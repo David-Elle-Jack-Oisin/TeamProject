@@ -19,21 +19,13 @@
 #include <iostream>
 #include <stdio.h>
 #include "raylib.h"
-
-class Player
-{
-    public:
-        Vector2 position = {1000, 1000};
-        Color color = GREEN;
-        //int velocity = 0;
-};
+#include "src/simulation/Player.cpp"
 
 
-#define PLAYER_SPD 100.0f
+
 
 // void UpdatePlayer(Player player, float delta);     
 
-void UpdatePlayer(Player *player, float delta);
 
 int main(void)
 {
@@ -78,19 +70,14 @@ int main(void)
 
                 float deltaTime = GetFrameTime();
 
-                //UpdatePlayer(player, deltaTime);
-
-                UpdatePlayer(&player, deltaTime);
-
                 BeginDrawing();
 
                 ClearBackground(RAYWHITE);
 
                 BeginMode2D(camera);
 
-                Rectangle playerRect = { player.position.x - 20, player.position.y - 40, 40 ,40};
-                DrawRectangleRec(playerRect, player.color);
-
+                player.UpdatePlayer(deltaTime);
+                
                 EndMode2D();
 
                 DrawText("The Game", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
@@ -106,22 +93,4 @@ int main(void)
     CloseWindow();
 
     return 0;
-}
-
-// void UpdatePlayer(Player player, float delta)
-// {
-//     if (IsKeyDown(KEY_LEFT)) player.position.x -= 200.0f * delta;
-//     if (IsKeyDown(KEY_RIGHT)) player.position.x += 200.0f * delta;
-//     if (IsKeyDown(KEY_UP)) player.position.y -= 200.0f * delta;
-//     if (IsKeyDown(KEY_UP)) player.position.y += 200.0f * delta;
-
-//     player.playerBody = { (player.position.x - 20),(player.position.y - 40), 40, 40};
-// }
-
-void UpdatePlayer(Player *player, float delta)
-{
-    if (IsKeyDown(KEY_LEFT)) player->position.x -= PLAYER_SPD*delta;
-    if (IsKeyDown(KEY_RIGHT)) player ->position.x += PLAYER_SPD*delta;
-    if (IsKeyDown(KEY_UP)) player ->position.y -= PLAYER_SPD*delta;
-    if (IsKeyDown(KEY_DOWN)) player -> position.y += PLAYER_SPD*delta;
 }
