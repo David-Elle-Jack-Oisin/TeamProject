@@ -1,127 +1,127 @@
 /*******************************************************************************************
 *
-*   raylib [text] example - Input Box
+*   raylib Quest for moisture MVP Version 1
 *
-*   This example has been created using raylib 3.5 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 *
-*   Copyright (c) 2017 Ramon Santamaria (@raysan5)
+* 
+*   Press enter to start
+*   Player can move around the map
+*   Enemy spawns after certain time period 
+*   Player/Enemy can damage each other
+*   Player/Enemy can kill each other
+*   If Player dies then the game is over 
+*   Multiplayer Connectivity
+*
 *
 ********************************************************************************************/
 
+#include <iostream>
+#include <stdio.h>
 #include "raylib.h"
 
-#define MAX_INPUT_CHARS     9
+class Player
+{
+    public:
+        Vector2 position = {1000, 1000};
+        Color color = GREEN;
+        //int velocity = 0;
+};
+
+
+#define PLAYER_SPD 100.0f
+
+// void UpdatePlayer(Player player, float delta);     
+
+void UpdatePlayer(Player *player, float delta);
 
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
 
-    InitWindow(screenWidth, screenHeight, "raylib [text] example - input box");
+    Player player;
 
-    char name[MAX_INPUT_CHARS + 1] = "\0";      // NOTE: One extra space required for null terminator char '\0'
-    int letterCount = 0;
+    Camera2D camera = { 0 };
+    camera.target = player.position;
+    camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
 
-    Rectangle textBox = { screenWidth/2.0f - 100, 180, 225, 50 };
-    bool mouseOnText = false;
+    InitWindow(screenWidth, screenHeight, "Quest for moisture");
 
     int framesCounter = 0;
 
-    SetTargetFPS(10);               // Set our game to run at 10 frames-per-second
-    //--------------------------------------------------------------------------------------
+    SetTargetFPS(60);  
+
+       
+
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        if (CheckCollisionPointRec(GetMousePosition(), textBox)) mouseOnText = true;
-        else mouseOnText = false;
 
-        if (mouseOnText)
-        {
-            // Set the window's cursor to the I-Beam
-            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        float deltaTime = GetFrameTime();
 
-            // Get char pressed (unicode character) on the queue
-            int key = GetCharPressed();
-
-            // Check if more characters have been pressed on the same frame
-            while (key > 0)
-            {
-                // NOTE: Only allow keys in range [32..125]
-                if ((key >= 32) && (key <= 125) && (letterCount < MAX_INPUT_CHARS))
-                {
-                    name[letterCount] = (char)key;
-                    name[letterCount+1] = '\0'; // Add null terminator at the end of the string.
-                    letterCount++;
-                }
-
-                key = GetCharPressed();  // Check next character in the queue
-            }
-
-            if (IsKeyPressed(KEY_BACKSPACE))
-            {
-                letterCount--;
-                if (letterCount < 0) letterCount = 0;
-                name[letterCount] = '\0';
-            }
-        }
-        else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-
-        if (mouseOnText) framesCounter++;
-        else framesCounter = 0;
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
 
-            DrawText("PLACE MOUSE OVER INPUT BOX!", 240, 140, 20, GRAY);
-
-            DrawRectangleRec(textBox, LIGHTGRAY);
-            if (mouseOnText) DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, RED);
-            else DrawRectangleLines((int)textBox.x, (int)textBox.y, (int)textBox.width, (int)textBox.height, DARKGRAY);
-
-            DrawText(name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
-
-            DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, MAX_INPUT_CHARS), 315, 250, 20, DARKGRAY);
-
-            if (mouseOnText)
-            {
-                if (letterCount < MAX_INPUT_CHARS)
-                {
-                    // Draw blinking underscore char
-                    if (((framesCounter/20)%2) == 0) DrawText("_", (int)textBox.x + 8 + MeasureText(name, 40), (int)textBox.y + 12, 40, MAROON);
-                }
-                else DrawText("Press BACKSPACE to delete chars...", 230, 300, 20, GRAY);
-            }
+            DrawText("Press enter to start", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
 
         EndDrawing();
-        //----------------------------------------------------------------------------------
+
+        if (IsKeyPressed(KEY_ENTER)){
+            while(!WindowShouldClose()){
+
+                float deltaTime = GetFrameTime();
+
+                //UpdatePlayer(player, deltaTime);
+
+                UpdatePlayer(&player, deltaTime);
+
+                BeginDrawing();
+
+                ClearBackground(RAYWHITE);
+
+                BeginMode2D(camera);
+
+                Rectangle playerRect = { player.position.x - 20, player.position.y - 40, 40 ,40};
+                DrawRectangleRec(playerRect, player.color);
+
+                EndMode2D();
+
+                DrawText("The Game", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
+
+                EndDrawing();
+            }
+        }
+
     }
 
     // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+
+    CloseWindow();
 
     return 0;
 }
 
-// Check if any key is pressed
-// NOTE: We limit keys check to keys between 32 (KEY_SPACE) and 126
-bool IsAnyKeyPressed()
+// void UpdatePlayer(Player player, float delta)
+// {
+//     if (IsKeyDown(KEY_LEFT)) player.position.x -= 200.0f * delta;
+//     if (IsKeyDown(KEY_RIGHT)) player.position.x += 200.0f * delta;
+//     if (IsKeyDown(KEY_UP)) player.position.y -= 200.0f * delta;
+//     if (IsKeyDown(KEY_UP)) player.position.y += 200.0f * delta;
+
+//     player.playerBody = { (player.position.x - 20),(player.position.y - 40), 40, 40};
+// }
+
+void UpdatePlayer(Player *player, float delta)
 {
-    bool keyPressed = false;
-    int key = GetKeyPressed();
-
-    if ((key >= 32) && (key <= 126)) keyPressed = true;
-
-    return keyPressed;
+    if (IsKeyDown(KEY_LEFT)) player->position.x -= PLAYER_SPD*delta;
+    if (IsKeyDown(KEY_RIGHT)) player ->position.x += PLAYER_SPD*delta;
+    if (IsKeyDown(KEY_UP)) player ->position.y -= PLAYER_SPD*delta;
+    if (IsKeyDown(KEY_DOWN)) player -> position.y += PLAYER_SPD*delta;
 }
