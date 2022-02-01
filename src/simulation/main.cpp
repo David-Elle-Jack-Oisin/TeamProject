@@ -19,13 +19,8 @@
 #include <iostream>
 #include <stdio.h>
 #include "raylib.h"
-#include "src/simulation/Player.cpp"
-
-
-
-
-// void UpdatePlayer(Player player, float delta);     
-
+#include "TeamProject/src/simulation/Player.cpp"
+#include "TeamProject/src/simulation/Enemy.cpp"
 
 int main(void)
 {
@@ -35,6 +30,9 @@ int main(void)
     const int screenHeight = 1080;
 
     Player player;
+    Enemy enemy;
+
+    InitAudioDevice(); // Initialize audio device
 
     Camera2D camera = { 0 };
     camera.target = player.position;
@@ -42,14 +40,17 @@ int main(void)
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
+    Music music = LoadMusicStream("bensound-deepblue.MP3");
+    music.looping = true;
+    float pitch = 1.0f;
+
+    PlayMusicStream(music);
+
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
 
     int framesCounter = 0;
 
     SetTargetFPS(60);  
-
-       
-
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -78,6 +79,8 @@ int main(void)
 
                 player.UpdatePlayer(deltaTime);
                 
+                enemy.UpdateEnemy();
+
                 EndMode2D();
 
                 DrawText("The Game", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
@@ -89,6 +92,9 @@ int main(void)
     }
 
     // De-Initialization
+    UnloadMusicStream(music); // Unload music stream buffers from RAM
+
+    CloseAudioDevice(); // Close audio device (music streaming is automatically stopped)
 
     CloseWindow();
 
