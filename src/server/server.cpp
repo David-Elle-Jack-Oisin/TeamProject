@@ -178,11 +178,10 @@ int main( int argc, const char *argv[] )
 {
 	int port = DEFAULT_SERVER_PORT;
 	SteamNetworkingIPAddr serverAddress; serverAddress.Clear();
-
+    gameServer server;
 
 	// Create client and server sockets
 	server.InitialiseConnectionSockets();
-	ChatServer server;
 	server.Run((uint16)port );
 	GameNetworkingSockets_Kill();
 
