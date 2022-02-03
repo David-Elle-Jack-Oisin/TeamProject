@@ -8,7 +8,7 @@
 #ifndef STEAMNETWORKINGSOCKETS_OPENSOURCE
 #include <steam/steam_api.h>
 #endif
-
+SteamNetworkingMicroseconds globalLogTimeZero;
 class gameServer{
     public:
         void Run(uint16 port){
@@ -20,7 +20,7 @@ class gameServer{
             serverConfig.SetPtr( k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged );
             listenSocket = serverInstance->CreateListenSocketIP( serverLocalAddress, 1, &serverConfig );
             if ( listenSocket == k_HSteamListenSocket_Invalid )
-                printf( "Failed to listen on port %d", port );
+                printf( "Failed to listen on port %d", port );SteamNetworkingMicroseconds globalLogTimeZero;
             serverPollGroup = serverInstance->CreatePollGroup();
             if ( serverPollGroup == k_HSteamNetPollGroup_Invalid )
                 printf( "Failed to listen on port %d", port );
