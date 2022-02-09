@@ -29,15 +29,15 @@ class Player
                         framesCounter = 0;
                         currentFrame++;
 
-                        if (currentFrame > 1) currentFrame = 0;
+                        if (currentFrame > 7) currentFrame = 0;
 
                         //This hides the other frames in the animation
                         //So that the walking looks natural
 
                         frameRec.x = (float)currentFrame*(float)Jerry.width/5;
-            }
+            } }
             if (IsKeyDown(KEY_RIGHT)) { 
-                this ->position.x += PLAYER_SPD*delta;
+                this->position.x += PLAYER_SPD*delta;
                 if (framesCounter >= (60/framesSpeed))
                     {
                         framesCounter = 0;
@@ -50,8 +50,33 @@ class Player
                             frameRec.x = (float)currentFrame*(float)Jerry.width/5;
                         }
             }
-            if (IsKeyDown(KEY_UP)) this ->position.y -= PLAYER_SPD*delta;
-            if (IsKeyDown(KEY_DOWN)) this-> position.y += PLAYER_SPD*delta;
+            if (IsKeyDown(KEY_UP)) {
+                this ->position.y -= PLAYER_SPD*delta;
+                if (framesCounter >= (60/framesSpeed))
+                    {
+                        framesCounter = 0;
+                        currentFrame++;
+                        if (currentFrame > 1) currentFrame = 0; //NEED to change the numbers to apply to jerry spritesheet
+
+                            //This hides the other frames in the animation
+                            //So that the walking looks natural
+
+                            frameRec.x = (float)currentFrame*(float)Jerry.width/5;
+                        }
+            }
+            if (IsKeyDown(KEY_DOWN)) {
+                this ->position.y += PLAYER_SPD*delta;
+                if (framesCounter >= (60/framesSpeed))
+                    {
+                        framesCounter = 0;
+                        currentFrame++;
+                        if (currentFrame > 1) currentFrame = 0; //NEED to change the numbers to apply to jerry spritesheet
+
+                            //This hides the other frames in the animation
+                            //So that the walking looks natural
+
+                            frameRec.x = (float)currentFrame*(float)Jerry.width/5;
+                        }
+            }
             };
         };
-};
