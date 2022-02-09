@@ -162,6 +162,7 @@ class gameServer{
 
             }
         }
+
         static gameServer *gameServerCallBackInstance;
 
         static void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
@@ -172,6 +173,7 @@ class gameServer{
             serverInstance->RunCallbacks();
         }
 };
+
 gameServer *gameServer::gameServerCallBackInstance = nullptr;
 const uint16 DEFAULT_SERVER_PORT = 27020;
 
@@ -181,7 +183,7 @@ int main( int argc, const char *argv[] )
 	SteamNetworkingIPAddr serverAddress; serverAddress.Clear();
     gameServer server;
 
-	// Create client and server sockets
+	// create server sockets
 	server.InitialiseConnectionSockets();
 	server.Run((uint16)port );
 	GameNetworkingSockets_Kill();
