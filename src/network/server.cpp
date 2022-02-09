@@ -19,8 +19,9 @@ class gameServer{
             SteamNetworkingConfigValue_t serverConfig;
             serverConfig.SetPtr( k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged );
             listenSocket = serverInstance->CreateListenSocketIP( serverLocalAddress, 1, &serverConfig );
-            if ( listenSocket == k_HSteamListenSocket_Invalid )
-                printf( "Failed to listen on port %d", port );SteamNetworkingMicroseconds globalLogTimeZero;
+            if(listenSocket == k_HSteamListenSocket_Invalid){
+                printf( "Failed to listen on port %d", port );
+            }
             serverPollGroup = serverInstance->CreatePollGroup();
             if ( serverPollGroup == k_HSteamNetPollGroup_Invalid )
                 printf( "Failed to listen on port %d", port );
@@ -70,11 +71,6 @@ class gameServer{
             }
         }
 
-        static gameServer *gameServerCallBackInstance;
-
-        static void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
-            gameServerCallBackInstance->OnConnectionStatusChanged(connectionInfo);
-        }
         void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
             char temp[1024];
             // depends on connection state 
@@ -161,10 +157,16 @@ class gameServer{
 
                 incomingMessage->Release();
 
-                sprintf(temp, formattedPacket);
+                sprintf(temp, "%s", formattedPacket);
                 SendToAllClients(temp, client->first);
 
             }
+        }
+
+        static gameServer *gameServerCallBackInstance;
+
+        static void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
+            gameServerCallBackInstance->OnConnectionStatusChanged(connectionInfo);
         }
         void pollConnectionStateChanges(){
             gameServerCallBackInstance = this;
@@ -172,6 +174,7 @@ class gameServer{
         }
 };
 
+gameServer *gameServer::gameServerCallBackInstance = nullptr;
 const uint16 DEFAULT_SERVER_PORT = 27020;
 
 int main( int argc, const char *argv[] )
@@ -180,7 +183,7 @@ int main( int argc, const char *argv[] )
 	SteamNetworkingIPAddr serverAddress; serverAddress.Clear();
     gameServer server;
 
-	// Create client and server sockets
+	// create server sockets
 	server.InitialiseConnectionSockets();
 	server.Run((uint16)port );
 	GameNetworkingSockets_Kill();
