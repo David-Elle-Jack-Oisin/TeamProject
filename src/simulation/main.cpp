@@ -22,24 +22,18 @@
 #include "TeamProject/src/simulation/Player.cpp"
 #include "TeamProject/src/simulation/Enemy.cpp"
 
+
+
 int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
+
+
     const int screenWidth = 1920;
     const int screenHeight = 1080;
 
-    Player player;
-    Enemy enemy;
-
     InitAudioDevice(); // Initialize audio device
-
-    Camera2D camera = { 0 };
-    camera.target = player.position;
-    camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
-
     Music music = LoadMusicStream("bensound-deepblue.MP3");
     music.looping = true;
     float pitch = 1.0f;
@@ -48,13 +42,12 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
 
-    int framesCounter = 0;
-
     SetTargetFPS(60);  
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+
 
         float deltaTime = GetFrameTime();
 
@@ -75,11 +68,7 @@ int main(void)
 
                 ClearBackground(RAYWHITE);
 
-                BeginMode2D(camera);
-
                 player.UpdatePlayer(deltaTime);
-                
-                enemy.UpdateEnemy();
 
                 EndMode2D();
 
