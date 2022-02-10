@@ -14,11 +14,11 @@ class Player
         int framesSpeed = 8;
         int framesCounter = 0;
         int currentFrame = 0;
+        
 
         Vector2 position = {1000, 1000};
         void UpdatePlayer(float delta)
         {   
-
             Texture2D Jerry = LoadTexture("JerryXmovement.png");    //Sprite Sheet (14 Sprites)
             Rectangle frameRec = { 0.0f, 0.0f, (float)Jerry.width/14, (float)Jerry.height}; //frameRec is Jerry
             DrawTextureRec(Jerry, frameRec, this-> position, WHITE);    //Draw Jerry

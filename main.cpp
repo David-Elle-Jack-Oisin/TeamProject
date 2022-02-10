@@ -93,10 +93,6 @@ int main(void)
 
                 EndMode2D();
 
-                DrawText("The Game", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
-
-                DrawRectangle(0, 900, screenWidth, 100, DARKGRAY);
-
                 EndDrawing();
             }
         }
