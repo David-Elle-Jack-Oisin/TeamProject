@@ -21,6 +21,10 @@
 #include "raylib.h"
 #include "src/simulation/Player.cpp"
 #include "src/simulation/Enemy.cpp"
+#ifndef _CLIENT_H
+#define _CLIENT_H
+    #include "src/network/client.cpp"
+#endif
 
 int main(void)
 {
@@ -28,6 +32,11 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1920;
     const int screenHeight = 1080;
+
+    gameClient client;
+    std::thread clientThread([&client](){
+        client.startClient();
+    });
 
     Player player;
     Enemy enemy;
@@ -78,6 +87,7 @@ int main(void)
                 BeginMode2D(camera);
 
                 player.UpdatePlayer(deltaTime);
+                client.sendPos(player.position);
                 
                 enemy.UpdateEnemy();
 

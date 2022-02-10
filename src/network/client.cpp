@@ -1,16 +1,9 @@
 #include <assert.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <string.h>
-#include <algorithm>
 #include <string>
 #include <random>
-#include <chrono>
 #include <thread>
-#include <mutex>
-#include <queue>
-#include <map>
-#include <cctype>
+
 
 #include <steam/steamnetworkingsockets.h>
 #include <steam/isteamnetworkingutils.h>
@@ -18,42 +11,55 @@
 #include <steam/steam_api.h>
 #endif
 
-#ifdef WIN32
-	#include <windows.h> // Ug, for NukeProcess -- see below
-#else
-	#include <unistd.h>
-	#include <signal.h>
-#endif
+#include "raylib.h"
 SteamNetworkingMicroseconds globalLogTimeZero;
+const uint16 DEFAULT_SERVER_PORT = 27020;
 class gameClient
 {
 public:
-    void Run(const SteamNetworkingIPAddr &serverIp){
+    void sendPos(Vector2 position){
+        std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
+        const char *formatPacket = packet.c_str();
+        clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+    }
+	void startClient(){
+		SteamNetworkingIPAddr serverAddress; 
+		serverAddress.Clear();
+		if (!serverAddress.ParseString("127.0.0.1"))
+			fprintf(stderr,"Invalid server address '%s'", "127.0.0.1");
+		serverAddress.m_port = DEFAULT_SERVER_PORT;
+		fprintf(stderr,"%i",DEFAULT_SERVER_PORT);
+		InitialiseConnectionSockets();
+		Run(serverAddress);
+		GameNetworkingSockets_Kill();
+	}
+private:
+    ISteamNetworkingSockets *clientInstance;
+    HSteamNetConnection connection;
+    bool shutDown = false;
+
+	static void InitialiseConnectionSockets(){
+        SteamDatagramErrMsg errorMessage;
+        GameNetworkingSockets_Init( nullptr, errorMessage );
+        globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
+    }
+
+	void Run(const SteamNetworkingIPAddr &serverIp){
         clientInstance = SteamNetworkingSockets();
         char serverAddressBuffer[ SteamNetworkingIPAddr::k_cchMaxString ];
         serverIp.ToString(serverAddressBuffer, sizeof(serverAddressBuffer), true);
-        printf("Connecting to server at %s", serverAddressBuffer);
+        fprintf(stderr,"Connecting to server at %s", serverAddressBuffer);
 		SteamNetworkingConfigValue_t clientConfig;
 		clientConfig.SetPtr(k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged);
 		connection = clientInstance->ConnectByIPAddress(serverIp, 1, &clientConfig);
 		if ( connection == k_HSteamNetConnection_Invalid )
-			printf("Failed to create connection");
+			fprintf(stderr,"Failed to create connection");
 		while (!shutDown){
 			pollIncomingMessages();
 			pollConnectionStateChanges();
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 		}
 	}
-    static void InitialiseConnectionSockets(){
-            SteamDatagramErrMsg errorMessage;
-            GameNetworkingSockets_Init( nullptr, errorMessage );
-            globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
-        }
-private:
-    ISteamNetworkingSockets *clientInstance;
-    HSteamNetConnection connection;
-    bool shutDown = false;
-
     void pollIncomingMessages(){
         while(!shutDown){
             ISteamNetworkingMessage *incomingMessage = nullptr;
@@ -62,9 +68,12 @@ private:
                 break;
             }
             if(numOfMessages < 0){
-                printf("Error Checking For Messages");
+                fprintf(stderr,"Error Checking For Messages");
             }
-            printf("RECIEVED FROM SERVER");
+            std::string packet;
+			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
+			const char *formattedPacket = packet.c_str();
+            fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
 			incomingMessage->Release();
         }
     }
@@ -79,13 +88,13 @@ private:
 				shutDown = true;
 				if (connectionInfo->m_eOldState == k_ESteamNetworkingConnectionState_Connecting)
 				{
-					printf("Local Problem (%s)", connectionInfo->m_info.m_szEndDebug );
+					fprintf(stderr,"Local Problem (%s)", connectionInfo->m_info.m_szEndDebug );
 				}
 				else if (connectionInfo->m_info.m_eState == k_ESteamNetworkingConnectionState_ProblemDetectedLocally){
-					printf("Lost Connection with host (%s)", connectionInfo->m_info.m_szEndDebug );
+					fprintf(stderr,"Lost Connection with host (%s)", connectionInfo->m_info.m_szEndDebug );
 				}
 				else{
-					printf("Host Disconnected (%s)", connectionInfo->m_info.m_szEndDebug);
+					fprintf(stderr,"Host Disconnected (%s)", connectionInfo->m_info.m_szEndDebug);
 				}
 
 				clientInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false );
@@ -95,7 +104,7 @@ private:
 			case k_ESteamNetworkingConnectionState_Connecting:
 				break;
 			case k_ESteamNetworkingConnectionState_Connected:
-				printf("Connected to server OK");
+				fprintf(stderr,"Connected to server OK");
 				break;
 			default:
 				break;
@@ -114,18 +123,3 @@ private:
 };
 
 gameClient *gameClient::gameClientCallBackInstance = nullptr;
-const uint16 DEFAULT_SERVER_PORT = 27020;
-
-int main(int argc, const char *argv[]){
-	SteamNetworkingIPAddr serverAddress; 
-    serverAddress.Clear();
-    gameClient client;
-    
-    if (!serverAddress.ParseString("127.0.0.1"))
-		printf("Invalid server address '%s'", "127.0.0.1");
-    serverAddress.m_port = DEFAULT_SERVER_PORT;
-    printf("%i",DEFAULT_SERVER_PORT);
-    client.InitialiseConnectionSockets();
-	client.Run(serverAddress);
-	GameNetworkingSockets_Kill();
-}

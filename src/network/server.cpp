@@ -20,19 +20,19 @@ class gameServer{
             serverConfig.SetPtr( k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged );
             listenSocket = serverInstance->CreateListenSocketIP( serverLocalAddress, 1, &serverConfig );
             if(listenSocket == k_HSteamListenSocket_Invalid){
-                printf( "Failed to listen on port %d", port );
+                fprintf(stderr, "Failed to listen on port %d", port );
             }
             serverPollGroup = serverInstance->CreatePollGroup();
             if ( serverPollGroup == k_HSteamNetPollGroup_Invalid )
-                printf( "Failed to listen on port %d", port );
-            printf( "Server listening on port %d\n", port );
+                fprintf(stderr, "Failed to listen on port %d", port );
+            fprintf(stderr, "Server listening on port %d\n", port );
 
             while(!shutDown){
                 pollIncomingMessages();
                 pollConnectionStateChanges();
                 std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
             }
-            printf( "Closing connections...\n" );
+            fprintf(stderr, "Closing connections...\n" );
             for (auto client: clients){
                 SendToClient(client.first, "Shutdown");
                 serverInstance->CloseConnection(client.first, 0, "Server Shutdown", true);
@@ -93,7 +93,7 @@ class gameServer{
                             debugMessage = "closed by peer";
                             sprintf(temp, "Client Left");
                         }
-                        printf("Connection %s %s, reason %d: %s\n",
+                        fprintf(stderr,"Connection %s %s, reason %d: %s\n",
                             connectionInfo->m_info.m_szConnectionDescription,
                             debugMessage,
                             connectionInfo->m_info.m_eEndReason,
@@ -111,16 +111,16 @@ class gameServer{
                 }
                 case k_ESteamNetworkingConnectionState_Connecting:
                     assert(clients.find(connectionInfo->m_hConn) == clients.end());
-                    printf("Connection request from %s", connectionInfo->m_info.m_szConnectionDescription);
+                    fprintf(stderr,"Connection request from %s", connectionInfo->m_info.m_szConnectionDescription);
                     if(serverInstance->AcceptConnection(connectionInfo->m_hConn) != k_EResultOK){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        printf("Can't Accept Connection");
+                        fprintf(stderr,"Can't Accept Connection");
                         break;
                     }
 
                     if(!serverInstance->SetConnectionPollGroup(connectionInfo->m_hConn, serverPollGroup)){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        printf("Failed To Set Poll Group");
+                        fprintf(stderr,"Failed To Set Poll Group");
                         break;
                     }
 
@@ -145,7 +145,7 @@ class gameServer{
                     break;
                 }
                 if(numOfMessages < 0){
-                    printf("Error Checking For Messages");
+                    fprintf(stderr,"Error Checking For Messages");
                 }
                 assert(numOfMessages == 1 && incomingMessage);
                 auto client = clients.find( incomingMessage->m_conn);
@@ -154,9 +154,9 @@ class gameServer{
                 std::string packet;
 			    packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
 			    const char *formattedPacket = packet.c_str();
-
+                fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
                 incomingMessage->Release();
-
+                
                 sprintf(temp, "%s", formattedPacket);
                 SendToAllClients(temp, client->first);
 
