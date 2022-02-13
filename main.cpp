@@ -19,12 +19,17 @@
 #include <iostream>
 #include <stdio.h>
 #include "raylib.h"
-#include "src/simulation/Player.cpp"
+#include "src/simulation/PlayerController.cpp"
+#ifndef _PLAYER_RENDERER_H
+#define _PLAYER_RENDERER_H
+    #include "src/simulation/PlayersRenderer.cpp"
+#endif
 #include "src/simulation/Enemy.cpp"
 #ifndef _CLIENT_H
 #define _CLIENT_H
     #include "src/network/client.cpp"
 #endif
+
 
 int main(void)
 {
@@ -34,17 +39,22 @@ int main(void)
     const int screenHeight = 1080;
 
     gameClient client;
-    std::thread clientThread([&client](){
-        client.startClient();
+    PlayersRenderer playersRender;
+    std::thread clientThread([&client, &playersRender](){
+        client.startClient(&playersRender);
     });
-
-    Player player;
+    
     Enemy enemy;
 
     InitAudioDevice(); // Initialize audio device
 
     Camera2D camera = { 0 };
-    camera.target = player.position;
+    PlayerController playerController;
+    Player *ptrPlayer;
+    ptrPlayer = playerController.getPlayer();
+    playersRender.addNewPlayer(ptrPlayer);
+
+    camera.target = ptrPlayer->position;
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
@@ -56,6 +66,7 @@ int main(void)
     PlayMusicStream(music);
 
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
+    playersRender.loadTexture();
 
     int framesCounter = 0;
 
@@ -72,8 +83,7 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             DrawText("Press enter to start", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
-
-        EndDrawing();
+            EndDrawing();
 
         if (IsKeyPressed(KEY_ENTER)){
             while(!WindowShouldClose()){
@@ -86,8 +96,9 @@ int main(void)
 
                 BeginMode2D(camera);
 
-                player.UpdatePlayer(deltaTime);
-                client.sendPos(player.position);
+                playerController.updatePosition(delta);
+                playersRender.renderPlayers();
+                client.sendPos(ptrPlayer->position);
                 
                 enemy.UpdateEnemy();
 

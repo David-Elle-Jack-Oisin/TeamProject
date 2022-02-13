@@ -3,6 +3,16 @@
 #include <string>
 #include <random>
 #include <thread>
+#include <cstring>
+
+#ifndef _PLAYER_H
+#define _PLAYER_H
+    #include "../simulation/Player.cpp"
+#endif
+#ifndef _PLAYER_RENDERER_H
+#define _PLAYER_RENDERER_H
+    #include "../simulation/PlayersRenderer.cpp"
+#endif
 
 
 #include <steam/steamnetworkingsockets.h>
@@ -22,8 +32,9 @@ public:
         const char *formatPacket = packet.c_str();
         clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
     }
-	void startClient(){
-		SteamNetworkingIPAddr serverAddress; 
+	void startClient(PlayersRenderer *renderer){
+		SteamNetworkingIPAddr serverAddress;
+		playRenderer = renderer;
 		serverAddress.Clear();
 		if (!serverAddress.ParseString("127.0.0.1"))
 			fprintf(stderr,"Invalid server address '%s'", "127.0.0.1");
@@ -34,9 +45,11 @@ public:
 		GameNetworkingSockets_Kill();
 	}
 private:
+	PlayersRenderer *playRenderer;
     ISteamNetworkingSockets *clientInstance;
     HSteamNetConnection connection;
     bool shutDown = false;
+	bool firstPlayer = true;
 
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
@@ -72,8 +85,21 @@ private:
             }
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
-			const char *formattedPacket = packet.c_str();
-            fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
+			if (packet.find(":") != std::string::npos)
+			{
+				if(firstPlayer == true){
+					Player *ptrPlayer;
+					ptrPlayer = new Player(2);
+					playRenderer->addNewPlayer(ptrPlayer);
+					firstPlayer = false;
+				}
+				const char *firstFloatCharArray = packet.substr(0, packet.find(":")).c_str();
+				const char *secondFloatCharArray = packet.substr(packet.find(":") + 1).c_str();
+				float firstFloat = std::atof(firstFloatCharArray);
+				float secondFloat = std::atof(secondFloatCharArray);
+				playRenderer->updateSecondPlayer(firstFloat, secondFloat);
+			}
+			
 			incomingMessage->Release();
         }
     }
