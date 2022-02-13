@@ -25,6 +25,7 @@ class PlayersRenderer{
             frameRec = { 0.0f, 0.0f, (float)Jerry.width/14, (float)Jerry.height};
         }
         void updateSecondPlayer(float x, float y){
+            playerList.back()->prevPosition = playerList.back()->position; 
             playerList.back()->position.x = x;
             playerList.back()->position.y = y;
         }
@@ -36,5 +37,32 @@ class PlayersRenderer{
        
         void renderPlayer(Player* player){
             DrawTextureRec(Jerry, frameRec, player->position, WHITE);
+            // LEFT CHECK
+            if (player->prevPosition.x - player->position.x > 0){
+                fprintf(stderr,"LEFT");
+                player->prevPosition = player->position;
+                // ANIMATION CODE
+
+            }
+            // RIGHT CHECK 
+            if (player->prevPosition.x - player->position.x < 0){
+                fprintf(stderr,"RIGHT");
+                player->prevPosition = player->position;
+                // ANIMATION CODE
+            }
+            // UP CHECK
+            if (player->prevPosition.y - player->position.y > 0){
+                fprintf(stderr,"UP");
+                player->prevPosition = player->position;
+                // ANIMATION CODE
+            }
+            // DOWN CHECK 
+            if (player->prevPosition.y - player->position.y < 0){
+                fprintf(stderr,"DOWN");
+                player->prevPosition = player->position;
+                // ANIMATION CODE
+
+            }
+    
         }
 };
