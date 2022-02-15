@@ -21,8 +21,8 @@ class PlayersRenderer{
             }
         }
         void loadTexture(){
-            Jerry = LoadTexture("JerryXmovement.png");
-            frameRec = { 0.0f, 0.0f, (float)Jerry.width/14, (float)Jerry.height};
+            Jerry = LoadTexture("smallJerry.png");
+            frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
         }
         void updateSecondPlayer(float x, float y){
             playerList.back()->prevPosition = playerList.back()->position; 
@@ -41,7 +41,25 @@ class PlayersRenderer{
             if (player->prevPosition.x - player->position.x > 0){
                 fprintf(stderr,"LEFT");
                 player->prevPosition = player->position;
+
                 // ANIMATION CODE
+
+                player->framesCounter++;
+
+
+                if (player->framesCounter >= (60/player->framesSpeed))
+                    {
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (player->currentFrame > 15) {player->currentFrame = 8;}
+
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+
+                        frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+            } 
 
             }
             // RIGHT CHECK 
@@ -49,18 +67,37 @@ class PlayersRenderer{
                 fprintf(stderr,"RIGHT");
                 player->prevPosition = player->position;
                 // ANIMATION CODE
+
+                player->framesCounter++;
+
+
+                if (player->framesCounter >= (60/player->framesSpeed))
+                    {
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (player->currentFrame > 7) {player->currentFrame = 1;}
+
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+
+                        frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+            } 
             }
             // UP CHECK
             if (player->prevPosition.y - player->position.y > 0){
                 fprintf(stderr,"UP");
                 player->prevPosition = player->position;
                 // ANIMATION CODE
+
             }
             // DOWN CHECK 
             if (player->prevPosition.y - player->position.y < 0){
                 fprintf(stderr,"DOWN");
                 player->prevPosition = player->position;
                 // ANIMATION CODE
+
 
             }
     
