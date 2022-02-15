@@ -125,6 +125,8 @@ int main(void)
         }
 
     }
+    client.turnOff();
+    clientThread.join();
 
     // De-Initialization
     UnloadMusicStream(music); // Unload music stream buffers from RAM

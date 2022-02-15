@@ -93,7 +93,7 @@ class gameServer{
                             debugMessage = "closed by peer";
                             sprintf(temp, "Client Left");
                         }
-                        fprintf(stderr,"Connection %s %s, reason %d: %s\n",
+                        fprintf(stderr,"NETWORK: Connection %s %s, reason %d: %s\n",
                             connectionInfo->m_info.m_szConnectionDescription,
                             debugMessage,
                             connectionInfo->m_info.m_eEndReason,
@@ -111,16 +111,16 @@ class gameServer{
                 }
                 case k_ESteamNetworkingConnectionState_Connecting:
                     assert(clients.find(connectionInfo->m_hConn) == clients.end());
-                    fprintf(stderr,"Connection request from %s", connectionInfo->m_info.m_szConnectionDescription);
+                    fprintf(stderr,"NETWORK: Connection request from %s", connectionInfo->m_info.m_szConnectionDescription);
                     if(serverInstance->AcceptConnection(connectionInfo->m_hConn) != k_EResultOK){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        fprintf(stderr,"Can't Accept Connection");
+                        fprintf(stderr,"NETWORK: Can't Accept Connection");
                         break;
                     }
 
                     if(!serverInstance->SetConnectionPollGroup(connectionInfo->m_hConn, serverPollGroup)){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        fprintf(stderr,"Failed To Set Poll Group");
+                        fprintf(stderr,"NETWORK: Failed To Set Poll Group");
                         break;
                     }
 
@@ -145,7 +145,7 @@ class gameServer{
                     break;
                 }
                 if(numOfMessages < 0){
-                    fprintf(stderr,"Error Checking For Messages");
+                    fprintf(stderr,"NETWORK: Error Checking For Messages");
                 }
                 assert(numOfMessages == 1 && incomingMessage);
                 auto client = clients.find( incomingMessage->m_conn);
