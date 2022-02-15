@@ -28,9 +28,11 @@ class gameClient
 {
 public:
     void sendPos(Vector2 position){
-        std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
-        const char *formatPacket = packet.c_str();
-        clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+		if (!shutDown) {
+			std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
+        	const char *formatPacket = packet.c_str();
+        	clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+		}
     }
 	void startClient(PlayersRenderer *renderer){
 		SteamNetworkingIPAddr serverAddress;
