@@ -2,35 +2,20 @@
 #include <stdio.h>
 #include "raylib.h"
 
-const int screenWidth = 1920;
-const int screenHeight = 1080;
-
 class Enemy
 {
     private:
-    #define ENEMY_SPD 100.0f
-    #define delta 0.75f
 
     public:
-        float max_enemies = 10;
-        float radius;
-        bool active;
-        float posx = GetRandomValue(100, screenWidth);
-        float posy = GetRandomValue(550, screenHeight);
-        Vector2 position = {posx, posy};
-        Color color = RED;
+    static const int framesSpeed = 8;
+        static constexpr float speed = 5.0f;
+        int id;
+        Vector2 prevPosition;
+        Vector2 position;
+        int framesCounter;
+        int currentFrame;
+        Enemy(int identifyier): id(identifyier), position({1000, 1000}), prevPosition({0, 0}), framesCounter(0), currentFrame(0){} 
+        //int damage =
+        //int health =  
 
-        //int velocity = 0;
-        void UpdateEnemy()
-        {
-
-            this->position.x -= ENEMY_SPD * delta;
-            this->position.x += ENEMY_SPD * delta;
-            this->position.y -= ENEMY_SPD * delta;
-            this->position.y += ENEMY_SPD * delta;
-        
-            Rectangle enemyRect = {position.x - 30, position.y - 40, 40, 40};
-            DrawRectangleRec(enemyRect, color);
-            
-        }
 };

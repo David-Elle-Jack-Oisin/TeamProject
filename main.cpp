@@ -24,7 +24,18 @@
 #define _PLAYER_RENDERER_H
     #include "src/simulation/PlayersRenderer.cpp"
 #endif
-#include "src/simulation/Enemy.cpp"
+#ifndef _ENEMY_H
+#define _ENEMY_H
+    #include "src/simulation/Enemy.cpp"
+#endif
+#ifndef _ENEMY_RENDERER_H
+#define _ENEMY_RENDERER_H
+    #include "src/simulation/EnemyRenderer.cpp"
+#endif
+#ifndef _ENEMY_CONT_H
+#define _ENEMY_CONT_H
+    #include "src/simulation/EnemyController.cpp"
+#endif
 #ifndef _CLIENT_H
 #define _CLIENT_H
     #include "src/network/client.cpp"
@@ -43,8 +54,10 @@ int main(void)
     std::thread clientThread([&client, &playersRender](){
         client.startClient(&playersRender);
     });
+
+    EnemyRenderer enemyRender;
+ 
     
-    Enemy enemy;
 
     InitAudioDevice(); // Initialize audio device
 
@@ -53,6 +66,12 @@ int main(void)
     Player *ptrPlayer;
     ptrPlayer = playerController.getPlayer();
     playersRender.addNewPlayer(ptrPlayer);
+
+    EnemyController enemyController;
+    Enemy *ptrEnemy;
+    ptrEnemy = enemyController.getEnemy();
+    enemyRender.addNewEnemy(ptrEnemy);
+
 
     camera.target = ptrPlayer->position;
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
@@ -99,8 +118,9 @@ int main(void)
                 playerController.updatePosition(delta);
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
+
                 
-                enemy.UpdateEnemy();
+                
 
                 EndMode2D();
 
