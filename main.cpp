@@ -78,14 +78,11 @@ int main(void)
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Music music = LoadMusicStream("bensound-deepblue.mp3");
-    music.looping = true;
-    float pitch = 1.0f;
-
-    PlayMusicStream(music);
-
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     playersRender.loadTexture();
+    Music music = LoadMusicStream("bensound-jazzyfrenchy.mp3");
+    music.looping = true;
+    float pitch = 1.0f;
 
     int framesCounter = 0;
 
@@ -94,10 +91,10 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        UpdateMusicStream(music);
+        PlayMusicStream(music);
 
         float deltaTime = GetFrameTime();
-
-        BeginDrawing();
 
             ClearBackground(RAYWHITE);
 
@@ -106,6 +103,8 @@ int main(void)
 
         if (IsKeyPressed(KEY_ENTER)){
             while(!WindowShouldClose()){
+                UpdateMusicStream(music);
+                PlayMusicStream(music);
 
                 float deltaTime = GetFrameTime();
 
@@ -118,9 +117,6 @@ int main(void)
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
-
-                
-                
 
                 EndMode2D();
 
