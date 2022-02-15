@@ -21,4 +21,3 @@ Once Ubunutu is setup VM or otherwise:
 - You can now build the project. Just enter the command "make" from within the directory TeamProject. The client will crash after a few seconds with no server.
 - You can run ./server.exe to start a server 
 # ALSO DO NOT COMMIT THE FILES FROM THE WINDOWS BUILD FILES
-    

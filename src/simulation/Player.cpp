@@ -8,7 +8,7 @@ class Player {
 
     public:
         static const int framesSpeed = 8;
-        static constexpr float speed = 5.0f;
+        static constexpr float speed = 100.0f;
         int id;
         Vector2 prevPosition;
         Vector2 position;

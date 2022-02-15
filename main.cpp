@@ -115,7 +115,7 @@ int main(void)
 
                 BeginMode2D(camera);
 
-                playerController.updatePosition(delta);
+                playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
 
