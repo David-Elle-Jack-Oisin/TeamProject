@@ -3,6 +3,7 @@
 #include <iostream>
 #include <list>
 #include <iterator>
+#include "raylib.h"
 #ifndef _PLAYER_H
 #define _PLAYER_H
     #include "Player.cpp"
@@ -13,6 +14,7 @@ class PlayersRenderer{
         void addNewPlayer(Player* player){
             playerList.push_back(player);
             id++;
+            player->currentHealthFrame = 1;
         }
         void renderPlayers(){
             std::list<Player*>::iterator iter;
@@ -23,6 +25,9 @@ class PlayersRenderer{
         void loadTexture(){
             Jerry = LoadTexture("smallJerry.png");
             frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
+
+            Health = LoadTexture("Health.png");
+            healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
         }
         void updateSecondPlayer(float x, float y){
             playerList.back()->prevPosition = playerList.back()->position; 
@@ -37,9 +42,17 @@ class PlayersRenderer{
         int id;
         Texture2D Jerry;
         Rectangle frameRec;
+
+        Texture2D Health;
+        Rectangle healthFrameRec;
+
        
         void renderPlayer(Player* player){
+            renderHealth(player);
+
             DrawTextureRec(Jerry, frameRec, player->position, WHITE);
+            DrawTextureRec(Health, healthFrameRec, player->position, WHITE);  
+    
             // LEFT CHECK
             if (player->prevPosition.x - player->position.x > 0){
                 player->prevPosition = player->position;
@@ -86,5 +99,32 @@ class PlayersRenderer{
 
             }
     
+        }
+
+        void renderHealth(Player* player) {
+            
+            //Draw the health bar in the top left corner
+
+            player->playerHealth == 11;     //11, every time player takes damage, health -1
+            
+
+            if (IsKeyPressed(80)) {     //(if P is pressed), will replace with collisions later
+                player->playerHealth--;
+                //fprintf(stderr,"HEALTH: %i\n", player->playerHealth);
+
+                healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
+                player->currentHealthFrame++;
+
+                fprintf(stderr,"FRAME: %i\n", player->currentHealthFrame);
+
+                if (player->playerHealth = 0) {       //Dead
+                    //Make jerry disappear!!
+                }
+            }
+
+            //if player collides with slime, health -= 1
+            //player->playerHealth = healthFrameRec     //as health changes the frame changes
+
+            //if health = 0 OR health->currentFrame = 11 (0 hearts) then: death
         }
 };

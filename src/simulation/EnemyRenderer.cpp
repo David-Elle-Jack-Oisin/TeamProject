@@ -21,7 +21,7 @@ class EnemyRenderer{
             }
         }
         void loadTexture(){
-            Slime = LoadTexture("LightSlime.png");
+            Slime = LoadTexture("LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
         }
         void updateSecondEnemy(float x, float y){
