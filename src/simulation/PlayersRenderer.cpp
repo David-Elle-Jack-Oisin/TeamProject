@@ -15,6 +15,7 @@ class PlayersRenderer{
             playerList.push_back(player);
             id++;
             player->currentHealthFrame = 1;
+            player->playerHealth = 9;     
         }
         void renderPlayers(){
             std::list<Player*>::iterator iter;
@@ -102,29 +103,14 @@ class PlayersRenderer{
         }
 
         void renderHealth(Player* player) {
-            
-            //Draw the health bar in the top left corner
-
-            player->playerHealth == 11;     //11, every time player takes damage, health -1
-            
 
             if (IsKeyPressed(80)) {     //(if P is pressed), will replace with collisions later
-                player->playerHealth--;
-                //fprintf(stderr,"HEALTH: %i\n", player->playerHealth);
 
+                fprintf(stderr,"HEALTH: %i\n", player->playerHealth);
                 healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
                 player->currentHealthFrame++;
 
-                fprintf(stderr,"FRAME: %i\n", player->currentHealthFrame);
-
-                if (player->playerHealth = 0) {       //Dead
-                    //Make jerry disappear!!
-                }
+                player->playerHealth--;
             }
-
-            //if player collides with slime, health -= 1
-            //player->playerHealth = healthFrameRec     //as health changes the frame changes
-
-            //if health = 0 OR health->currentFrame = 11 (0 hearts) then: death
         }
 };
