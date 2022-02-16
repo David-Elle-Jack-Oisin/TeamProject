@@ -22,7 +22,5 @@ Once Ubunutu is setup VM or otherwise:
 - You can run ./server.exe to start a server 
 # ALSO DO NOT COMMIT THE FILES FROM THE WINDOWS BUILD FILES
 - stuff to do
-- terminate client when game ends
 - add classes 
 - score
-- without no server crashes

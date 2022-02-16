@@ -40,6 +40,10 @@
 #define _CLIENT_H
     #include "src/network/client.cpp"
 #endif
+#ifndef _MAP_H
+#define _MAP_H
+    #include "src/simulation/MapGenerator.cpp"
+#endif
 
 
 int main(void)
@@ -49,30 +53,38 @@ int main(void)
     const int screenWidth = 1920;
     const int screenHeight = 1080;
 
+    int x;
+    int y;
+    int z;
+
+    int height = 10;
+    int length = 20;
+
     gameClient client;
-    PlayersRenderer playersRender;
-    std::thread clientThread([&client, &playersRender](){
-        client.startClient(&playersRender);
-    });
-
-    EnemyRenderer enemyRender;
- 
     
-
-    InitAudioDevice(); // Initialize audio device
-
-    Camera2D camera = { 0 };
+    // Player Must Be Created And Added To Renderer Before The Thread
+    // This Is So We Don't Have To Wait For A Time Out To Start The Game
+    PlayersRenderer playersRender;
     PlayerController playerController;
     Player *ptrPlayer;
     ptrPlayer = playerController.getPlayer();
     playersRender.addNewPlayer(ptrPlayer);
 
+    std::thread clientThread([&client, &playersRender](){
+        client.startClient(&playersRender);
+    });
+
+    EnemyRenderer enemyRender;
+    MapGenerator terrain;
+
+    InitAudioDevice(); // Initialize audio device
+
+    Camera2D camera = { 0 };
+
     EnemyController enemyController;
     Enemy *ptrEnemy;
     ptrEnemy = enemyController.getEnemy();
     enemyRender.addNewEnemy(ptrEnemy);
-
-
     camera.target = ptrPlayer->position;
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
@@ -93,7 +105,7 @@ int main(void)
     {
         UpdateMusicStream(music);
         PlayMusicStream(music);
-
+        
         float deltaTime = GetFrameTime();
 
             ClearBackground(RAYWHITE);
@@ -108,9 +120,12 @@ int main(void)
 
                 float deltaTime = GetFrameTime();
 
+
                 BeginDrawing();
 
                 ClearBackground(RAYWHITE);
+
+                terrain.DrawMap();
 
                 BeginMode2D(camera);
 
@@ -118,17 +133,26 @@ int main(void)
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
 
+<<<<<<< HEAD
                 enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
                 client.sendPos(ptrEnemy->position);
+=======
+                
+>>>>>>> a25f70fc78dcb514af964847a7614dfcce94a222
 
                 EndMode2D();
 
+
+
                 EndDrawing();
+                                
             }
         }
 
     }
+    client.turnOff();
+    clientThread.join();
 
     // De-Initialization
     UnloadMusicStream(music); // Unload music stream buffers from RAM
