@@ -133,13 +133,8 @@ int main(void)
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
 
-<<<<<<< HEAD
                 enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
-                client.sendPos(ptrEnemy->position);
-=======
-                
->>>>>>> a25f70fc78dcb514af964847a7614dfcce94a222
 
                 EndMode2D();
 
