@@ -118,6 +118,10 @@ int main(void)
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
 
+                enemyController.updatePosition(deltaTime);
+                enemyRender.renderEnemy(); 
+                client.sendPos(ptrEnemy->position);
+
                 EndMode2D();
 
                 EndDrawing();

@@ -14,7 +14,7 @@ class EnemyRenderer{
             EnemyList.push_back(Enemy);
             id++;
         }
-        void renderEnemys(){
+        void renderEnemy(){
             std::list<Enemy*>::iterator iter;
             for (iter = EnemyList.begin(); iter != EnemyList.end(); ++iter){
                 renderEnemy(*iter);
@@ -22,7 +22,7 @@ class EnemyRenderer{
         }
         void loadTexture(){
             Slime = LoadTexture("Slime.png");
-            frameRec = { 0.0f, 0.0f, (float)Slime.width/16, (float)Slime.height};
+            frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
         }
         void updateSecondEnemy(float x, float y){
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
@@ -53,12 +53,12 @@ class EnemyRenderer{
                         Enemy->currentFrame++;     //currentFrame is the current image of Slime from the spritesheet
                         //0-7 is right-facing, 7-14 is left-facing
 
-                        if (Enemy->currentFrame > 15) {Enemy->currentFrame = 8;}
+                        if (Enemy->currentFrame > 2) {Enemy->currentFrame = 1;}
 
                         //This hides the other frames in the animation
                         //So that the walking looks natural
 
-                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/16;
+                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/2;
             } 
 
             }
@@ -77,12 +77,12 @@ class EnemyRenderer{
                         Enemy->currentFrame++;     //currentFrame is the current image of Slime from the spritesheet
                         //0-7 is right-facing, 7-14 is left-facing
 
-                        if (Enemy->currentFrame > 7) {Enemy->currentFrame = 1;}
+                        if (Enemy->currentFrame > 2) {Enemy->currentFrame = 1;}
 
                         //This hides the other frames in the animation
                         //So that the walking looks natural
 
-                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/16;
+                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/2;
             } 
             }
             // UP CHECK
