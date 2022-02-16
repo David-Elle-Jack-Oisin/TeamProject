@@ -50,29 +50,31 @@ int main(void)
     const int screenHeight = 1080;
 
     gameClient client;
-    PlayersRenderer playersRender;
-    std::thread clientThread([&client, &playersRender](){
-        client.startClient(&playersRender);
-    });
-
-    EnemyRenderer enemyRender;
- 
     
-
-    InitAudioDevice(); // Initialize audio device
-
-    Camera2D camera = { 0 };
+    // Player Must Be Created And Added To Renderer Before The Thread
+    // This Is So We Don't Have To Wait For A Time Out To Start The Game
+    PlayersRenderer playersRender;
     PlayerController playerController;
     Player *ptrPlayer;
     ptrPlayer = playerController.getPlayer();
     playersRender.addNewPlayer(ptrPlayer);
 
+    std::thread clientThread([&client, &playersRender](){
+        client.startClient(&playersRender);
+    });
+
+    EnemyRenderer enemyRender;
+    
+    
+
+    InitAudioDevice(); // Initialize audio device
+
+    Camera2D camera = { 0 };
+
     EnemyController enemyController;
     Enemy *ptrEnemy;
     ptrEnemy = enemyController.getEnemy();
     enemyRender.addNewEnemy(ptrEnemy);
-
-
     camera.target = ptrPlayer->position;
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;

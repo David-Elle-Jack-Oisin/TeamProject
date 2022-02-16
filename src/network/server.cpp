@@ -20,11 +20,11 @@ class gameServer{
             serverConfig.SetPtr( k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged );
             listenSocket = serverInstance->CreateListenSocketIP( serverLocalAddress, 1, &serverConfig );
             if(listenSocket == k_HSteamListenSocket_Invalid){
-                fprintf(stderr, "Failed to listen on port %d", port );
+                fprintf(stderr, "Failed to listen on port %d\n", port );
             }
             serverPollGroup = serverInstance->CreatePollGroup();
             if ( serverPollGroup == k_HSteamNetPollGroup_Invalid )
-                fprintf(stderr, "Failed to listen on port %d", port );
+                fprintf(stderr, "Failed to listen on port %d\n", port );
             fprintf(stderr, "Server listening on port %d\n", port );
 
             while(!shutDown){
@@ -35,7 +35,7 @@ class gameServer{
             fprintf(stderr, "Closing connections...\n" );
             for (auto client: clients){
                 SendToClient(client.first, "Shutdown");
-                serverInstance->CloseConnection(client.first, 0, "Server Shutdown", true);
+                serverInstance->CloseConnection(client.first, 0, "Server Shutdown\n", true);
             }
             clients.clear();
             serverInstance->CloseListenSocket( listenSocket );
@@ -59,6 +59,7 @@ class gameServer{
 	    HSteamNetPollGroup serverPollGroup;
         HSteamListenSocket listenSocket;
         std::map< HSteamNetConnection, Client > clients;
+        int id = 0;
 
         void SendToClient( HSteamNetConnection connection, const char *str ){
 		    serverInstance->SendMessageToConnection( connection, str, (uint32)strlen(str), k_nSteamNetworkingSend_Reliable, nullptr );
@@ -92,13 +93,16 @@ class gameServer{
                         else{
                             debugMessage = "closed by peer";
                             sprintf(temp, "Client Left");
+                            
                         }
+                        
                         fprintf(stderr,"NETWORK: Connection %s %s, reason %d: %s\n",
                             connectionInfo->m_info.m_szConnectionDescription,
                             debugMessage,
                             connectionInfo->m_info.m_eEndReason,
                             connectionInfo->m_info.m_szEndDebug
                         );
+                        id--;
                         clients.erase(client);
                         SendToAllClients(temp);
 
@@ -111,16 +115,16 @@ class gameServer{
                 }
                 case k_ESteamNetworkingConnectionState_Connecting:
                     assert(clients.find(connectionInfo->m_hConn) == clients.end());
-                    fprintf(stderr,"NETWORK: Connection request from %s", connectionInfo->m_info.m_szConnectionDescription);
+                    fprintf(stderr,"NETWORK: Connection request from %s\n", connectionInfo->m_info.m_szConnectionDescription);
                     if(serverInstance->AcceptConnection(connectionInfo->m_hConn) != k_EResultOK){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        fprintf(stderr,"NETWORK: Can't Accept Connection");
+                        fprintf(stderr,"NETWORK: Can't Accept Connection\n");
                         break;
                     }
 
                     if(!serverInstance->SetConnectionPollGroup(connectionInfo->m_hConn, serverPollGroup)){
                         serverInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false);
-                        fprintf(stderr,"NETWORK: Failed To Set Poll Group");
+                        fprintf(stderr,"NETWORK: Failed To Set Poll Group\n");
                         break;
                     }
 
@@ -145,7 +149,7 @@ class gameServer{
                     break;
                 }
                 if(numOfMessages < 0){
-                    fprintf(stderr,"NETWORK: Error Checking For Messages");
+                    fprintf(stderr,"NETWORK: Error Checking For Messages\n");
                 }
                 assert(numOfMessages == 1 && incomingMessage);
                 auto client = clients.find( incomingMessage->m_conn);
@@ -156,10 +160,17 @@ class gameServer{
 			    const char *formattedPacket = packet.c_str();
                 fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
                 incomingMessage->Release();
-                
-                sprintf(temp, "%s", formattedPacket);
-                SendToAllClients(temp, client->first);
-
+                if (packet == "i"){
+                    fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
+                    std::string packet = "id:" + std::to_string(id);
+			        const char *formatPacket = packet.c_str();
+                    SendToClient(client->first, formatPacket);
+                    id++;
+                }
+                else{
+                    sprintf(temp, "%s", formattedPacket);
+                    SendToAllClients(temp, client->first);
+                }
             }
         }
 

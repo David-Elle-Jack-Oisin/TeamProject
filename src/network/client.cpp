@@ -54,6 +54,8 @@ private:
     HSteamNetConnection connection;
     bool shutDown = false;
 	bool firstPlayer = true;
+	bool recievedId = false;
+	int id;
 
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
@@ -71,6 +73,7 @@ private:
 		connection = clientInstance->ConnectByIPAddress(serverIp, 1, &clientConfig);
 		if ( connection == k_HSteamNetConnection_Invalid )
 			fprintf(stderr,"NETWORK: Failed to create connection\n");
+		generateId();
 		while (!shutDown){
 			pollIncomingMessages();
 			pollConnectionStateChanges();
@@ -89,7 +92,13 @@ private:
             }
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
-			if (packet.find(":") != std::string::npos)
+			if(packet.find("id:") != std::string::npos){
+					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
+					int id = std::stoi(identifer);
+					playRenderer->matchPlayerIdToServer(id);
+					fprintf(stderr,"NETWORK: Id Recieved (%s)\n",identifer);
+			}
+			else if (packet.find(":") != std::string::npos)
 			{
 				if(firstPlayer == true){
 					Player *ptrPlayer;
@@ -150,6 +159,13 @@ private:
         gameClientCallBackInstance = this;
         clientInstance->RunCallbacks();
     }
+	int generateId(){
+		if (!shutDown){
+			std::string packet = "i";
+			const char *formatPacket = packet.c_str();
+			clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+		}
+	}
 };
 
 gameClient *gameClient::gameClientCallBackInstance = nullptr;
