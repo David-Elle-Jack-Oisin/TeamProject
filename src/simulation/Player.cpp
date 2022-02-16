@@ -15,6 +15,10 @@ class Player {
         int framesCounter;
         int currentFrame;
         Player(int identifyier): id(identifyier), position({1000, 1000}), prevPosition({0, 0}), framesCounter(0), currentFrame(0){}   
+
+        void matchIdToServer(int identifyierServer){
+            id = identifyierServer;
+        }
         //int damage =
         //int health =  
         //shirtColour =       

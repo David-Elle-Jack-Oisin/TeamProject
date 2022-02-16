@@ -28,21 +28,25 @@ class gameClient
 {
 public:
     void sendPos(Vector2 position){
-        std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
-        const char *formatPacket = packet.c_str();
-        clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+		if (!shutDown) {
+			std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
+        	const char *formatPacket = packet.c_str();
+        	clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+		}
     }
 	void startClient(PlayersRenderer *renderer){
 		SteamNetworkingIPAddr serverAddress;
 		playRenderer = renderer;
 		serverAddress.Clear();
 		if (!serverAddress.ParseString("127.0.0.1"))
-			fprintf(stderr,"Invalid server address '%s'", "127.0.0.1");
+			fprintf(stderr,"NETWORK: Invalid server address '%s'\n", "127.0.0.1");
 		serverAddress.m_port = DEFAULT_SERVER_PORT;
-		fprintf(stderr,"%i",DEFAULT_SERVER_PORT);
 		InitialiseConnectionSockets();
 		Run(serverAddress);
 		GameNetworkingSockets_Kill();
+	}
+	void turnOff(){
+		shutDown = true;
 	}
 private:
 	PlayersRenderer *playRenderer;
@@ -50,6 +54,8 @@ private:
     HSteamNetConnection connection;
     bool shutDown = false;
 	bool firstPlayer = true;
+	bool recievedId = false;
+	int id;
 
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
@@ -61,12 +67,13 @@ private:
         clientInstance = SteamNetworkingSockets();
         char serverAddressBuffer[ SteamNetworkingIPAddr::k_cchMaxString ];
         serverIp.ToString(serverAddressBuffer, sizeof(serverAddressBuffer), true);
-        fprintf(stderr,"Connecting to server at %s", serverAddressBuffer);
+        fprintf(stderr,"NETWORK: Connecting to server at %s\n", serverAddressBuffer);
 		SteamNetworkingConfigValue_t clientConfig;
 		clientConfig.SetPtr(k_ESteamNetworkingConfig_Callback_ConnectionStatusChanged, (void*)ConnectionStatusChanged);
 		connection = clientInstance->ConnectByIPAddress(serverIp, 1, &clientConfig);
 		if ( connection == k_HSteamNetConnection_Invalid )
-			fprintf(stderr,"Failed to create connection");
+			fprintf(stderr,"NETWORK: Failed to create connection\n");
+		generateId();
 		while (!shutDown){
 			pollIncomingMessages();
 			pollConnectionStateChanges();
@@ -81,11 +88,17 @@ private:
                 break;
             }
             if(numOfMessages < 0){
-                fprintf(stderr,"Error Checking For Messages");
+                fprintf(stderr,"NETWORK: Error Checking For Messages\n");
             }
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
-			if (packet.find(":") != std::string::npos)
+			if(packet.find("id:") != std::string::npos){
+					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
+					int id = std::stoi(identifer);
+					playRenderer->matchPlayerIdToServer(id);
+					fprintf(stderr,"NETWORK: Id Recieved (%s)\n",identifer);
+			}
+			else if (packet.find(":") != std::string::npos)
 			{
 				if(firstPlayer == true){
 					Player *ptrPlayer;
@@ -114,13 +127,13 @@ private:
 				shutDown = true;
 				if (connectionInfo->m_eOldState == k_ESteamNetworkingConnectionState_Connecting)
 				{
-					fprintf(stderr,"Local Problem (%s)", connectionInfo->m_info.m_szEndDebug );
+					fprintf(stderr,"NETWORK: Local Problem (%s)\n", connectionInfo->m_info.m_szEndDebug );
 				}
 				else if (connectionInfo->m_info.m_eState == k_ESteamNetworkingConnectionState_ProblemDetectedLocally){
-					fprintf(stderr,"Lost Connection with host (%s)", connectionInfo->m_info.m_szEndDebug );
+					fprintf(stderr,"NETWORK: Lost Connection with host (%s)\n", connectionInfo->m_info.m_szEndDebug );
 				}
 				else{
-					fprintf(stderr,"Host Disconnected (%s)", connectionInfo->m_info.m_szEndDebug);
+					fprintf(stderr,"NETWORK: Host Disconnected (%s)\n", connectionInfo->m_info.m_szEndDebug);
 				}
 
 				clientInstance->CloseConnection(connectionInfo->m_hConn, 0, nullptr, false );
@@ -130,7 +143,7 @@ private:
 			case k_ESteamNetworkingConnectionState_Connecting:
 				break;
 			case k_ESteamNetworkingConnectionState_Connected:
-				fprintf(stderr,"Connected to server OK");
+				fprintf(stderr,"NETWORK: Connected to server OK\n");
 				break;
 			default:
 				break;
@@ -146,6 +159,13 @@ private:
         gameClientCallBackInstance = this;
         clientInstance->RunCallbacks();
     }
+	int generateId(){
+		if (!shutDown){
+			std::string packet = "i";
+			const char *formatPacket = packet.c_str();
+			clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+		}
+	}
 };
 
 gameClient *gameClient::gameClientCallBackInstance = nullptr;

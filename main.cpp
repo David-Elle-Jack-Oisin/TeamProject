@@ -61,28 +61,30 @@ int main(void)
     int length = 20;
 
     gameClient client;
+    
+    // Player Must Be Created And Added To Renderer Before The Thread
+    // This Is So We Don't Have To Wait For A Time Out To Start The Game
     PlayersRenderer playersRender;
-    std::thread clientThread([&client, &playersRender](){
-        client.startClient(&playersRender);
-    });
-
-    EnemyRenderer enemyRender;
-    MapGenerator map;
-
-    InitAudioDevice(); // Initialize audio device
-
-    Camera2D camera = { 0 };
     PlayerController playerController;
     Player *ptrPlayer;
     ptrPlayer = playerController.getPlayer();
     playersRender.addNewPlayer(ptrPlayer);
 
+    std::thread clientThread([&client, &playersRender](){
+        client.startClient(&playersRender);
+    });
+
+    EnemyRenderer enemyRender;
+    MapGenerator terrain;
+
+    InitAudioDevice(); // Initialize audio device
+
+    Camera2D camera = { 0 };
+
     EnemyController enemyController;
     Enemy *ptrEnemy;
     ptrEnemy = enemyController.getEnemy();
     enemyRender.addNewEnemy(ptrEnemy);
-
-
     camera.target = ptrPlayer->position;
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
@@ -123,7 +125,7 @@ int main(void)
 
                 ClearBackground(RAYWHITE);
 
-                map.DrawMap();
+                terrain.DrawMap();
 
                 BeginMode2D(camera);
 
@@ -143,6 +145,8 @@ int main(void)
         }
 
     }
+    client.turnOff();
+    clientThread.join();
 
     // De-Initialization
     UnloadMusicStream(music); // Unload music stream buffers from RAM
