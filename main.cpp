@@ -40,6 +40,10 @@
 #define _CLIENT_H
     #include "src/network/client.cpp"
 #endif
+#ifndef _MAP_H
+#define _MAP_H
+    #include "src/simulation/MapGenerator.cpp"
+#endif
 
 
 int main(void)
@@ -49,6 +53,13 @@ int main(void)
     const int screenWidth = 1920;
     const int screenHeight = 1080;
 
+    int x;
+    int y;
+    int z;
+
+    int height = 10;
+    int length = 20;
+
     gameClient client;
     PlayersRenderer playersRender;
     std::thread clientThread([&client, &playersRender](){
@@ -56,8 +67,7 @@ int main(void)
     });
 
     EnemyRenderer enemyRender;
- 
-    
+    MapGenerator map;
 
     InitAudioDevice(); // Initialize audio device
 
@@ -93,7 +103,7 @@ int main(void)
     {
         UpdateMusicStream(music);
         PlayMusicStream(music);
-
+        
         float deltaTime = GetFrameTime();
 
             ClearBackground(RAYWHITE);
@@ -108,9 +118,12 @@ int main(void)
 
                 float deltaTime = GetFrameTime();
 
+
                 BeginDrawing();
 
                 ClearBackground(RAYWHITE);
+
+                map.DrawMap();
 
                 BeginMode2D(camera);
 
@@ -118,9 +131,14 @@ int main(void)
                 playersRender.renderPlayers();
                 client.sendPos(ptrPlayer->position);
 
+                
+
                 EndMode2D();
 
+
+
                 EndDrawing();
+                                
             }
         }
 
