@@ -24,10 +24,10 @@ class PlayersRenderer{
             }
         }
         void loadTexture(){
-            Jerry = LoadTexture("smallJerry.png");
+            Jerry = LoadTexture("src-sprites/smallJerry.png");
             frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
 
-            Health = LoadTexture("Health.png");
+            Health = LoadTexture("src-sprites/Health.png");
             healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
         }
         void updatePlayerPosition(int id, float x, float y){

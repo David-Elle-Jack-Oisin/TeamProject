@@ -93,7 +93,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     playersRender.loadTexture();
     enemyRender.loadTexture();
-    Music music = LoadMusicStream("bensound-jazzyfrenchy.mp3");
+    Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
     music.looping = true;
     float pitch = 1.0f;
 
