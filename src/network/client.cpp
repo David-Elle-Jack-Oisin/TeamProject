@@ -4,6 +4,7 @@
 #include <random>
 #include <thread>
 #include <cstring>
+#include "packets.cpp"
 
 #ifndef _PLAYER_H
 #define _PLAYER_H
@@ -27,11 +28,11 @@ const uint16 DEFAULT_SERVER_PORT = 27020;
 class gameClient
 {
 public:
-    void sendPos(Vector2 position){
+    void sendPlayerInfo(int id, Vector2 position, int health){
 		if (!shutDown) {
-			std::string packet = std::to_string(position.x) + ":" + std::to_string(position.y);
-        	const char *formatPacket = packet.c_str();
-        	clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+        	std::string playerInfoPacket = packets.createPlayerInfoPacket(id, position.x, position.y, health);
+			const char *formattedplayerInfoPacket = playerInfoPacket.c_str();
+        	clientInstance->SendMessageToConnection(connection, formattedplayerInfoPacket, (uint32)strlen(formattedplayerInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
 		}
     }
 	void startClient(PlayersRenderer *renderer){
@@ -53,9 +54,10 @@ private:
     ISteamNetworkingSockets *clientInstance;
     HSteamNetConnection connection;
     bool shutDown = false;
-	bool firstPlayer = true;
-	bool recievedId = false;
 	int id;
+	float posX, posY;
+	int health;
+	Packets packets;
 
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
@@ -92,28 +94,29 @@ private:
             }
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
-			if(packet.find("id:") != std::string::npos){
+			incomingMessage->Release();
+			int typecode = (int)packet.at(0) - 48;
+			switch (typecode){
+				case 0:{
 					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
 					int id = std::stoi(identifer);
 					playRenderer->matchPlayerIdToServer(id);
 					fprintf(stderr,"NETWORK: Id Recieved (%s)\n",identifer);
-			}
-			else if (packet.find(":") != std::string::npos)
-			{
-				if(firstPlayer == true){
-					Player *ptrPlayer;
-					ptrPlayer = new Player(2);
-					playRenderer->addNewPlayer(ptrPlayer);
-					firstPlayer = false;
+					break;
 				}
-				const char *firstFloatCharArray = packet.substr(0, packet.find(":")).c_str();
-				const char *secondFloatCharArray = packet.substr(packet.find(":") + 1).c_str();
-				float firstFloat = std::atof(firstFloatCharArray);
-				float secondFloat = std::atof(secondFloatCharArray);
-				playRenderer->updateSecondPlayer(firstFloat, secondFloat);
+				case 1:{
+					std::tie(id, posX, posY, health) = packets.parsePlayerInfo(packet);
+					if(playRenderer->isNewPlayer(id)){
+						Player *ptrPlayer;
+						ptrPlayer = new Player(id);
+						playRenderer->addNewPlayer(ptrPlayer);
+					}
+					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
+					playRenderer->updatePlayerPosition(id, posX, posY);
+				}
+				default:
+					break;
 			}
-			
-			incomingMessage->Release();
         }
     }
 
@@ -161,10 +164,11 @@ private:
     }
 	int generateId(){
 		if (!shutDown){
-			std::string packet = "i";
-			const char *formatPacket = packet.c_str();
-			clientInstance->SendMessageToConnection(connection, formatPacket, (uint32)strlen(formatPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+			std::string idRequestPacket = packets.createIdRequestPacket();
+			const char *formattedidRequestPacket = idRequestPacket.c_str();
+			clientInstance->SendMessageToConnection(connection, formattedidRequestPacket, (uint32)strlen(formattedidRequestPacket), k_nSteamNetworkingSend_Reliable, nullptr);
 		}
+	
 	}
 };
 
