@@ -132,7 +132,7 @@ int main(void)
 
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
-                client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->health);
+                client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
 
                 enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
