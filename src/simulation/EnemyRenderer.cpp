@@ -39,7 +39,6 @@ class EnemyRenderer{
             DrawTextureRec(Slime, frameRec, Enemy->position, WHITE);
             // LEFT CHECK
             if (Enemy->prevPosition.x - Enemy->position.x > 0){
-                fprintf(stderr,"LEFT");
                 Enemy->prevPosition = Enemy->position;
 
                 // ANIMATION CODE
@@ -64,7 +63,6 @@ class EnemyRenderer{
             }
             // RIGHT CHECK 
             if (Enemy->prevPosition.x - Enemy->position.x < 0){
-                fprintf(stderr,"RIGHT");
                 Enemy->prevPosition = Enemy->position;
                 // ANIMATION CODE
 
@@ -87,14 +85,12 @@ class EnemyRenderer{
             }
             // UP CHECK
             if (Enemy->prevPosition.y - Enemy->position.y > 0){
-                fprintf(stderr,"UP");
                 Enemy->prevPosition = Enemy->position;
                 // ANIMATION CODE
 
             }
             // DOWN CHECK 
             if (Enemy->prevPosition.y - Enemy->position.y < 0){
-                fprintf(stderr,"DOWN");
                 Enemy->prevPosition = Enemy->position;
                 // ANIMATION CODE
 
