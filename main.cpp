@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "raylib.h"
 #include "src/simulation/PlayerController.cpp"
+#include "src/simulation/menus/MainMenu.cpp"
 #ifndef _PLAYER_RENDERER_H
 #define _PLAYER_RENDERER_H
     #include "src/simulation/PlayersRenderer.cpp"
@@ -44,7 +45,6 @@
 #define _MAP_H
     #include "src/simulation/MapGenerator.cpp"
 #endif
-
 
 int main(void)
 {
@@ -73,7 +73,7 @@ int main(void)
     std::thread clientThread([&client, &playersRender](){
         client.startClient(&playersRender);
     });
-
+    MainMenu mainMenu;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
 
@@ -106,15 +106,8 @@ int main(void)
     {
         UpdateMusicStream(music);
         PlayMusicStream(music);
-        
-        float deltaTime = GetFrameTime();
-
-            ClearBackground(RAYWHITE);
-
-            DrawText("Press enter to start", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
-            EndDrawing();
-
-        if (IsKeyPressed(KEY_ENTER)){
+        mainMenu.runMainMenu();
+        if (mainMenu.isMainMenuFinished()){
             while(!WindowShouldClose()){
                 UpdateMusicStream(music);
                 PlayMusicStream(music);
@@ -139,11 +132,10 @@ int main(void)
 
                 EndMode2D();
 
-
-
                 EndDrawing();
                                 
             }
+            mainMenu.clearOptions();
         }
 
     }
