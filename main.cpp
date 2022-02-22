@@ -106,7 +106,9 @@ int main(void)
     {
         UpdateMusicStream(music);
         PlayMusicStream(music);
+        
         mainMenu.runMainMenu();
+
         if (mainMenu.isMainMenuFinished()){
             while(!WindowShouldClose()){
                 UpdateMusicStream(music);
