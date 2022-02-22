@@ -13,9 +13,11 @@ class PlayersRenderer{
     public:
         void addNewPlayer(Player* player){
             playerMap.insert({player->id, player});
-            id++;
             player->currentHealthFrame = 1;
             player->playerHealth = 9;     
+        }
+        void removePlayer(int id){
+            playerMap.erase(id);     
         }
         void renderPlayers(){
             std::map<int, Player*>::iterator iter;
@@ -46,7 +48,6 @@ class PlayersRenderer{
         }
     private:
         std::map<int, Player*>playerMap;
-        int id;
         Texture2D Jerry;
         Rectangle frameRec;
 

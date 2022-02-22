@@ -95,6 +95,7 @@ private:
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
 			incomingMessage->Release();
+			fprintf(stderr,"NETWORK: Recieved (%s)\n",packet.c_str());
 			int typecode = (int)packet.at(0) - 48;
 			switch (typecode){
 				case 0:{
@@ -113,6 +114,13 @@ private:
 					}
 					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
 					playRenderer->updatePlayerPosition(id, posX, posY);
+				}
+				case 3:{
+					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
+					int id = std::stoi(identifer);
+					playRenderer->removePlayer(id);
+					fprintf(stderr,"NETWORK: Player (%s) Left\n",identifer);
+					break;
 				}
 				default:
 					break;

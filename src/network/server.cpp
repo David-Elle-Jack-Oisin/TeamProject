@@ -62,6 +62,7 @@ class gameServer{
 	    HSteamNetPollGroup serverPollGroup;
         HSteamListenSocket listenSocket;
         std::map< HSteamNetConnection, Client > clients;
+        std::map< HSteamNetConnection, int > clientToIdMap;
         Packets packets;
         int id = 0;
 
@@ -108,7 +109,10 @@ class gameServer{
                         );
                         id--;
                         clients.erase(client);
-                        SendToAllClients(temp);
+                        std::string disconnectPacket = packets.createPlayerDisconnectPacket(clientToIdMap.at(client->first));
+                        const char *formattedDisconnectPacket = disconnectPacket.c_str();
+                        clientToIdMap.erase(client->first);
+                        SendToAllClients(formattedDisconnectPacket);
 
                     }
                     else{
@@ -170,6 +174,7 @@ class gameServer{
                     if (typecode == '0'){
                         fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
                         std::string idPacket = packets.createIdReplyPacket(id);
+                        clientToIdMap.insert({client->first, id});
                         const char *formattedidPacket = idPacket.c_str();
                         SendToClient(client->first, formattedidPacket);
                         id++;
