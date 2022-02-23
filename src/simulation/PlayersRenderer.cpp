@@ -8,9 +8,17 @@
 #define _PLAYER_H
     #include "Player.cpp"
 #endif
+#ifndef _ENEMY_RENDERER_H
+#define _ENEMY_RENDERER_H
+    #include "EnemyRenderer.cpp"
+#endif
 
 class PlayersRenderer{
     public:
+
+        //Rectangle enemyRec = EnemysRenderer->frameRec;
+
+
         void addNewPlayer(Player* player){
             playerList.push_back(player);
             id++;
@@ -104,6 +112,7 @@ class PlayersRenderer{
 
         void renderHealth(Player* player) {
 
+            //collision = CheckCollisionRecs(frameRec, enemyRec);
             if (IsKeyPressed(80)) {     //(if P is pressed), will replace with collisions later
 
                 fprintf(stderr,"HEALTH: %i\n", player->playerHealth);
