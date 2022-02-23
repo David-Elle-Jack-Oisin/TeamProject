@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "raylib.h"
 #include "src/simulation/PlayerController.cpp"
+#include "src/simulation/menus/MainMenu.cpp"
 #ifndef _PLAYER_RENDERER_H
 #define _PLAYER_RENDERER_H
     #include "src/simulation/PlayersRenderer.cpp"
@@ -44,7 +45,6 @@
 #define _MAP_H
     #include "src/simulation/MapGenerator.cpp"
 #endif
-
 
 int main(void)
 {
@@ -73,7 +73,7 @@ int main(void)
     std::thread clientThread([&client, &playersRender](){
         client.startClient(&playersRender);
     });
-
+    MainMenu mainMenu;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
 
@@ -93,7 +93,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     playersRender.loadTexture();
     enemyRender.loadTexture();
-    Music music = LoadMusicStream("bensound-jazzyfrenchy.mp3");
+    Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
     music.looping = true;
     float pitch = 1.0f;
 
@@ -107,14 +107,9 @@ int main(void)
         UpdateMusicStream(music);
         PlayMusicStream(music);
         
-        float deltaTime = GetFrameTime();
+        mainMenu.runMainMenu();
 
-            ClearBackground(RAYWHITE);
-
-            DrawText("Press enter to start", ((screenWidth / 2) - 220), (screenHeight / 2), 40, GRAY);
-            EndDrawing();
-
-        if (IsKeyPressed(KEY_ENTER)){
+        if (mainMenu.isMainMenuFinished()){
             while(!WindowShouldClose()){
                 UpdateMusicStream(music);
                 PlayMusicStream(music);
@@ -132,18 +127,17 @@ int main(void)
 
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
-                client.sendPos(ptrPlayer->position);
+                client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
 
                 enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
 
                 EndMode2D();
 
-
-
                 EndDrawing();
                                 
             }
+            mainMenu.clearOptions();
         }
 
     }

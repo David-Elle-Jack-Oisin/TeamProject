@@ -20,35 +20,42 @@ class PlayersRenderer{
 
 
         void addNewPlayer(Player* player){
-            playerList.push_back(player);
-            id++;
+            playerMap.insert({player->id, player});
             player->currentHealthFrame = 1;
             player->playerHealth = 9;     
         }
+        void removePlayer(int id){
+            playerMap.erase(id);     
+        }
         void renderPlayers(){
-            std::list<Player*>::iterator iter;
-            for (iter = playerList.begin(); iter != playerList.end(); ++iter){
-                renderPlayer(*iter);
+            std::map<int, Player*>::iterator iter;
+            for (iter = playerMap.begin(); iter != playerMap.end(); ++iter){
+                renderPlayer(iter->second);
             }
         }
         void loadTexture(){
-            Jerry = LoadTexture("smallJerry.png");
+            Jerry = LoadTexture("src-sprites/smallJerry.png");
             frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
 
-            Health = LoadTexture("Health.png");
+            Health = LoadTexture("src-sprites/Health.png");
             healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
         }
-        void updateSecondPlayer(float x, float y){
-            playerList.back()->prevPosition = playerList.back()->position; 
-            playerList.back()->position.x = x;
-            playerList.back()->position.y = y;
+        void updatePlayerPosition(int id, float x, float y){
+            playerMap.at(id)->prevPosition = playerMap.at(id)->position; 
+            playerMap.at(id)->position.x = x;
+            playerMap.at(id)->position.y = y;
         }
         void matchPlayerIdToServer(int id){
-            playerList.front()->matchIdToServer(id);
+            Player* player = playerMap.at(30);
+            playerMap.erase(30);
+            player->matchIdToServer(id);
+            playerMap.insert({player->id, player});
+        }
+        bool isNewPlayer(int id){
+            return !(playerMap.count(id) > 0);
         }
     private:
-        std::list<Player*>playerList;
-        int id;
+        std::map<int, Player*>playerMap;
         Texture2D Jerry;
         Rectangle frameRec;
 

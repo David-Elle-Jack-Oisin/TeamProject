@@ -2,6 +2,9 @@
 #include <chrono>
 #include <thread>
 #include <map>
+#include "packets.cpp"
+#include <string.h>
+#include <string>
 
 #include <steam/steamnetworkingsockets.h>
 #include <steam/isteamnetworkingutils.h>
@@ -59,6 +62,8 @@ class gameServer{
 	    HSteamNetPollGroup serverPollGroup;
         HSteamListenSocket listenSocket;
         std::map< HSteamNetConnection, Client > clients;
+        std::map< HSteamNetConnection, int > clientToIdMap;
+        Packets packets;
         int id = 0;
 
         void SendToClient( HSteamNetConnection connection, const char *str ){
@@ -104,7 +109,10 @@ class gameServer{
                         );
                         id--;
                         clients.erase(client);
-                        SendToAllClients(temp);
+                        std::string disconnectPacket = packets.createPlayerDisconnectPacket(clientToIdMap.at(client->first));
+                        const char *formattedDisconnectPacket = disconnectPacket.c_str();
+                        clientToIdMap.erase(client->first);
+                        SendToAllClients(formattedDisconnectPacket);
 
                     }
                     else{
@@ -160,17 +168,23 @@ class gameServer{
 			    const char *formattedPacket = packet.c_str();
                 fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
                 incomingMessage->Release();
-                if (packet == "i"){
-                    fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
-                    std::string packet = "id:" + std::to_string(id);
-			        const char *formatPacket = packet.c_str();
-                    SendToClient(client->first, formatPacket);
-                    id++;
+                if (!packet.empty()){
+                    char typecode = packet.at(0);
+                    fprintf(stderr, "TYPECODE: %c\n", typecode );
+                    if (typecode == '0'){
+                        fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
+                        std::string idPacket = packets.createIdReplyPacket(id);
+                        clientToIdMap.insert({client->first, id});
+                        const char *formattedidPacket = idPacket.c_str();
+                        SendToClient(client->first, formattedidPacket);
+                        id++;
+                    }
+                    else{
+                        sprintf(temp, "%s", formattedPacket);
+                        SendToAllClients(temp, client->first);
+                    }
                 }
-                else{
-                    sprintf(temp, "%s", formattedPacket);
-                    SendToAllClients(temp, client->first);
-                }
+               
             }
         }
 
