@@ -89,12 +89,17 @@ int main(void)
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-
+    
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     playersRender.loadTexture();
     enemyRender.loadTexture();
+
+    Music MenuMusic = LoadMusicStream("src-audio/bensound-theelevatorbossanova.mp3");
+    MenuMusic.looping = true;
+
     Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
     music.looping = true;
+
     float pitch = 1.0f;
 
     int framesCounter = 0;
@@ -104,9 +109,8 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        UpdateMusicStream(music);
-        PlayMusicStream(music);
-        
+        UpdateMusicStream(MenuMusic);
+        PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
 
         if (mainMenu.isMainMenuFinished()){
@@ -115,7 +119,6 @@ int main(void)
                 PlayMusicStream(music);
 
                 float deltaTime = GetFrameTime();
-
 
                 BeginDrawing();
 
@@ -146,7 +149,7 @@ int main(void)
 
     // De-Initialization
     UnloadMusicStream(music); // Unload music stream buffers from RAM
-
+    UnloadMusicStream(MenuMusic); // Unload music stream buffers from RAM
     CloseAudioDevice(); // Close audio device (music streaming is automatically stopped)
 
     CloseWindow();

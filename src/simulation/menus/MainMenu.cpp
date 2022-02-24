@@ -1,10 +1,12 @@
 #include "raylib.h"
 #include <string>
 #include <thread>
+
 class MainMenu{
     public:
     void runMainMenu(){
         mousePoint = GetMousePosition();
+        Rectangle WideRect = { 0, GetScreenHeight()/2.0f - 425, GetScreenWidth(), 125 };
         Rectangle topButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f - 150, 400, 100 };
         Rectangle bottomButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f + 150, 400, 100 };
         // DECTECT buttons clicked
@@ -87,6 +89,8 @@ class MainMenu{
                     // MUILTIPLAYER PAGE DRAW
                     BeginDrawing();
                         ClearBackground(WHITE);
+                        DrawRectangleRec(WideRect, BLUE);
+                        DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                         DrawRectangleRec(topButtonBounds, BLUE);
                         DrawText("Join Game", (GetScreenWidth()/2.0f - 400/2.0f + 50), (GetScreenHeight()/2.0f - 130), 40, BLACK);
                         DrawRectangleRec(bottomButtonBounds, BLUE);
@@ -111,10 +115,12 @@ class MainMenu{
             // MAIN MENU PAGE
             BeginDrawing();
                 ClearBackground(WHITE);
+                DrawRectangleRec(WideRect, BLUE);
+                DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                 DrawRectangleRec(topButtonBounds, BLUE);
-                DrawText("Single Player", (GetScreenWidth()/2.0f - 400/2.0f + 50), (GetScreenHeight()/2.0f - 130), 40, BLACK);
+                DrawText("Single Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f - 120), 40, BLACK);
                 DrawRectangleRec(bottomButtonBounds, BLUE);
-                DrawText("Muilti Player", (GetScreenWidth()/2.0f - 400/2.0f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);  
+                DrawText("Muilti Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);  
             EndDrawing();
         }
     }
