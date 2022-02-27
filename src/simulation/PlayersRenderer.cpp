@@ -12,17 +12,21 @@
 #define _ENEMY_RENDERER_H
     #include "EnemyRenderer.cpp"
 #endif
+#ifndef _GAME_OVER_H
+#define _GAME_OVER_H
+    #include "menus/GameOver.cpp"
+#endif
 
 class PlayersRenderer{
     public:
 
-        //Rectangle enemyRec = EnemysRenderer->frameRec;
+        GameOver gameover;
 
 
         void addNewPlayer(Player* player){
             playerMap.insert({player->id, player});
             player->currentHealthFrame = 1;
-            player->playerHealth = 9;     
+            player->playerHealth = 10;     
         }
         void removePlayer(int id){
             playerMap.erase(id);     
@@ -106,6 +110,7 @@ class PlayersRenderer{
             if (player->prevPosition.y - player->position.y > 0){
                 player->prevPosition = player->position;
                 // ANIMATION CODE
+                
 
             }
             // DOWN CHECK 
@@ -122,11 +127,14 @@ class PlayersRenderer{
             //collision = CheckCollisionRecs(frameRec, enemyRec);
             if (IsKeyPressed(80)) {     //(if P is pressed), will replace with collisions later
 
-                fprintf(stderr,"HEALTH: %i\n", player->playerHealth);
                 healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
                 player->currentHealthFrame++;
 
                 player->playerHealth--;
+
+                if (player->playerHealth <= 0) {
+                    gameover.gameOver();
+                }
             }
         }
 };
