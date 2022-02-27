@@ -125,8 +125,11 @@ class MainMenu{
         }
     }
     bool isSinglePlayer(){
-            return singlePlayerButtonAction;
+        return singlePlayerButtonAction;
         }
+    bool isHosting(){
+        return hostButtonAction;
+    }
     bool isMainMenuFinished(){
         return singlePlayerButtonAction || hostButtonAction || isAttemptingToJoinServer;
     }
@@ -145,6 +148,7 @@ class MainMenu{
     std::string getIpFromInput(){
         return ipFromInput;
     }
+    MainMenu(): singlePlayerButtonAction(false), hostButtonAction(false){}
     private:
         bool singlePlayerButtonAction = false;
         bool muiltiPlayerButtonAction = false;
