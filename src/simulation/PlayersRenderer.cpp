@@ -110,7 +110,6 @@ class PlayersRenderer{
             if (player->prevPosition.y - player->position.y > 0){
                 player->prevPosition = player->position;
                 // ANIMATION CODE
-                
 
             }
             // DOWN CHECK 

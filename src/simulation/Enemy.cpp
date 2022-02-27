@@ -14,8 +14,14 @@ class Enemy
         Vector2 position;
         int framesCounter;
         int currentFrame;
-        Enemy(int identifyier): id(identifyier), position({1000, 1000}), prevPosition({0, 0}), framesCounter(0), currentFrame(0){} 
-        //int damage =
-        //int health =  
+
+        int enemyHealth;
+        int currentHealthFrame;
+        int healthFramesCounter; 
+
+        int enemyDamage;
+
+        Enemy(int identifyier): id(identifyier), position({1000, 1000}), prevPosition({0, 0}), framesCounter(0), currentFrame(0), currentHealthFrame(0), enemyHealth(), healthFramesCounter(0), enemyDamage(){} 
+
 
 };

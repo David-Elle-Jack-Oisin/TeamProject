@@ -13,6 +13,8 @@ class EnemyRenderer{
         void addNewEnemy(Enemy* Enemy){
             EnemyList.push_back(Enemy);
             id++;
+            Enemy->enemyDamage = 1;
+            Enemy->enemyHealth = 5;
         }
         void renderEnemy(){
             std::list<Enemy*>::iterator iter;
@@ -49,13 +51,9 @@ class EnemyRenderer{
                 if (Enemy->framesCounter >= (60/Enemy->framesSpeed))
                     {
                         Enemy->framesCounter = 0;
-                        Enemy->currentFrame++;     //currentFrame is the current image of Slime from the spritesheet
-                        //0-7 is right-facing, 7-14 is left-facing
+                        Enemy->currentFrame++;
 
                         if (Enemy->currentFrame > 2) {Enemy->currentFrame = 1;}
-
-                        //This hides the other frames in the animation
-                        //So that the walking looks natural
 
                         frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/2;
             } 
@@ -87,13 +85,14 @@ class EnemyRenderer{
             if (Enemy->prevPosition.y - Enemy->position.y > 0){
                 Enemy->prevPosition = Enemy->position;
                 // ANIMATION CODE
+                Enemy->framesCounter++;
 
             }
             // DOWN CHECK 
             if (Enemy->prevPosition.y - Enemy->position.y < 0){
                 Enemy->prevPosition = Enemy->position;
                 // ANIMATION CODE
-
+                Enemy->framesCounter++;
 
             }
     
