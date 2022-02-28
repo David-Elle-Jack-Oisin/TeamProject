@@ -7,7 +7,6 @@
 #endif
 
 
-
 class BossRoom{
     private:
 
@@ -28,17 +27,27 @@ class StartingRoom{
     Rectangle Bottom {0, 980, 1920, 100};
     Rectangle Center {100, 100, 1720, 880};
 
+    Rectangle rectangles[4] = {Top, RSide, LSide, Bottom};
+
     int Draw(){
-        DrawRectangleRec(Center, GRAY);
+        //Texture2D grASS;
+        //grASS = LoadTexture("src-sprites/grASS.png");
+        
+        //SetShapesTexture(grASS, Top);
+       // DrawTextureRec(grASS, Top, {100,100}, GREEN);
         DrawRectangleRec(Top, BLACK);
+        DrawRectangleRec(Center, GRAY);
         DrawRectangleRec(RSide, BLACK);
         DrawRectangleRec(LSide, BLACK);
         DrawRectangleRec(Bottom, BLACK);
+        
         return 1;
     };
 
-
 };
+
+
+
 
 StartingRoom startingRoom;
 
@@ -118,6 +127,21 @@ class MapGenerator {
 
     int ClassDrawMap(){
         startingRoom.Draw();
+    }
+
+    int CheckCollision(Player *player){
+
+        if((CheckCollisionRecs(player->frameRec, startingRoom.Top))){
+            //fprintf(stderr,"Collision\n");
+
+            if(player->frameRec.y < (startingRoom.Top.height + startingRoom.Top.y)){
+                
+                player->position.y = startingRoom.Top.height + startingRoom.Top.y;
+                fprintf(stderr,"Up Collision\n");
+
+            
+            }
+        }
     }
 
 };

@@ -160,11 +160,21 @@ int main(void)
 
                 BeginDrawing();
 
+<<<<<<< HEAD
                 ClearBackground(BLACK);
                 DrawPixelV(ptrPlayer->frameRecCentre, BLUE);
                 BeginMode2D(camera);
 
                 terrain.ClassDrawMap();
+=======
+                ClearBackground(RAYWHITE);
+
+                BeginMode2D(camera);
+
+                terrain.ClassDrawMap();
+                terrain.CheckCollision(ptrPlayer);
+
+>>>>>>> Basic Collision for top rectangle
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
                 if (!mainMenu.isSinglePlayer()){
