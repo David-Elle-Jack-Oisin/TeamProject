@@ -14,6 +14,7 @@ class Player {
         Vector2 position;
         int framesCounter;
         int currentFrame;
+        Rectangle frameRec;
 
         int playerHealth;
         int currentHealthFrame;

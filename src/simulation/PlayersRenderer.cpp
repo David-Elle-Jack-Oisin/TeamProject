@@ -21,12 +21,11 @@ class PlayersRenderer{
     public:
 
         GameOver gameover;
-
-
         void addNewPlayer(Player* player){
             playerMap.insert({player->id, player});
             player->currentHealthFrame = 1;
-            player->playerHealth = 10;     
+            player->playerHealth = 10;
+            player->frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};     
         }
         void removePlayer(int id){
             playerMap.erase(id);     
@@ -39,7 +38,7 @@ class PlayersRenderer{
         }
         void loadTexture(){
             Jerry = LoadTexture("src-sprites/smallJerry.png");
-            frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
+            
 
             Health = LoadTexture("src-sprites/Health.png");
             healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
@@ -61,7 +60,6 @@ class PlayersRenderer{
     private:
         std::map<int, Player*>playerMap;
         Texture2D Jerry;
-        Rectangle frameRec;
 
         Texture2D Health;
         Rectangle healthFrameRec;
@@ -70,7 +68,7 @@ class PlayersRenderer{
         void renderPlayer(Player* player){
             renderHealth(player);
 
-            DrawTextureRec(Jerry, frameRec, player->position, WHITE);
+            DrawTextureRec(Jerry, player->frameRec, player->position, WHITE);
             DrawTextureRec(Health, healthFrameRec, player->position, WHITE);  
     
             // LEFT CHECK
@@ -86,7 +84,7 @@ class PlayersRenderer{
                         if (player->currentFrame > 15) {player->currentFrame = 8;}
                         //This hides the other frames in the animation
                         //So that the walking looks natural
-                        frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
                 } 
             }
             // RIGHT CHECK 
@@ -103,7 +101,7 @@ class PlayersRenderer{
                         if (player->currentFrame > 7) {player->currentFrame = 1;}  
                         //This hides the other frames in the animation
                         //So that the walking looks natural
-                        frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
                 } 
             }
             // UP CHECK

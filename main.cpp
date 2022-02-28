@@ -65,11 +65,7 @@ int main(void)
     std::thread clientThread;
     // Player Must Be Created And Added To Renderer Before The Thread
     // This Is So We Don't Have To Wait For A Time Out To Start The Game
-    PlayersRenderer playersRender;
-    PlayerController playerController;
-    Player *ptrPlayer;
-    ptrPlayer = playerController.getPlayer();
-    playersRender.addNewPlayer(ptrPlayer);
+    
 
     
     MainMenu mainMenu;
@@ -84,12 +80,13 @@ int main(void)
     Enemy *ptrEnemy;
     ptrEnemy = enemyController.getEnemy();
     enemyRender.addNewEnemy(ptrEnemy);
-    camera.target = ptrPlayer->position;
+    camera.target = {1000,1000};
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
     
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
+    PlayersRenderer playersRender;
     playersRender.loadTexture();
     enemyRender.loadTexture();
 
@@ -108,6 +105,10 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        PlayerController playerController;
+        Player *ptrPlayer;
+        ptrPlayer = playerController.getPlayer();
+        playersRender.addNewPlayer(ptrPlayer);
         UpdateMusicStream(MenuMusic);
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
