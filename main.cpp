@@ -161,20 +161,19 @@ int main(void)
                 BeginDrawing();
 
                 ClearBackground(BLACK);
-
+                DrawPixelV(ptrPlayer->frameRecCentre, BLUE);
                 BeginMode2D(camera);
 
                 terrain.ClassDrawMap();
-
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
                 if (!mainMenu.isSinglePlayer()){
                     client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
                 }
                 
-                enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
-
+                enemyRender.EnemyAi(ptrPlayer);
+               
                 EndMode2D();
 
                 EndDrawing();

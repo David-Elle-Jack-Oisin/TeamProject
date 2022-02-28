@@ -3,16 +3,20 @@
 #include <iostream>
 #include <list>
 #include <iterator>
+#include <raymath.h>
 #ifndef _ENEMY_H
 #define _ENEMY_H
     #include "Enemy.cpp"
+#endif
+#ifndef _PLAYER_H
+#define _PLAYER_H
+    #include "Player.cpp"
 #endif
 
 class EnemyRenderer{
     public:
         void addNewEnemy(Enemy* Enemy){
             EnemyList.push_back(Enemy);
-            id++;
             Enemy->enemyDamage = 1;
             Enemy->enemyHealth = 5;
         }
@@ -26,10 +30,10 @@ class EnemyRenderer{
             Slime = LoadTexture("src-sprites/LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
         }
-        void updateSecondEnemy(float x, float y){
+        void EnemyAi (Player* player){
+            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->position, 2.0);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
-            EnemyList.back()->position.x = x;
-            EnemyList.back()->position.y = y;
+            EnemyList.back()->position = nextPosition;
         }
     private:
         std::list<Enemy*>EnemyList;

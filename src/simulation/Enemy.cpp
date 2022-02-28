@@ -14,7 +14,7 @@ class Enemy
         Vector2 position;
         int framesCounter;
         int currentFrame;
-
+        Vector2 frameRecCentre;
         int enemyHealth;
         int currentHealthFrame;
         int healthFramesCounter; 
