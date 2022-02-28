@@ -19,7 +19,7 @@ class Player {
         int currentHealthFrame;
         int healthFramesCounter;
 
-        Player(int identifyier): id(identifyier), position({1000, 1000}), prevPosition({0, 0}), framesCounter(0), healthFramesCounter(0), currentFrame(0), currentHealthFrame(0), playerHealth(){}
+        Player(int identifyier): id(identifyier), position({960, 540}), prevPosition({0, 0}), framesCounter(0), healthFramesCounter(0), currentFrame(0), currentHealthFrame(0), playerHealth(){}
 
         void matchIdToServer(int identifyierServer){
             id = identifyierServer;

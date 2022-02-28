@@ -50,19 +50,16 @@
     #include "src/simulation/MapGenerator.cpp"
 #endif
 
+
+const int screenWidth = 1920;
+const int screenHeight = 1080;
+void UpdateCameraCenter(Camera2D *camera, Player *player);
+
 int main(void)
 {
-    // Initialization
+    // Initializationcamera
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 1920;
-    const int screenHeight = 1080;
 
-    int x;
-    int y;
-    int z;
-
-    int height = 10;
-    int length = 20;
 
     gameClient client;
     std::thread clientThread;
@@ -158,13 +155,15 @@ int main(void)
 
                 float deltaTime = GetFrameTime();
 
+                UpdateCameraCenter(&camera, playerController.getPlayer());
+
                 BeginDrawing();
 
-                ClearBackground(RAYWHITE);
-
-                terrain.DrawMap();
+                ClearBackground(BLACK);
 
                 BeginMode2D(camera);
+
+                terrain.ClassDrawMap();
 
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
@@ -197,4 +196,9 @@ int main(void)
     CloseWindow();
 
     return 0;
+}
+
+void UpdateCameraCenter(Camera2D *camera, Player *player){
+    camera->offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f};
+    camera->target = player->position;
 }
