@@ -33,10 +33,6 @@
 #define _ENEMY_RENDERER_H
     #include "src/simulation/EnemyRenderer.cpp"
 #endif
-#ifndef _ENEMY_CONT_H
-#define _ENEMY_CONT_H
-    #include "src/simulation/EnemyController.cpp"
-#endif
 #ifndef _CLIENT_H
 #define _CLIENT_H
     #include "src/network/client.cpp"
@@ -76,10 +72,8 @@ int main(void)
 
     Camera2D camera = { 0 };
 
-    EnemyController enemyController;
-    Enemy *ptrEnemy;
-    ptrEnemy = enemyController.getEnemy();
-    enemyRender.addNewEnemy(ptrEnemy);
+    Enemy Enemy(1);
+    enemyRender.addNewEnemy(&Enemy);
     camera.target = {1000,1000};
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
