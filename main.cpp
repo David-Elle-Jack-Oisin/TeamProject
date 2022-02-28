@@ -45,6 +45,7 @@
 #define _MAP_H
     #include "src/simulation/MapGenerator.cpp"
 #endif
+#include <map>
 
 
 const int screenWidth = 1920;
@@ -69,7 +70,7 @@ int main(void)
     MapGenerator terrain;
 
     InitAudioDevice(); // Initialize audio device
-
+    std::map<int, Player*>playerMap;
     Camera2D camera = { 0 };
 
     Enemy Enemy(1);
@@ -80,7 +81,7 @@ int main(void)
     camera.zoom = 1.0f;
     
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
-    PlayersRenderer playersRender;
+    PlayersRenderer playersRender(playerMap);
     playersRender.loadTexture();
     enemyRender.loadTexture();
 

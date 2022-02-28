@@ -57,8 +57,9 @@ class PlayersRenderer{
         bool isNewPlayer(int id){
             return !(playerMap.count(id) > 0);
         }
+        PlayersRenderer(std::map<int, Player*>&map):playerMap(map){}
     private:
-        std::map<int, Player*>playerMap;
+        std::map<int, Player*>&playerMap;
         Texture2D Jerry;
 
         Texture2D Health;
