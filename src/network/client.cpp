@@ -4,7 +4,10 @@
 #include <random>
 #include <thread>
 #include <cstring>
-#include "packets.cpp"
+#ifndef _PACKETS_H
+#define _PACKETS_H
+    #include "packets.cpp"
+#endif
 
 #ifndef _PLAYER_H
 #define _PLAYER_H
@@ -23,7 +26,6 @@
 #endif
 
 #include "raylib.h"
-SteamNetworkingMicroseconds globalLogTimeZero;
 const uint16 DEFAULT_SERVER_PORT = 27020;
 class gameClient
 {
@@ -36,6 +38,8 @@ public:
 		}
     }
 	void startClient(PlayersRenderer *renderer){
+		connected = false;
+		timeOut = false;
 		SteamNetworkingIPAddr serverAddress;
 		playRenderer = renderer;
 		serverAddress.Clear();
@@ -49,11 +53,19 @@ public:
 	void turnOff(){
 		shutDown = true;
 	}
+	bool checkTimeOut(){
+		return timeOut;
+	}
+	bool checkConnected(){
+		return connected;
+	}
 private:
 	PlayersRenderer *playRenderer;
     ISteamNetworkingSockets *clientInstance;
     HSteamNetConnection connection;
     bool shutDown = false;
+	bool timeOut = false;
+	bool connected = false;
 	int id;
 	float posX, posY;
 	int health;
@@ -62,7 +74,7 @@ private:
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
         GameNetworkingSockets_Init( nullptr, errorMessage );
-        globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
+        SteamNetworkingMicroseconds globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
     }
 
 	void Run(const SteamNetworkingIPAddr &serverIp){
@@ -139,6 +151,7 @@ private:
 				if (connectionInfo->m_eOldState == k_ESteamNetworkingConnectionState_Connecting)
 				{
 					fprintf(stderr,"NETWORK: Local Problem (%s)\n", connectionInfo->m_info.m_szEndDebug );
+					timeOut = true;
 				}
 				else if (connectionInfo->m_info.m_eState == k_ESteamNetworkingConnectionState_ProblemDetectedLocally){
 					fprintf(stderr,"NETWORK: Lost Connection with host (%s)\n", connectionInfo->m_info.m_szEndDebug );
@@ -155,6 +168,7 @@ private:
 				break;
 			case k_ESteamNetworkingConnectionState_Connected:
 				fprintf(stderr,"NETWORK: Connected to server OK\n");
+				connected = true;
 				break;
 			default:
 				break;

@@ -41,6 +41,10 @@
 #define _CLIENT_H
     #include "src/network/client.cpp"
 #endif
+#ifndef _SERVER_H
+#define _SERVER_H
+    #include "src/network/server.cpp"
+#endif
 #ifndef _MAP_H
 #define _MAP_H
     #include "src/simulation/MapGenerator.cpp"
@@ -61,7 +65,7 @@ int main(void)
     int length = 20;
 
     gameClient client;
-    
+    std::thread clientThread;
     // Player Must Be Created And Added To Renderer Before The Thread
     // This Is So We Don't Have To Wait For A Time Out To Start The Game
     PlayersRenderer playersRender;
@@ -70,9 +74,7 @@ int main(void)
     ptrPlayer = playerController.getPlayer();
     playersRender.addNewPlayer(ptrPlayer);
 
-    std::thread clientThread([&client, &playersRender](){
-        client.startClient(&playersRender);
-    });
+    
     MainMenu mainMenu;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
@@ -114,6 +116,42 @@ int main(void)
         mainMenu.runMainMenu();
 
         if (mainMenu.isMainMenuFinished()){
+            if (!mainMenu.isSinglePlayer()){
+                clientThread = std::thread([&client, &playersRender](){
+                    client.startClient(&playersRender);
+                });
+                int connectFrame = 0;
+                while(!client.checkConnected() && !WindowShouldClose()){
+                    BeginDrawing();
+                        ClearBackground(RAYWHITE);
+                        DrawText("Connecting", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
+                        if (connectFrame > 0) DrawText(".", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 300), 80, BLACK);
+                        if (connectFrame > 1) DrawText(".", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 200), 80, BLACK);
+                        if (connectFrame > 2) DrawText(".", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 200), 80, BLACK);
+                    EndDrawing();
+                    connectFrame++;
+                    if (connectFrame == 4){
+                        connectFrame = 0;
+                    }
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+                    if (client.checkTimeOut()){
+                        while(!WindowShouldClose()){
+                            BeginDrawing();
+                                ClearBackground(RAYWHITE);
+                                DrawText("Failed To Connect", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
+                            EndDrawing();
+                        }
+                        break;
+                    }
+                }
+                if (!client.checkConnected()){
+                    mainMenu.clearOptions();
+                    client.turnOff();
+                    clientThread.join();
+                }
+            }
+        }
+        if (mainMenu.isMainMenuFinished()){
             while(!WindowShouldClose()){
                 UpdateMusicStream(music);
                 PlayMusicStream(music);
@@ -130,8 +168,10 @@ int main(void)
 
                 playerController.updatePosition(deltaTime);
                 playersRender.renderPlayers();
-                client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-
+                if (!mainMenu.isSinglePlayer()){
+                    client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
+                }
+                
                 enemyController.updatePosition(deltaTime);
                 enemyRender.renderEnemy(); 
 
@@ -140,12 +180,14 @@ int main(void)
                 EndDrawing();
                                 
             }
+            if (!mainMenu.isSinglePlayer()){
+                client.turnOff();
+                clientThread.join();
+            }
             mainMenu.clearOptions();
         }
-
     }
-    client.turnOff();
-    clientThread.join();
+    
 
     // De-Initialization
     UnloadMusicStream(music); // Unload music stream buffers from RAM

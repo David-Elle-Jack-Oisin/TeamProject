@@ -2,18 +2,63 @@
 #include <chrono>
 #include <thread>
 #include <map>
-#include "packets.cpp"
+#ifndef _PACKETS_H
+#define _PACKETS_H
+    #include "packets.cpp"
+#endif
 #include <string.h>
 #include <string>
-
+#include <atomic>
 #include <steam/steamnetworkingsockets.h>
 #include <steam/isteamnetworkingutils.h>
 #ifndef STEAMNETWORKINGSOCKETS_OPENSOURCE
 #include <steam/steam_api.h>
 #endif
-SteamNetworkingMicroseconds globalLogTimeZero;
+
 class gameServer{
     public:
+        void startServer(){
+            int port = DEFAULT_SERVER_PORT;
+            SteamNetworkingIPAddr serverAddress; serverAddress.Clear();
+            gameServer server;
+            // create server sockets
+            server.InitialiseConnectionSockets();
+            server.Run((uint16)port);
+            if (serverShutDown.load()){
+                GameNetworkingSockets_Kill();
+            }
+            
+        }
+        void turnOff(){
+		    serverShutDown.store(true);
+	    }
+        gameServer():serverShutDown(false){}
+    private:
+        struct Client{
+            int posx;
+            int posy;
+	    };
+        std::atomic<bool> serverShutDown;
+        ISteamNetworkingSockets *serverInstance;
+	    HSteamNetPollGroup serverPollGroup;
+        HSteamListenSocket listenSocket;
+        std::map< HSteamNetConnection, Client > clients;
+        std::map< HSteamNetConnection, int > clientToIdMap;
+        Packets packets;
+        const uint16 DEFAULT_SERVER_PORT = 27020;
+        int id = 0;
+
+        void SendToClient( HSteamNetConnection connection, const char *str ){
+		    serverInstance->SendMessageToConnection( connection, str, (uint32)strlen(str), k_nSteamNetworkingSend_Reliable, nullptr );
+	    }
+
+        void SendToAllClients( const char *str, HSteamNetConnection exception = k_HSteamNetConnection_Invalid ){
+            for ( auto &client: clients ){
+                if ( client.first != exception )
+                    SendToClient( client.first, str );
+            }
+        }
+
         void Run(uint16 port){
             serverInstance = SteamNetworkingSockets();
             SteamNetworkingIPAddr serverLocalAddress;
@@ -29,16 +74,17 @@ class gameServer{
             if ( serverPollGroup == k_HSteamNetPollGroup_Invalid )
                 fprintf(stderr, "Failed to listen on port %d\n", port );
             fprintf(stderr, "Server listening on port %d\n", port );
-
-            while(!shutDown){
+    
+            while(!serverShutDown.load()){
                 pollIncomingMessages();
                 pollConnectionStateChanges();
                 std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+                // fprintf(stderr, "%i", std::this_thread::get_id());
             }
             fprintf(stderr, "Closing connections...\n" );
             for (auto client: clients){
-                SendToClient(client.first, "Shutdown");
-                serverInstance->CloseConnection(client.first, 0, "Server Shutdown\n", true);
+                SendToClient(client.first, "serverShutDown");
+                serverInstance->CloseConnection(client.first, 0, "Server serverShutDown\n", true);
             }
             clients.clear();
             serverInstance->CloseListenSocket( listenSocket );
@@ -50,31 +96,7 @@ class gameServer{
         static void InitialiseConnectionSockets(){
             SteamDatagramErrMsg errorMessage;
             GameNetworkingSockets_Init( nullptr, errorMessage );
-            globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
-        }
-    private:
-        struct Client{
-            int posx;
-            int posy;
-	    };
-        bool shutDown = false;
-        ISteamNetworkingSockets *serverInstance;
-	    HSteamNetPollGroup serverPollGroup;
-        HSteamListenSocket listenSocket;
-        std::map< HSteamNetConnection, Client > clients;
-        std::map< HSteamNetConnection, int > clientToIdMap;
-        Packets packets;
-        int id = 0;
-
-        void SendToClient( HSteamNetConnection connection, const char *str ){
-		    serverInstance->SendMessageToConnection( connection, str, (uint32)strlen(str), k_nSteamNetworkingSend_Reliable, nullptr );
-	    }
-
-        void SendToAllClients( const char *str, HSteamNetConnection exception = k_HSteamNetConnection_Invalid ){
-            for ( auto &client: clients ){
-                if ( client.first != exception )
-                    SendToClient( client.first, str );
-            }
+            SteamNetworkingMicroseconds globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
         }
 
         void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
@@ -150,7 +172,8 @@ class gameServer{
         }
         void pollIncomingMessages(){
             char temp[1024];
-            while(!shutDown){
+            // fprintf(stderr, "%i", serverShutDown.load());
+            while(!serverShutDown.load()){
                 ISteamNetworkingMessage *incomingMessage = nullptr;
                 int numOfMessages = serverInstance->ReceiveMessagesOnPollGroup(serverPollGroup, &incomingMessage, 1);
                 if(numOfMessages == 0){
@@ -158,33 +181,40 @@ class gameServer{
                 }
                 if(numOfMessages < 0){
                     fprintf(stderr,"NETWORK: Error Checking For Messages\n");
+                    serverShutDown = true;
                 }
-                assert(numOfMessages == 1 && incomingMessage);
-                auto client = clients.find( incomingMessage->m_conn);
-                assert(client != clients.end());
+                
+                if(numOfMessages == 1 && incomingMessage){
+                    auto client = clients.find( incomingMessage->m_conn);
+                    
+                    if(client != clients.end()){
 
-                std::string packet;
-			    packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
-			    const char *formattedPacket = packet.c_str();
-                fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
-                incomingMessage->Release();
-                if (!packet.empty()){
-                    char typecode = packet.at(0);
-                    fprintf(stderr, "TYPECODE: %c\n", typecode );
-                    if (typecode == '0'){
-                        fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
-                        std::string idPacket = packets.createIdReplyPacket(id);
-                        clientToIdMap.insert({client->first, id});
-                        const char *formattedidPacket = idPacket.c_str();
-                        SendToClient(client->first, formattedidPacket);
-                        id++;
-                    }
-                    else{
-                        sprintf(temp, "%s", formattedPacket);
-                        SendToAllClients(temp, client->first);
+                        std::string packet;
+                        packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
+                        const char *formattedPacket = packet.c_str();
+                        fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
+                        incomingMessage->Release();
+                        if (!packet.empty()){
+                            char typecode = packet.at(0);
+                            fprintf(stderr, "TYPECODE: %c\n", typecode );
+                            if (typecode == '0'){
+                                fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
+                                std::string idPacket = packets.createIdReplyPacket(id);
+                                clientToIdMap.insert({client->first, id});
+                                const char *formattedidPacket = idPacket.c_str();
+                                SendToClient(client->first, formattedidPacket);
+                                id++;
+                            }
+                            else{
+                                sprintf(temp, "%s", formattedPacket);
+                                SendToAllClients(temp, client->first);
+                            }
+                        }
                     }
                 }
-               
+                else{
+                    serverShutDown = true;
+                }
             }
         }
 
@@ -200,17 +230,3 @@ class gameServer{
 };
 
 gameServer *gameServer::gameServerCallBackInstance = nullptr;
-const uint16 DEFAULT_SERVER_PORT = 27020;
-
-int main( int argc, const char *argv[] )
-{
-	int port = DEFAULT_SERVER_PORT;
-	SteamNetworkingIPAddr serverAddress; serverAddress.Clear();
-    gameServer server;
-
-	// create server sockets
-	server.InitialiseConnectionSockets();
-	server.Run((uint16)port );
-	GameNetworkingSockets_Kill();
-
-}
