@@ -38,6 +38,13 @@ class gameServer{
             int posx;
             int posy;
 	    };
+        int EnemyId;
+        float EnemyPosX;
+        float EnemyPosY;
+        int EnemyHealth;
+        float enemyPosX = 1400;
+        float enemyPosY = 540;
+        int enemyHealth;
         std::atomic<bool> serverShutDown;
         ISteamNetworkingSockets *serverInstance;
 	    HSteamNetPollGroup serverPollGroup;
@@ -192,22 +199,31 @@ class gameServer{
                         std::string packet;
                         packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
                         const char *formattedPacket = packet.c_str();
-                        fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
+                        // fprintf(stderr, "RECEIEVED: %s\n", formattedPacket );
                         incomingMessage->Release();
                         if (!packet.empty()){
-                            char typecode = packet.at(0);
-                            fprintf(stderr, "TYPECODE: %c\n", typecode );
-                            if (typecode == '0'){
-                                fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
-                                std::string idPacket = packets.createIdReplyPacket(id);
-                                clientToIdMap.insert({client->first, id});
-                                const char *formattedidPacket = idPacket.c_str();
-                                SendToClient(client->first, formattedidPacket);
-                                id++;
-                            }
-                            else{
-                                sprintf(temp, "%s", formattedPacket);
-                                SendToAllClients(temp, client->first);
+                            int typecode = (int)packet.at(0) - 48;
+			                switch (typecode){
+                                case 0:{
+                                    fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
+                                    std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY);
+                                    clientToIdMap.insert({client->first, id});
+                                    const char *formattedidPacket = idPacket.c_str();
+                                    SendToClient(client->first, formattedidPacket);
+                                    id++;
+                                    break;
+                                }
+                                case 6:{
+                                    fprintf(stderr, "ENEMY: %s\n", formattedPacket );
+                                    std::tie(EnemyId, EnemyPosX, EnemyPosY, EnemyHealth) = packets.parseEnemyInfo(packet);
+                                    if (EnemyPosX != enemyPosX) enemyPosX = EnemyPosX;
+                                    if (EnemyPosY != enemyPosY) enemyPosY = EnemyPosY;
+                                    break;
+                                }
+                                default:{
+                                    sprintf(temp, "%s", formattedPacket);
+                                    SendToAllClients(temp, client->first);
+                                }
                             }
                         }
                     }

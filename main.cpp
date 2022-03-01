@@ -110,8 +110,8 @@ int main(void)
 
         if (mainMenu.isMainMenuFinished()){
             if (!mainMenu.isSinglePlayer()){
-                clientThread = std::thread([&client, &playersRender](){
-                    client.startClient(&playersRender);
+                clientThread = std::thread([&client, &playersRender,&enemyRender](){
+                    client.startClient(&playersRender, &enemyRender);
                 });
                 int connectFrame = 0;
                 while(!client.checkConnected() && !WindowShouldClose()){
@@ -174,11 +174,11 @@ int main(void)
                 playersRender.renderPlayers();
                 if (!mainMenu.isSinglePlayer()){
                     client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
+                    client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
                 }
                 
-                enemyRender.renderEnemy(); 
-                enemyRender.EnemyAi(ptrPlayer);
-               
+                enemyRender.renderEnemy();
+                enemyRender.findClosestPlayer(playerMap);
                 EndMode2D();
 
                 EndDrawing();

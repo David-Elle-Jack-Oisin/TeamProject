@@ -8,7 +8,10 @@
 #define _PACKETS_H
     #include "packets.cpp"
 #endif
-
+#ifndef _ENEMY_RENDERER_H
+#define _ENEMY_RENDERER_H
+    #include "src/simulation/EnemyRenderer.cpp"
+#endif
 #ifndef _PLAYER_H
 #define _PLAYER_H
     #include "../simulation/Player.cpp"
@@ -37,11 +40,19 @@ public:
         	clientInstance->SendMessageToConnection(connection, formattedplayerInfoPacket, (uint32)strlen(formattedplayerInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
 		}
     }
-	void startClient(PlayersRenderer *renderer){
+	void sendEnemyInfo(int id, Vector2 position, int health){
+		if (!shutDown) {
+        	std::string enemyInfoPacket = packets.createEnemyInfoPacket(id, position.x, position.y, health);
+			const char *formattedEnemyInfoPacket = enemyInfoPacket.c_str();
+        	clientInstance->SendMessageToConnection(connection, formattedEnemyInfoPacket, (uint32)strlen(formattedEnemyInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+		}
+    }
+	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender){
 		connected = false;
 		timeOut = false;
 		SteamNetworkingIPAddr serverAddress;
 		playRenderer = renderer;
+		enemyRenderer = enemyRender;
 		serverAddress.Clear();
 		if (!serverAddress.ParseString("127.0.0.1"))
 			fprintf(stderr,"NETWORK: Invalid server address '%s'\n", "127.0.0.1");
@@ -61,6 +72,7 @@ public:
 	}
 private:
 	PlayersRenderer *playRenderer;
+	EnemyRenderer *enemyRenderer;
     ISteamNetworkingSockets *clientInstance;
     HSteamNetConnection connection;
     bool shutDown = false;
@@ -107,14 +119,15 @@ private:
             std::string packet;
 			packet.assign((const char *)incomingMessage->m_pData, incomingMessage->m_cbSize);
 			incomingMessage->Release();
-			fprintf(stderr,"NETWORK: Recieved (%s)\n",packet.c_str());
+			// fprintf(stderr,"NETWORK: Recieved (%s)\n",packet.c_str());
 			int typecode = (int)packet.at(0) - 48;
 			switch (typecode){
 				case 0:{
-					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
-					int id = std::stoi(identifer);
+					std::tie(id, posX, posY) = packets.parseIdReplyPacket(packet);
 					playRenderer->matchPlayerIdToServer(id);
-					fprintf(stderr,"NETWORK: Id Recieved (%s)\n",identifer);
+					enemyRenderer->setEnemyPosition(posX, posY);
+					fprintf(stderr,"NETWORK: Id Recieved (%i)\n",id);
+					fprintf(stderr,"NETWORK: EnemyPos (%f, %f)\n",posX,posY);
 					break;
 				}
 				case 1:{
@@ -126,6 +139,7 @@ private:
 					}
 					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
 					playRenderer->updatePlayerPosition(id, posX, posY);
+					break;
 				}
 				case 3:{
 					const char *identifer = packet.substr(packet.find(":") + 1).c_str();

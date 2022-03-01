@@ -13,6 +13,7 @@
     #include "Player.cpp"
 #endif
 
+
 class EnemyRenderer{
     public:
         void addNewEnemy(Enemy* Enemy){
@@ -30,10 +31,32 @@ class EnemyRenderer{
             Slime = LoadTexture("src-sprites/LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
         }
+        void findClosestPlayer(std::map<int, Player*> &playerMap){
+            std::map<int, Player*>::iterator iter;
+            Player* closestPlayer;
+            float distance = 1000000.f;
+            bool set = false;
+            for (iter = playerMap.begin(); iter != playerMap.end(); ++iter){
+                float playerDistance = Vector2Distance(iter->second->position, EnemyList.back()->position);
+                if (playerDistance < distance){
+                    distance = playerDistance;
+                    closestPlayer = iter->second;
+                    set = true;
+                }
+            }
+            if (set){
+                EnemyAi(closestPlayer);
+            }
+            
+        }
         void EnemyAi (Player* player){
             Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->position, 2.0);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
             EnemyList.back()->position = nextPosition;
+        }
+        void setEnemyPosition(float posX, float posY){
+            EnemyList.back()->position.x = posX;
+            EnemyList.back()->position.y = posY;
         }
     private:
         std::list<Enemy*>EnemyList;
