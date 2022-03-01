@@ -30,7 +30,9 @@ class PlayerController{
             if (IsKeyDown(KEY_DOWN)) {
                 controllablePlayer.prevPosition = controllablePlayer.position; 
                 controllablePlayer.position.y += controllablePlayer.speed*delta;
-            }    
+            }
+            controllablePlayer.hitBox.x = controllablePlayer.position.x;
+            controllablePlayer.hitBox.y = controllablePlayer.position.y;
         }
         Player* getPlayer(){
             return &controllablePlayer;

@@ -131,15 +131,15 @@ class MapGenerator {
 
     int CheckCollision(Player *player){
 
-        if((CheckCollisionRecs(player->frameRec, startingRoom.Top))){
-            //fprintf(stderr,"Collision\n");
-
-            if(player->frameRec.y < (startingRoom.Top.height + startingRoom.Top.y)){
+        if((CheckCollisionRecs(player->hitBox, startingRoom.Top))){
+            fprintf(stderr,"Collision\n");
+            DrawRectangleRec(player->frameRec, RED);
+            DrawRectangleRec(player->hitBox, GREEN);
+            if(player->hitBox.y < (startingRoom.Top.height + startingRoom.Top.y)){
                 
                 player->position.y = startingRoom.Top.height + startingRoom.Top.y;
                 fprintf(stderr,"Up Collision\n");
 
-            
             }
         }
     }
