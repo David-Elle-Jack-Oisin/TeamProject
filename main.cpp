@@ -65,7 +65,7 @@ int main(void)
     // This Is So We Don't Have To Wait For A Time Out To Start The Game
     
 
-    
+    SoundEffects soundEffects;
     MainMenu mainMenu;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
@@ -89,7 +89,7 @@ int main(void)
 
     Music MenuMusic = LoadMusicStream("src-audio/bensound-theelevatorbossanova.mp3");
     MenuMusic.looping = true;
-
+    soundEffects.loadSounds();
     Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
     music.looping = true; 
 
@@ -106,7 +106,7 @@ int main(void)
         Player *ptrPlayer;
         ptrPlayer = playerController.getPlayer();
         playersRender.addNewPlayer(ptrPlayer);
-        SoundEffects soundEffects;
+        
         UpdateMusicStream(MenuMusic);
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
