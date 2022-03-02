@@ -177,7 +177,6 @@ int main(void)
                 DrawPixelV(ptrPlayer->positionOffset, RED);
                 enemyRender.renderEnemy();
                 enemyRender.findClosestPlayer(playerMap);
-                DrawPixelV(Enemy.positionOffset, RED);
                 EndMode2D();
 
                 EndDrawing();
