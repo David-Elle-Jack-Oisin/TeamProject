@@ -161,7 +161,8 @@ int main(void)
 
                 terrain.ClassDrawMap();
                 terrain.CheckCollision(ptrPlayer);
-
+                DrawRectangleRec(ptrPlayer->hitBox, RED);
+                DrawRectangleRec(Enemy.hitBox, BLUE);
                 playerController.updatePosition(deltaTime);
                 soundEffects.updateSoundEffects(deltaTime);
                 playersRender.renderPlayers();
@@ -171,9 +172,10 @@ int main(void)
                 }
                 // DrawRectangleRec(Enemy.hitBox, BLUE);
                 
-                DrawPixelV(ptrPlayer->positionOffset, RED);
+                
                 enemyRender.renderEnemy();
                 enemyRender.findClosestPlayer(playerMap);
+                
                 EndMode2D();
 
                 EndDrawing();

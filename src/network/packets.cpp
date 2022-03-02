@@ -20,7 +20,6 @@ class Packets{
         unsigned newline = packet.find("\n") + 1;
         int id = std::stoi(packet.substr(newline, firstComma - newline));
         const char *firstFloatCharArray = packet.substr(firstComma, colon - firstComma - 1).c_str();
-        fprintf(stderr,"NETWORK: first (%s)\n",firstFloatCharArray);
         float posX = std::atof(firstFloatCharArray);
 		const char *secondFloatCharArray = packet.substr(colon, secondComma - colon).c_str();
 		float posY = std::atof(secondFloatCharArray);

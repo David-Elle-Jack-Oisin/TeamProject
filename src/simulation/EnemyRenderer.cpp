@@ -20,7 +20,7 @@ class EnemyRenderer{
             EnemyList.push_back(enemy);
             enemy->enemyDamage = 1;
             enemy->enemyHealth = 5;
-            enemy->hitBox = { enemy->position.x, enemy->position.y, (float)Slime.width/2, (float)Slime.height};
+            enemy->hitBox = { enemy->position.x + 50, enemy->position.y + 50, (float)320/2, (float)140};
         }
         void renderEnemy(){
             std::list<Enemy*>::iterator iter;
@@ -39,9 +39,27 @@ class EnemyRenderer{
             float distance = 1000000.f;
             bool set = false;
             for (iter = playerMap.begin(); iter != playerMap.end(); ++iter){
+                if(!colliding){
+                    if (CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
+                        iter->second->decrementHealth();
+                        damageTimer = 1;
+                        colliding = true;
+                    }
+                }
+                else{
+                    if (!CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
+                        colliding = false;
+                    }
+                    if (damageTimer % 20 == 0){
+                        iter->second->decrementHealth();
+                    }
+                    damageTimer++;
+                }
+                
                 float playerDistance = Vector2Distance(iter->second->position, EnemyList.back()->position);
                 if (playerDistance < distance){
                     distance = playerDistance;
+                    
                     closestPlayer = iter->second;
                     set = true;
                 }
@@ -53,11 +71,11 @@ class EnemyRenderer{
         }
         void EnemyAi (Player* player){
             
-            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, 2);
+            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, 1.0);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
             EnemyList.back()->position = nextPosition;
-            EnemyList.back()->hitBox.x = EnemyList.back()->position.x;
-            EnemyList.back()->hitBox.y = EnemyList.back()->position.y;
+            EnemyList.back()->hitBox.x = EnemyList.back()->position.x + 50;
+            EnemyList.back()->hitBox.y = EnemyList.back()->position.y + 50;
         }
         void setEnemyPosition(float posX, float posY){
             EnemyList.back()->position.x = posX;
@@ -68,6 +86,8 @@ class EnemyRenderer{
         int id;
         Texture2D Slime;
         Rectangle frameRec;
+        bool colliding;
+        int damageTimer;
        
         void renderEnemy(Enemy* Enemy){
             DrawTextureRec(Slime, frameRec, Enemy->position, WHITE);

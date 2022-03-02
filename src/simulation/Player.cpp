@@ -29,5 +29,9 @@ class Player {
         void matchIdToServer(int identifyierServer){
             id = identifyierServer;
         }
+        void decrementHealth(){
+            playerHealth--;
+            currentHealthFrame++;
+        }
   
 };

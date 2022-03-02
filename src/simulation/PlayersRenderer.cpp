@@ -23,7 +23,7 @@ class PlayersRenderer{
         GameOver gameover;
         void addNewPlayer(Player* player){
             playerMap.insert({player->id, player});
-            player->currentHealthFrame = 1;
+            player->currentHealthFrame = 0;
             player->playerHealth = 10;
             player->frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
             player->hitBox = { (player->position.x + 50), (player->position.y + 30), 26, 65};
@@ -123,18 +123,9 @@ class PlayersRenderer{
         }
 
         void renderHealth(Player* player) {
-
-            //collision = CheckCollisionRecs(frameRec, enemyRec);
-            if (IsKeyPressed(80)) {     //(if P is pressed), will replace with collisions later
-
-                healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
-                player->currentHealthFrame++;
-
-                player->playerHealth--;
-
+            healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
                 if (player->playerHealth <= 0) {
                     gameover.gameOver();
                 }
-            }
         }
 };
