@@ -16,10 +16,11 @@
 
 class EnemyRenderer{
     public:
-        void addNewEnemy(Enemy* Enemy){
-            EnemyList.push_back(Enemy);
-            Enemy->enemyDamage = 1;
-            Enemy->enemyHealth = 5;
+        void addNewEnemy(Enemy* enemy){
+            EnemyList.push_back(enemy);
+            enemy->enemyDamage = 1;
+            enemy->enemyHealth = 5;
+            enemy->hitBox = { enemy->position.x, enemy->position.y, (float)Slime.width/2, (float)Slime.height};
         }
         void renderEnemy(){
             std::list<Enemy*>::iterator iter;
@@ -30,6 +31,7 @@ class EnemyRenderer{
         void loadTexture(){
             Slime = LoadTexture("src-sprites/LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
+            
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){
             std::map<int, Player*>::iterator iter;
@@ -50,9 +52,13 @@ class EnemyRenderer{
             
         }
         void EnemyAi (Player* player){
-            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->position, 2.0);
+            
+            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, 2);
+            fprintf(stderr, "%f %f", nextPosition.x, nextPosition.y);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
             EnemyList.back()->position = nextPosition;
+            EnemyList.back()->hitBox.x = EnemyList.back()->position.x;
+            EnemyList.back()->hitBox.y = EnemyList.back()->position.y;
         }
         void setEnemyPosition(float posX, float posY){
             EnemyList.back()->position.x = posX;

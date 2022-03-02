@@ -74,8 +74,6 @@ int main(void)
     std::map<int, Player*>playerMap;
     Camera2D camera = { 0 };
 
-    Enemy Enemy(1);
-    enemyRender.addNewEnemy(&Enemy);
     camera.target = {1000,1000};
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
@@ -102,6 +100,8 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        Enemy Enemy(1);
+        enemyRender.addNewEnemy(&Enemy);
         PlayerController playerController;
         Player *ptrPlayer;
         ptrPlayer = playerController.getPlayer();
@@ -172,9 +172,12 @@ int main(void)
                     client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
                     client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
                 }
+                // DrawRectangleRec(Enemy.hitBox, BLUE);
                 
+                DrawPixelV(ptrPlayer->positionOffset, RED);
                 enemyRender.renderEnemy();
                 enemyRender.findClosestPlayer(playerMap);
+                DrawPixelV(Enemy.positionOffset, RED);
                 EndMode2D();
 
                 EndDrawing();
