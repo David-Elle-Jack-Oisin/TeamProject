@@ -19,7 +19,8 @@ class Player {
         Rectangle frameRec;
         Rectangle hitBox;
         Vector2 positionOffset;
-
+        float playerXDir;
+        float playerYDir;
         int playerHealth;
         int currentHealthFrame;
         int healthFramesCounter;

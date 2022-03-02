@@ -50,6 +50,10 @@
 #define _GAME_OVER_H
     #include "src/simulation/menus/GameOver.cpp"
 #endif
+#ifndef _BULLET_RENDERER_H
+#define _BULLET_RENDERER_H
+    #include "src/simulation/BulletRenderer.cpp"
+#endif
 #include <map>
 
 
@@ -72,6 +76,7 @@ int main(void)
     MainMenu mainMenu;
     GameOver gameover;
     EnemyRenderer enemyRender;
+    BulletRenderer bulletRenderer;
     MapGenerator terrain;
     enemyRender.addNewEnemy(&Enemy);
     InitAudioDevice(); // Initialize audio device
@@ -100,15 +105,13 @@ int main(void)
     int framesCounter = 0;
 
     SetTargetFPS(60);  
-
+    PlayerController playerController;
+    Player *ptrPlayer;
+    ptrPlayer = playerController.getPlayer();
+    playersRender.addNewPlayer(ptrPlayer);
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        PlayerController playerController;
-        Player *ptrPlayer;
-        ptrPlayer = playerController.getPlayer();
-        playersRender.addNewPlayer(ptrPlayer);
-        
+    {   
         UpdateMusicStream(MenuMusic);
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
@@ -179,6 +182,8 @@ int main(void)
                         }
                         enemyRender.renderEnemy();
                         enemyRender.findClosestPlayer(playerMap);
+                        bulletRenderer.checkCreateBullet(ptrPlayer);
+                        bulletRenderer.renderBullets();
                     
                     EndMode2D();
 

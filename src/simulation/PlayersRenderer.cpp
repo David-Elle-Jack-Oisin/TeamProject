@@ -23,7 +23,7 @@ class PlayersRenderer{
             player->playerHealth = 10;
             player->frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
             player->hitBox = { (player->position.x + 50), (player->position.y + 30), 26, 65};
-            player->positionOffset = {player->position.x - 100 , player->position.y - 100};    
+            player->positionOffset = {player->position.x - 100 , player->position.y - 100};
         }
         void removePlayer(int id){
             playerMap.erase(id);     
@@ -69,9 +69,11 @@ class PlayersRenderer{
 
             DrawTextureRec(Jerry, player->frameRec, player->position, WHITE);
             DrawTextureRec(Health, healthFrameRec, player->position, WHITE);  
-    
+            
             // LEFT CHECK
             if (player->prevPosition.x - player->position.x > 0){
+                player->playerXDir = player->prevPosition.x - player->position.x;
+                player->playerYDir = 0.0;
                 player->prevPosition = player->position;
 
                 // ANIMATION CODE
@@ -88,6 +90,8 @@ class PlayersRenderer{
             }
             // RIGHT CHECK 
             if (player->prevPosition.x - player->position.x < 0){
+                player->playerXDir = player->prevPosition.x - player->position.x;
+                player->playerYDir = 0.0;
                 player->prevPosition = player->position;
                 // ANIMATION CODE
                 player->framesCounter++;
@@ -105,12 +109,16 @@ class PlayersRenderer{
             }
             // UP CHECK
             if (player->prevPosition.y - player->position.y > 0){
+                player->playerYDir = player->prevPosition.y - player->position.y;
+                player->playerXDir = 0.0;
                 player->prevPosition = player->position;
                 // ANIMATION CODE
 
             }
             // DOWN CHECK 
             if (player->prevPosition.y - player->position.y < 0){
+                player->playerYDir = player->prevPosition.y - player->position.y;
+                player->playerXDir = 0.0;
                 player->prevPosition = player->position;
                 // ANIMATION CODE
 

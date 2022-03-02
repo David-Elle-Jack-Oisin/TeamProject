@@ -136,6 +136,7 @@ private:
 						Player *ptrPlayer;
 						ptrPlayer = new Player(id);
 						playRenderer->addNewPlayer(ptrPlayer);
+						fprintf(stderr, "ADD NEW PLAYER\n");
 					}
 					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
 					playRenderer->updatePlayerPosition(id, posX, posY);
