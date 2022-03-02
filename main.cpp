@@ -112,6 +112,7 @@ int main(void)
         UpdateMusicStream(MenuMusic);
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
+        dead = false;
 
         if (mainMenu.isMainMenuFinished()){
             if (!mainMenu.isSinglePlayer()){
@@ -162,34 +163,29 @@ int main(void)
 
                 ClearBackground(RAYWHITE);
 
-                BeginMode2D(camera);
+                    BeginMode2D(camera);
 
-                terrain.ClassDrawMap();
-                terrain.CheckCollision(ptrPlayer);
-                DrawRectangleRec(ptrPlayer->hitBox, RED);
-                DrawRectangleRec(Enemy.hitBox, BLUE);
-                playerController.updatePosition(deltaTime);
-                soundEffects.updateSoundEffects(deltaTime);
-                playersRender.renderPlayers();
-                if (!mainMenu.isSinglePlayer()){
-                    client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-                    client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
-                }
-                if (ptrPlayer->playerHealth <= 0) {
-                    dead = true;
-                }
-                // DrawRectangleRec(Enemy.hitBox, BLUE);
-                
-                
-                enemyRender.renderEnemy();
-                enemyRender.findClosestPlayer(playerMap);
-                
-                EndMode2D();
+                        terrain.ClassDrawMap();
+                        terrain.CheckCollision(ptrPlayer);
+                        playerController.updatePosition(deltaTime);
+                        soundEffects.updateSoundEffects(deltaTime);
+                        playersRender.renderPlayers();
+                        if (!mainMenu.isSinglePlayer()){
+                            client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
+                            client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
+                        }
+                        if (ptrPlayer->playerHealth <= 0) {
+                            dead = true;
+                        }
+                        enemyRender.renderEnemy();
+                        enemyRender.findClosestPlayer(playerMap);
+                    
+                    EndMode2D();
 
                 EndDrawing();
                                 
             }
-            gameover.gameOver();
+            if (dead)gameover.gameOver();
             if (!mainMenu.isSinglePlayer()){
                 client.turnOff();
                 clientThread.join();

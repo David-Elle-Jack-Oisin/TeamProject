@@ -19,6 +19,8 @@ class GameOver{
     // MainMenu mainmenu;
     void gameOver() {
         Rectangle replayButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f + 150, 400, 100 };
+        exitWindow = false;
+        exitButtonAction = false;
 
         while(!exitWindow) {
             // EXIT CONDITIONS
