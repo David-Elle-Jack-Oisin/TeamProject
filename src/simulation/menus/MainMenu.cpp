@@ -4,6 +4,11 @@
 
 class MainMenu{
     public:
+
+    void loadTexture(){
+        Texture2D background = LoadTexture("src-background/neon-rain-drops-colorful-4k.png");
+    }
+
     void runMainMenu(){
         mousePoint = GetMousePosition();
         Rectangle WideRect = { 0, GetScreenHeight()/2.0f - 425, GetScreenWidth(), 125 };
@@ -69,6 +74,7 @@ class MainMenu{
                         // JOIN PAGE DRAW
                         BeginDrawing();
                             ClearBackground(RAYWHITE);
+                            DrawTexture(background, 0, 0, WHITE);
                             DrawRectangleRec(topButtonBounds, LIGHTGRAY);
                             DrawRectangleLines((int)topButtonBounds.x, (int)topButtonBounds.y, (int)topButtonBounds.width, (int)topButtonBounds.height, RED);
 
@@ -89,6 +95,7 @@ class MainMenu{
                     // MUILTIPLAYER PAGE DRAW
                     BeginDrawing();
                         ClearBackground(WHITE);
+                        DrawTexture(background, 0, 0, WHITE);
                         DrawRectangleRec(WideRect, BLUE);
                         DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                         DrawRectangleRec(topButtonBounds, BLUE);
@@ -115,6 +122,7 @@ class MainMenu{
             // MAIN MENU PAGE
             BeginDrawing();
                 ClearBackground(WHITE);
+                DrawTexture(background, 0, 0, WHITE);
                 DrawRectangleRec(WideRect, BLUE);
                 DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                 DrawRectangleRec(topButtonBounds, BLUE);
@@ -150,6 +158,7 @@ class MainMenu{
     }
     MainMenu(): singlePlayerButtonAction(false), hostButtonAction(false){}
     private:
+        Texture2D background;
         bool singlePlayerButtonAction = false;
         bool muiltiPlayerButtonAction = false;
         bool joinButtonAction = false;

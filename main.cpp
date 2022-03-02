@@ -21,6 +21,7 @@
 #include "raylib.h"
 #include "src/simulation/PlayerController.cpp"
 #include "src/simulation/menus/MainMenu.cpp"
+#include "src/simulation/SoundEffects.cpp"
 #ifndef _PLAYER_RENDERER_H
 #define _PLAYER_RENDERER_H
     #include "src/simulation/PlayersRenderer.cpp"
@@ -83,13 +84,14 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     PlayersRenderer playersRender(playerMap);
     playersRender.loadTexture();
+    mainMenu.loadTexture();
     enemyRender.loadTexture();
 
     Music MenuMusic = LoadMusicStream("src-audio/bensound-theelevatorbossanova.mp3");
     MenuMusic.looping = true;
 
     Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
-    music.looping = true;
+    music.looping = true; 
 
     float pitch = 1.0f;
 
@@ -104,6 +106,7 @@ int main(void)
         Player *ptrPlayer;
         ptrPlayer = playerController.getPlayer();
         playersRender.addNewPlayer(ptrPlayer);
+        SoundEffects soundEffects;
         UpdateMusicStream(MenuMusic);
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
@@ -163,6 +166,7 @@ int main(void)
                 terrain.CheckCollision(ptrPlayer);
 
                 playerController.updatePosition(deltaTime);
+                soundEffects.updateSoundEffects(deltaTime);
                 playersRender.renderPlayers();
                 if (!mainMenu.isSinglePlayer()){
                     client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
