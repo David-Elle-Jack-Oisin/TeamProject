@@ -46,6 +46,10 @@
 #define _MAP_H
     #include "src/simulation/MapGenerator.cpp"
 #endif
+#ifndef _GAME_OVER_H
+#define _GAME_OVER_H
+    #include "src/simulation/menus/GameOver.cpp"
+#endif
 #include <map>
 
 
@@ -66,6 +70,7 @@ int main(void)
     Enemy Enemy(1);
     SoundEffects soundEffects;
     MainMenu mainMenu;
+    GameOver gameover;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
     enemyRender.addNewEnemy(&Enemy);
@@ -91,7 +96,7 @@ int main(void)
     music.looping = true; 
 
     float pitch = 1.0f;
-
+    bool dead = false;
     int framesCounter = 0;
 
     SetTargetFPS(60);  
@@ -145,7 +150,7 @@ int main(void)
             }
         }
         if (mainMenu.isMainMenuFinished()){
-            while(!WindowShouldClose()){
+            while(!WindowShouldClose() & !dead){
                 UpdateMusicStream(music);
                 PlayMusicStream(music);
 
@@ -170,6 +175,9 @@ int main(void)
                     client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
                     client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
                 }
+                if (ptrPlayer->playerHealth <= 0) {
+                    dead = true;
+                }
                 // DrawRectangleRec(Enemy.hitBox, BLUE);
                 
                 
@@ -181,6 +189,7 @@ int main(void)
                 EndDrawing();
                                 
             }
+            gameover.gameOver();
             if (!mainMenu.isSinglePlayer()){
                 client.turnOff();
                 clientThread.join();

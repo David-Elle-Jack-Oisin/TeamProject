@@ -12,15 +12,11 @@
 #define _ENEMY_RENDERER_H
     #include "EnemyRenderer.cpp"
 #endif
-#ifndef _GAME_OVER_H
-#define _GAME_OVER_H
-    #include "menus/GameOver.cpp"
-#endif
+
 
 class PlayersRenderer{
     public:
 
-        GameOver gameover;
         void addNewPlayer(Player* player){
             playerMap.insert({player->id, player});
             player->currentHealthFrame = 0;
@@ -124,8 +120,5 @@ class PlayersRenderer{
 
         void renderHealth(Player* player) {
             healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
-                if (player->playerHealth <= 0) {
-                    gameover.gameOver();
-                }
         }
 };
