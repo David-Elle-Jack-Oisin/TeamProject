@@ -54,7 +54,6 @@ class EnemyRenderer{
         void EnemyAi (Player* player){
             
             Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, 2);
-            fprintf(stderr, "%f %f", nextPosition.x, nextPosition.y);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
             EnemyList.back()->position = nextPosition;
             EnemyList.back()->hitBox.x = EnemyList.back()->position.x;

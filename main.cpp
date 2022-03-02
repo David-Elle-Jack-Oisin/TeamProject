@@ -63,13 +63,12 @@ int main(void)
     std::thread clientThread;
     // Player Must Be Created And Added To Renderer Before The Thread
     // This Is So We Don't Have To Wait For A Time Out To Start The Game
-    
-
+    Enemy Enemy(1);
     SoundEffects soundEffects;
     MainMenu mainMenu;
     EnemyRenderer enemyRender;
     MapGenerator terrain;
-
+    enemyRender.addNewEnemy(&Enemy);
     InitAudioDevice(); // Initialize audio device
     std::map<int, Player*>playerMap;
     Camera2D camera = { 0 };
@@ -100,8 +99,6 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        Enemy Enemy(1);
-        enemyRender.addNewEnemy(&Enemy);
         PlayerController playerController;
         Player *ptrPlayer;
         ptrPlayer = playerController.getPlayer();
