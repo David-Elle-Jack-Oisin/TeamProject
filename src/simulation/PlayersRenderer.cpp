@@ -26,7 +26,7 @@ class PlayersRenderer{
             player->currentHealthFrame = 1;
             player->playerHealth = 10;
             player->frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
-            player->hitBox = { player->position.x, player->position.y, (float)Jerry.width/16, (float)Jerry.height};   
+            player->hitBox = { (player->position.x + 50), (player->position.y + 30), 26, 65};   
         }
         void removePlayer(int id){
             playerMap.erase(id);     

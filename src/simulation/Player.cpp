@@ -12,6 +12,8 @@ class Player {
         int id;
         Vector2 prevPosition;
         Vector2 position;
+        Vector2 prevHitboxPosition;
+        Vector2 hitboxPosition;
         int framesCounter;
         int currentFrame;
         Rectangle frameRec;
@@ -21,7 +23,7 @@ class Player {
         int currentHealthFrame;
         int healthFramesCounter;
 
-        Player(int identifyier): id(identifyier), position({960, 540}), prevPosition({0, 0}), framesCounter(0), healthFramesCounter(0), currentFrame(0), currentHealthFrame(0), playerHealth(){}
+        Player(int identifyier): id(identifyier), position({960, 540}), prevPosition({0, 0}),hitboxPosition({960 + 30, 540 + 12}), prevHitboxPosition({0, 0}), framesCounter(0), healthFramesCounter(0), currentFrame(0), currentHealthFrame(0), playerHealth(){}
 
         void matchIdToServer(int identifyierServer){
             id = identifyierServer;

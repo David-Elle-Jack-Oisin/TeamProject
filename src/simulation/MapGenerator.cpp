@@ -129,18 +129,53 @@ class MapGenerator {
         startingRoom.Draw();
     }
 
+    bool collideFromLeft(Player *player){
+        return player->prevHitboxPosition.x + player->hitBox.width < startingRoom.Top.x && player->hitboxPosition.x + player->hitBox.width >= startingRoom.Top.x;  
+    }
+
+    bool collideFromRight(Player *player){
+        return player->prevHitboxPosition.x >= startingRoom.Top.x + startingRoom.Top.width && player->hitboxPosition.x < startingRoom.Top.x +startingRoom.Top.width;
+    }   
+
+    bool collideFromTop(Player *player){
+        return player->prevHitboxPosition.y + player->hitBox.height < startingRoom.Top.y && player->hitboxPosition.y + player->hitBox.height >= startingRoom.Top.y;  
+    }
+
+    bool collideFromBottom(Player *player){
+        return player->prevHitboxPosition.y  >= startingRoom.Top.y + startingRoom.Top.height && player->hitboxPosition.y < startingRoom.Top.y + startingRoom.Top.height;  
+    }
+
+
     int CheckCollision(Player *player){
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.Top))){
-            fprintf(stderr,"Collision\n");
+            //fprintf(stderr,"Collision\n");
             DrawRectangleRec(player->frameRec, RED);
             DrawRectangleRec(player->hitBox, GREEN);
-            if(player->hitBox.y < (startingRoom.Top.height + startingRoom.Top.y)){
-                
-                player->position.y = startingRoom.Top.height + startingRoom.Top.y;
-                fprintf(stderr,"Up Collision\n");
 
+            if(collideFromLeft(player)){
+                fprintf(stderr,"left Collision\n");
             }
+
+            if(collideFromRight(player)){
+                fprintf(stderr,"right Collision\n");
+            }
+
+            if(collideFromTop(player)){
+                fprintf(stderr,"Top Collision\n");
+            }
+
+            if(collideFromBottom(player)){
+                fprintf(stderr,"Bottom Collision\n");
+            }
+            // If hit from bottom
+            // if(player->hitBox.y < (startingRoom.Top.height + startingRoom.Top.y) && player ->hitBox.x  > startingRoom.Top.x && player ->hitBox.x < (startingRoom.Top.x + startingRoom.Top.width)){
+                
+            //     player->position.y = startingRoom.Top.height + startingRoom.Top.y;
+            //     fprintf(stderr,"Up Collision\n");
+                
+
+            // }
         }
     }
 
