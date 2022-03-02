@@ -1,8 +1,7 @@
 #include "raylib.h"
 
 class SoundEffects{
-    public:
-        Sound footsteps = LoadSound("src-audio/footsteps.wav");  
+    public: 
         void updateSoundEffects(float delta){
             if (IsKeyPressed(KEY_LEFT)) {
                 PlaySound(footsteps);
@@ -17,4 +16,9 @@ class SoundEffects{
                 PlaySound(footsteps);
             }
         }
+        void loadSounds(){
+            footsteps = LoadSound("src-audio/footsteps.wav"); 
+        }
+    private:
+        Sound footsteps;
 };
