@@ -30,6 +30,9 @@ class EnemyRenderer{
         void loadTexture(){
             Slime = LoadTexture("src-sprites/LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
+
+            Skelly = LoadTexture("src-sprites/Skelly.png");
+            frameRec = { 0.0f, 0.0f, (float)Slime.width/14, (float)Slime.height};
             
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){
@@ -84,12 +87,14 @@ class EnemyRenderer{
         std::list<Enemy*>EnemyList;
         int id;
         Texture2D Slime;
+        Texture2D Skelly;
         Rectangle frameRec;
         bool colliding;
         int damageTimer;
        
         void renderEnemy(Enemy* Enemy){
             DrawTextureRec(Slime, frameRec, Enemy->position, WHITE);
+            // DrawTextureRec(Skelly, frameRec, Enemy->position, WHITE);
             // LEFT CHECK
             if (Enemy->prevPosition.x - Enemy->position.x > 0){
                 Enemy->prevPosition = Enemy->position;
