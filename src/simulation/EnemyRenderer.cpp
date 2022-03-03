@@ -19,7 +19,6 @@ class EnemyRenderer{
         void addNewEnemy(Enemy* enemy){
             EnemyList.push_back(enemy);
             enemy->enemyDamage = 1;
-            enemy->enemyHealth = 5;
             enemy->hitBox = { enemy->position.x + 50, enemy->position.y + 50, (float)320/2, (float)140};
         }
         void renderEnemy(){

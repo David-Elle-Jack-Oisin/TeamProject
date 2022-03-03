@@ -8,6 +8,10 @@
 #define _BULLET_H
     #include "Bullet.cpp"
 #endif
+#ifndef _ENEMY_H
+#define _ENEMY_H
+    #include "src/simulation/Enemy.cpp"
+#endif
 
 class BulletRenderer{
     public:
@@ -15,6 +19,7 @@ class BulletRenderer{
             if (IsKeyPressed(KEY_SPACE)){
                 Bullet bullet;
                 bullet.position = player->position;
+                bullet.hitBox = { player->position.x, player->position.y, 20, 20};
                 if (player->playerXDir < -959) player->playerXDir = -1.675537f; 
                 bullet.directionX = -player->playerXDir;
                 bullet.directionY = -player->playerYDir;
@@ -22,10 +27,10 @@ class BulletRenderer{
             }
         }
         
-        void renderBullets(){
+        void renderBullets(Enemy* curEnemy){
             std::map<int, Bullet>::iterator iter;
             for (iter = bulletMap.begin(); iter != bulletMap.end(); ++iter){
-                renderBullet(&iter->second);
+                renderBullet(&iter->second, curEnemy);
             }
         }
 
@@ -42,10 +47,14 @@ class BulletRenderer{
         }
 
        
-        void renderBullet(Bullet* bullet){
-            DrawRectangleV(bullet->position, {20,20}, RED);
-
+        void renderBullet(Bullet* bullet, Enemy* curEnemy){
+            DrawRectangleRec(bullet->hitBox, RED);
+            if (CheckCollisionRecs(bullet->hitBox, curEnemy->hitBox)){
+                curEnemy->decrementHealth();
+            }
             bullet->position.x += bullet->directionX*bullet->speed;
             bullet->position.y += bullet->directionY*bullet->speed;
+            bullet->hitBox.x = bullet->position.x;
+            bullet->hitBox.y = bullet->position.y;
         }
 };

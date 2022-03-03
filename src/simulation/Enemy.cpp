@@ -21,7 +21,11 @@ class Enemy
 
         int enemyDamage;
 
-        Enemy(int identifyier): id(identifyier), position({1400, 540}), prevPosition({0, 0}), framesCounter(0), currentFrame(0), currentHealthFrame(0), enemyHealth(), healthFramesCounter(0), enemyDamage(){} 
+        void decrementHealth(){
+            enemyHealth--;
+        }
+
+        Enemy(int identifyier): id(identifyier), position({1400, 540}), prevPosition({0, 0}), framesCounter(0), currentFrame(0), currentHealthFrame(0), enemyHealth(100), healthFramesCounter(0), enemyDamage(){} 
 
 
 };

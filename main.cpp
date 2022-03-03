@@ -165,9 +165,10 @@ int main(void)
                 BeginDrawing();
 
                 ClearBackground(RAYWHITE);
-
+                
+                    
                     BeginMode2D(camera);
-
+                        
                         terrain.ClassDrawMap();
                         terrain.CheckCollision(ptrPlayer);
                         playerController.updatePosition(deltaTime);
@@ -183,10 +184,11 @@ int main(void)
                         enemyRender.renderEnemy();
                         enemyRender.findClosestPlayer(playerMap);
                         bulletRenderer.checkCreateBullet(ptrPlayer);
-                        bulletRenderer.renderBullets();
+                        bulletRenderer.renderBullets(&Enemy);
+                        
                     
                     EndMode2D();
-
+                    DrawRectangle( 200, 100, Enemy.enemyHealth*10, 10, RED);
                 EndDrawing();
                                 
             }

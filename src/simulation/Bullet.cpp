@@ -20,4 +20,5 @@ class Bullet {
         Vector2 position;
         float directionX;
         float directionY;
+        Rectangle hitBox;
 };
