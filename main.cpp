@@ -94,10 +94,10 @@ int main(void)
     mainMenu.loadTexture();
     enemyRender.loadTexture();
 
-    Music MenuMusic = LoadMusicStream("src-audio/bensound-theelevatorbossanova.mp3");
+    Music MenuMusic = LoadMusicStream("src-audio/MenuMusic.mp3");
     MenuMusic.looping = true;
     soundEffects.loadSounds();
-    Music music = LoadMusicStream("src-audio/bensound-jazzyfrenchy.mp3");
+    Music music = LoadMusicStream("src-audio/gameMusic.mp3");
     music.looping = true; 
 
     float pitch = 1.0f;

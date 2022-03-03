@@ -31,8 +31,8 @@ class EnemyRenderer{
             Slime = LoadTexture("src-sprites/LSlime.png");
             frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
 
-            Skelly = LoadTexture("src-sprites/Skelly.png");
-            frameRec = { 0.0f, 0.0f, (float)Slime.width/14, (float)Slime.height};
+            // Skelly = LoadTexture("src-sprites/Skelly.png");
+            // frameRec = { 0.0f, 0.0f, (float)Slime.width/14, (float)Slime.height};
             
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){

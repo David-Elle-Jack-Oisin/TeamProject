@@ -27,14 +27,14 @@ class StartingRoom{
     Rectangle Bottom {0, 980, 1920, 100};
     Rectangle Center {100, 100, 1720, 880};
 
-    Rectangle rectangles[4] = {Top, RSide, LSide, Bottom};
+    Rectangle rectangles[5] = {Top, RSide, Center, LSide, Bottom};
 
     int Draw(){
-        //Texture2D grASS;
-        //grASS = LoadTexture("src-sprites/grASS.png");
+    //     Texture2D Stones;
+    //     Stones = LoadTexture("src-sprites/mossyStones.png");
         
-        //SetShapesTexture(grASS, Top);
-       // DrawTextureRec(grASS, Top, {100,100}, GREEN);
+    //     SetShapesTexture(Stones, Top);
+    //    DrawTextureRec(Stones, Top, {100,100}, GREEN);
         DrawRectangleRec(Top, BLACK);
         DrawRectangleRec(Center, GRAY);
         DrawRectangleRec(RSide, BLACK);

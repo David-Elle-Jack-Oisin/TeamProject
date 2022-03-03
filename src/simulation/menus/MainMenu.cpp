@@ -128,7 +128,7 @@ class MainMenu{
                 DrawRectangleRec(topButtonBounds, BLUE);
                 DrawText("Single Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f - 120), 40, BLACK);
                 DrawRectangleRec(bottomButtonBounds, BLUE);
-                DrawText("Muilti Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);  
+                DrawText("Multi Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);  
             EndDrawing();
         }
     }
