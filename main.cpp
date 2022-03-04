@@ -94,6 +94,7 @@ int main(void)
     playersRender.loadTexture();
     mainMenu.loadTexture();
     enemyRender.loadTexture();
+    terrain.loadTextures();
 
     Music MenuMusic = LoadMusicStream("src-audio/MenuMusic.mp3");
     MenuMusic.looping = true;

@@ -18,7 +18,11 @@ class BossRoom{
 
 class StartingRoom{
     private:
-
+        Texture2D Stone;
+        Texture2D Stone2;
+        Texture2D Stone3;
+        Texture2D Floor;
+        Texture2D Bones;
     public:
 
     Rectangle Top = {0, 0, 1920, 100};
@@ -29,18 +33,15 @@ class StartingRoom{
     Rectangle test = {0, 0, 150, 150};
 
     Rectangle rectangles[6] = {Top, RSide, Center, LSide, Bottom, test};
-
-    int Draw(){
-        Texture2D Stone;
-        Texture2D Stone2;
-        Texture2D Stone3;
-        Texture2D Floor;
-        Texture2D Bones;
+    void loadTextures(){
         Bones = LoadTexture("src-sprites/bonePile.png");
         Stone = LoadTexture("src-sprites/mossyStones.png");
         Stone2 = LoadTexture("src-sprites/Stone2.png");
         Stone3 = LoadTexture("src-sprites/Stone3.png");
         Floor = LoadTexture("src-sprites/floor.png");
+    }
+    
+    int Draw(){
         
         SetShapesTexture(Bones, test);
         DrawTextureRec(Bones, test, {100,100}, WHITE);
@@ -286,6 +287,10 @@ class MapGenerator {
         CheckCollisionBottom(player);
         CheckCollisionLeft(player);
         CheckCollisionRight(player);
+    }
+
+    void loadTextures(){
+        startingRoom.loadTextures();
     }
 
 };
