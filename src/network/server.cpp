@@ -114,7 +114,7 @@ class gameServer{
         static void InitialiseConnectionSockets(){
             SteamDatagramErrMsg errorMessage;
             GameNetworkingSockets_Init( nullptr, errorMessage );
-            SteamNetworkingMicroseconds globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
+            SteamNetworkingUtils()->GetLocalTimestamp();
         }
 
         void OnConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *connectionInfo){
@@ -229,8 +229,13 @@ class gameServer{
                                     SendToAllClientsReliable(temp, client->first);
                                     break;
                                 }
+                                case 4:{
+                                    sprintf(temp, "%s", formattedPacket);
+                                    SendToAllClientsReliable(temp, client->first);
+                                    break;
+                                }
                                 case 6:{
-                                    fprintf(stderr, "ENEMY: %s\n", formattedPacket );
+                                    // fprintf(stderr, "ENEMY: %s\n", formattedPacket );
                                     std::tie(EnemyId, EnemyPosX, EnemyPosY, EnemyHealth) = packets.parseEnemyInfo(packet);
                                     if (EnemyPosX != enemyPosX) enemyPosX = EnemyPosX;
                                     if (EnemyPosY != enemyPosY) enemyPosY = EnemyPosY;

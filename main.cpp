@@ -101,9 +101,7 @@ int main(void)
     Music music = LoadMusicStream("src-audio/gameMusic.mp3");
     music.looping = true; 
 
-    float pitch = 1.0f;
     bool dead = false;
-    int framesCounter = 0;
 
     SetTargetFPS(60);  
     PlayerController playerController;
@@ -120,8 +118,8 @@ int main(void)
 
         if (mainMenu.isMainMenuFinished()){
             if (!mainMenu.isSinglePlayer()){
-                clientThread = std::thread([&client, &playersRender,&enemyRender](){
-                    client.startClient(&playersRender, &enemyRender);
+                clientThread = std::thread([&client, &playersRender,&enemyRender,&bulletRenderer](){
+                    client.startClient(&playersRender, &enemyRender, &bulletRenderer);
                 });
                 int connectFrame = 0;
                 while(!client.checkConnected() && !WindowShouldClose()){
@@ -190,7 +188,18 @@ int main(void)
                         }
                         enemyRender.renderEnemy();
                         enemyRender.findClosestPlayer(playerMap);
-                        bulletRenderer.checkCreateBullet(ptrPlayer);
+                        if (IsKeyPressed(KEY_SPACE)){
+                            Bullet bullet;
+                            bullet.position = ptrPlayer->position;
+                            bullet.hitBox = { ptrPlayer->position.x, ptrPlayer->position.y, 20, 20};
+                            if (ptrPlayer->playerXDir < -959) ptrPlayer->playerXDir = -1.675537f; 
+                            bullet.directionX = -ptrPlayer->playerXDir;
+                            bullet.directionY = -ptrPlayer->playerYDir;
+                            bulletRenderer.addNewBullet(bullet);
+                            if (!mainMenu.isSinglePlayer()){
+                                client.sendBullet(bullet.position.x,bullet.position.y, bullet.directionX, bullet.directionY);
+                            }
+                        }
                         bulletRenderer.renderBullets(&slime);
                         
                     

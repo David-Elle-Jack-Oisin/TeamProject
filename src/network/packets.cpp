@@ -55,9 +55,27 @@ class Packets{
         std::string packet = "3:" + std::to_string(id);
         return packet;
     }
-    std::string createEnemyDamagePacket(int id, int damage){
-        std::string packet = "4:" + std::to_string(id) + "," + std::to_string(damage);
+    std::string createBulletPacket(float posX, float posY, float dirX, float dirY){
+        std::string packet = "4\n" + 
+            std::to_string(posX) + "," +
+            std::to_string(posY) + ":" + std::to_string(dirX) + "," +
+            std::to_string(dirY);
         return packet;
+    }
+    std::tuple<float, float, float, float> parseBulletInfo(std::string packet){   
+        unsigned firstComma = packet.find(",") + 1;
+        unsigned colon = packet.find(":") + 1;
+        unsigned secondComma = packet.find_last_of(",");
+        unsigned newline = packet.find("\n") + 1;
+        const char *firstFloatCharArray = packet.substr(newline, firstComma - newline).c_str();
+        float posX = std::atof(firstFloatCharArray);
+        const char *secondFloatCharArray = packet.substr(firstComma, colon - firstComma - 1).c_str();
+        float posY = std::atof(secondFloatCharArray);
+		const char *thirdFloatCharArray = packet.substr(colon, secondComma - colon).c_str();
+		float dirX = std::atof(thirdFloatCharArray);
+        const char *fourthFloatCharArray = packet.substr(secondComma+ 1).c_str();
+        float dirY = std::atof(fourthFloatCharArray);
+        return {posX, posY, dirX, dirY};
     }
     std::string createGameOverPacket(int score){
         std::string packet = "5:" + std::to_string(score);

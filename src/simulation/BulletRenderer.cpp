@@ -12,21 +12,17 @@
 #define _ENEMY_H
     #include "src/simulation/Enemy.cpp"
 #endif
-
 class BulletRenderer{
     public:
-        void checkCreateBullet(Player* player){
-            if (IsKeyPressed(KEY_SPACE)){
-                Bullet bullet;
-                bullet.position = player->position;
-                bullet.hitBox = { player->position.x, player->position.y, 20, 20};
-                if (player->playerXDir < -959) player->playerXDir = -1.675537f; 
-                bullet.directionX = -player->playerXDir;
-                bullet.directionY = -player->playerYDir;
-                addNewBullet(bullet);
-            }
+        void addBullet(float posX, float posY, float dirX, float dirY){
+            Bullet bullet;
+            bullet.position.x = posX;
+            bullet.position.y = posY;
+            bullet.directionX = dirX;
+            bullet.directionY = dirY;
+            bullet.hitBox = { bullet.position.x, bullet.position.y, 20, 20};
+            addNewBullet(bullet);
         }
-        
         void renderBullets(Enemy* curEnemy){
             std::map<int, Bullet>::iterator iter;
             for (iter = bulletMap.begin(); iter != bulletMap.end(); ++iter){
@@ -34,14 +30,15 @@ class BulletRenderer{
             }
         }
 
-    private:
-        std::map<int, Bullet>bulletMap;
-        int id = 0;
-
         void addNewBullet(Bullet bullet){
             bulletMap.insert({id, bullet});
             id++; 
         }
+
+    private:
+        std::map<int, Bullet>bulletMap;
+        int id = 0;
+
         void removeBullet(int id){
             bulletMap.erase(id);     
         }

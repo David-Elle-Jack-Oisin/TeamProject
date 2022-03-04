@@ -20,7 +20,10 @@
 #define _PLAYER_RENDERER_H
     #include "../simulation/PlayersRenderer.cpp"
 #endif
-
+#ifndef _BULLET_RENDERER_H
+#define _BULLET_RENDERER_H
+    #include "../simulation/BulletRenderer.cpp"
+#endif
 
 #include <steam/steamnetworkingsockets.h>
 #include <steam/isteamnetworkingutils.h>
@@ -49,17 +52,25 @@ public:
     }
 	void sendDeathPacket(int id){
 		if (!shutDown) {
-        	std::string playerInfoPacket = packets.createPlayerDeathPacket(id);
-			const char *formattedplayerInfoPacket = playerInfoPacket.c_str();
-        	clientInstance->SendMessageToConnection(connection, formattedplayerInfoPacket, (uint32)strlen(formattedplayerInfoPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+        	std::string deathPacket = packets.createPlayerDeathPacket(id);
+			const char *formattedDeathPacket = deathPacket.c_str();
+        	clientInstance->SendMessageToConnection(connection, formattedDeathPacket, (uint32)strlen(formattedDeathPacket), k_nSteamNetworkingSend_Reliable, nullptr);
 		}
     }
-	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender){
+	void sendBullet(float posX, float posY, float dirX, float dirY){
+		if (!shutDown) {
+        	std::string bulletPacket = packets.createBulletPacket(posX, posY, dirX, dirY);
+			const char *formattedBulletPacket = bulletPacket.c_str();
+        	clientInstance->SendMessageToConnection(connection, formattedBulletPacket, (uint32)strlen(formattedBulletPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+		}
+    }
+	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender, BulletRenderer *bulletRender){
 		connected = false;
 		timeOut = false;
 		SteamNetworkingIPAddr serverAddress;
 		playRenderer = renderer;
 		enemyRenderer = enemyRender;
+		bulletRenderer = bulletRender;
 		serverAddress.Clear();
 		if (!serverAddress.ParseString("127.0.0.1"))
 			fprintf(stderr,"NETWORK: Invalid server address '%s'\n", "127.0.0.1");
@@ -80,20 +91,21 @@ public:
 private:
 	PlayersRenderer *playRenderer;
 	EnemyRenderer *enemyRenderer;
+	BulletRenderer *bulletRenderer;
     ISteamNetworkingSockets *clientInstance;
     HSteamNetConnection connection;
     bool shutDown = false;
 	bool timeOut = false;
 	bool connected = false;
 	int id;
-	float posX, posY;
+	float posX, posY, dirX, dirY;
 	int health;
 	Packets packets;
 
 	static void InitialiseConnectionSockets(){
         SteamDatagramErrMsg errorMessage;
         GameNetworkingSockets_Init( nullptr, errorMessage );
-        SteamNetworkingMicroseconds globalLogTimeZero = SteamNetworkingUtils()->GetLocalTimestamp();
+        SteamNetworkingUtils()->GetLocalTimestamp();
     }
 
 	void Run(const SteamNetworkingIPAddr &serverIp){
@@ -143,7 +155,6 @@ private:
 						Player *ptrPlayer;
 						ptrPlayer = new Player(id);
 						playRenderer->addNewPlayer(ptrPlayer);
-						fprintf(stderr, "ADD NEW PLAYER\n");
 					}
 					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
 					playRenderer->updatePlayerPosition(id, posX, posY);
@@ -161,6 +172,11 @@ private:
 					int id = std::stoi(identifer);
 					playRenderer->removePlayer(id);
 					fprintf(stderr,"NETWORK: Player (%s) Left\n",identifer);
+					break;
+				}
+				case 4: {
+					std::tie(posX, posY, dirX, dirY) = packets.parseBulletInfo(packet);
+					bulletRenderer->addBullet(posX, posY, dirX, dirY);
 					break;
 				}
 				default:
@@ -213,7 +229,7 @@ private:
         gameClientCallBackInstance = this;
         clientInstance->RunCallbacks();
     }
-	int generateId(){
+	void generateId(){
 		if (!shutDown){
 			std::string idRequestPacket = packets.createIdRequestPacket();
 			const char *formattedidRequestPacket = idRequestPacket.c_str();
