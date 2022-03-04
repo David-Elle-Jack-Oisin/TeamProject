@@ -147,8 +147,8 @@ class MainMenu{
         joinButtonAction = false;
         hostButtonAction = false;
         isAttemptingToJoinServer = false;
-        bool exitWindow = false;
-        bool exitWindow2 = false;
+        exitWindow = false;
+        exitWindow2 = false;
     }
     void printBools(){
         fprintf(stderr, "%i %i %i %i %i %i %i\n",singlePlayerButtonAction, muiltiPlayerButtonAction, joinButtonAction,hostButtonAction,isAttemptingToJoinServer, exitWindow, exitWindow2 );

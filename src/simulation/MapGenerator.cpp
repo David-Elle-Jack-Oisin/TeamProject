@@ -99,11 +99,11 @@ class MapGenerator {
 
 // ================================= GRID MAP DRAW ===============================
 
-    int GridDrawMap(){
+    void GridDrawMap(){
         for (y = 0; y <= height; ++y){
             for (x = 0; x <= length; ++x){
 
-                Rectangle rect = {(0 + (80 * x)), (20 + (80 * y)), 80, 80};
+                Rectangle rect = {(float)(0 + (80 * x)), (float)(20 + (80 * y)), 80, 80};
 
                 if (oneScreenMap[y][x] == 1){
                     DrawRectangleRec(rect, GRAY);
@@ -143,7 +143,7 @@ class MapGenerator {
 
 // =================================== CLASS MAP DRAW ===============================
 
-    int ClassDrawMap(){
+    void ClassDrawMap(){
         startingRoom.Draw();
     }
 
@@ -212,7 +212,7 @@ class MapGenerator {
 
 //   =========================================================================================================
 
-    int CheckCollisionTop(Player *player){
+    void CheckCollisionTop(Player *player){
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.Top))){
             //fprintf(stderr,"Collision\n");
@@ -227,7 +227,7 @@ class MapGenerator {
         }
     }
 
-    int CheckCollisionBottom(Player *player){
+    void CheckCollisionBottom(Player *player){
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.Bottom))){
             //fprintf(stderr,"Collision\n");
@@ -244,7 +244,7 @@ class MapGenerator {
         }
     }
 
-    int CheckCollisionLeft(Player *player){
+    void CheckCollisionLeft(Player *player){
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.LSide))){
             //fprintf(stderr,"Collision\n");
@@ -264,7 +264,7 @@ class MapGenerator {
     
 
 
-    int CheckCollisionRight(Player *player){
+    void CheckCollisionRight(Player *player){
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.RSide))){
             //fprintf(stderr,"Collision\n");
@@ -281,7 +281,7 @@ class MapGenerator {
         }
     }
 
-    int CheckCollision(Player *player){
+    void CheckCollision(Player *player){
         CheckCollisionTop(player);
         CheckCollisionBottom(player);
         CheckCollisionLeft(player);
