@@ -55,14 +55,25 @@ class gameServer{
         const uint16 DEFAULT_SERVER_PORT = 27020;
         int id = 0;
 
-        void SendToClient( HSteamNetConnection connection, const char *str ){
+        void SendToClientReliable( HSteamNetConnection connection, const char *str ){
 		    serverInstance->SendMessageToConnection( connection, str, (uint32)strlen(str), k_nSteamNetworkingSend_Reliable, nullptr );
 	    }
 
-        void SendToAllClients( const char *str, HSteamNetConnection exception = k_HSteamNetConnection_Invalid ){
+        void SendToAllClientsReliable( const char *str, HSteamNetConnection exception = k_HSteamNetConnection_Invalid ){
             for ( auto &client: clients ){
                 if ( client.first != exception )
-                    SendToClient( client.first, str );
+                    SendToClientReliable( client.first, str );
+            }
+        }
+
+        void SendToClientUnReliable( HSteamNetConnection connection, const char *str ){
+		    serverInstance->SendMessageToConnection( connection, str, (uint32)strlen(str), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr );
+	    }
+
+        void SendToAllClientsUnReliable( const char *str, HSteamNetConnection exception = k_HSteamNetConnection_Invalid ){
+            for ( auto &client: clients ){
+                if ( client.first != exception )
+                    SendToClientUnReliable( client.first, str );
             }
         }
 
@@ -90,7 +101,7 @@ class gameServer{
             }
             fprintf(stderr, "Closing connections...\n" );
             for (auto client: clients){
-                SendToClient(client.first, "serverShutDown");
+                SendToClientReliable(client.first, "serverShutDown");
                 serverInstance->CloseConnection(client.first, 0, "Server serverShutDown\n", true);
             }
             clients.clear();
@@ -141,7 +152,7 @@ class gameServer{
                         std::string disconnectPacket = packets.createPlayerDisconnectPacket(clientToIdMap.at(client->first));
                         const char *formattedDisconnectPacket = disconnectPacket.c_str();
                         clientToIdMap.erase(client->first);
-                        SendToAllClients(formattedDisconnectPacket);
+                        SendToAllClientsReliable(formattedDisconnectPacket);
 
                     }
                     else{
@@ -166,9 +177,9 @@ class gameServer{
                     }
 
                     sprintf(temp, "Welcome");
-                    SendToClient(connectionInfo->m_hConn, temp);
+                    SendToClientReliable(connectionInfo->m_hConn, temp);
                     sprintf(temp, "New Client");
-                    SendToAllClients(temp, connectionInfo->m_hConn);
+                    SendToAllClientsReliable(temp, connectionInfo->m_hConn);
                     clients[connectionInfo->m_hConn];
                     break;
                 case k_ESteamNetworkingConnectionState_Connected:
@@ -209,8 +220,13 @@ class gameServer{
                                     std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY);
                                     clientToIdMap.insert({client->first, id});
                                     const char *formattedidPacket = idPacket.c_str();
-                                    SendToClient(client->first, formattedidPacket);
+                                    SendToClientReliable(client->first, formattedidPacket);
                                     id++;
+                                    break;
+                                }
+                                case 2:{
+                                    sprintf(temp, "%s", formattedPacket);
+                                    SendToAllClientsReliable(temp, client->first);
                                     break;
                                 }
                                 case 6:{
@@ -222,7 +238,7 @@ class gameServer{
                                 }
                                 default:{
                                     sprintf(temp, "%s", formattedPacket);
-                                    SendToAllClients(temp, client->first);
+                                    SendToAllClientsUnReliable(temp, client->first);
                                 }
                             }
                         }

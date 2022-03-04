@@ -17,6 +17,7 @@ class Player {
         int framesCounter;
         int currentFrame;
         Rectangle frameRec;
+        Rectangle healthFrameRec;
         Rectangle hitBox;
         Vector2 positionOffset;
         float playerXDir;

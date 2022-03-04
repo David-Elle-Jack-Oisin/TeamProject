@@ -22,6 +22,7 @@ class PlayersRenderer{
             player->currentHealthFrame = 0;
             player->playerHealth = 10;
             player->frameRec = { 0.0f, 0.0f, (float)Jerry.width/16, (float)Jerry.height};
+            player->healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
             player->hitBox = { (player->position.x + 50), (player->position.y + 30), 26, 65};
             player->positionOffset = {player->position.x - 100 , player->position.y - 100};
         }
@@ -36,10 +37,7 @@ class PlayersRenderer{
         }
         void loadTexture(){
             Jerry = LoadTexture("src-sprites/smallJerry.png");
-            
-
             Health = LoadTexture("src-sprites/Health.png");
-            healthFrameRec = { 0.0f, 0.0f, (float)Health.width/11 , (float)Health.height};
         }
         void updatePlayerPosition(int id, float x, float y){
             playerMap.at(id)->prevPosition = playerMap.at(id)->position; 
@@ -61,14 +59,13 @@ class PlayersRenderer{
         Texture2D Jerry;
 
         Texture2D Health;
-        Rectangle healthFrameRec;
 
        
         void renderPlayer(Player* player){
             renderHealth(player);
 
             DrawTextureRec(Jerry, player->frameRec, player->position, WHITE);
-            DrawTextureRec(Health, healthFrameRec, player->position, WHITE);  
+            DrawTextureRec(Health, player->healthFrameRec, player->position, WHITE);  
             
             // LEFT CHECK
             if (player->prevPosition.x - player->position.x > 0){
@@ -127,6 +124,6 @@ class PlayersRenderer{
         }
 
         void renderHealth(Player* player) {
-            healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
+            player->healthFrameRec.x = (float)player->currentHealthFrame*(float)Health.width/11;
         }
 };

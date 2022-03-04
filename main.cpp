@@ -57,8 +57,8 @@
 #include <map>
 
 
-const int screenWidth = 1920;
-const int screenHeight = 1080;
+const int screenWidth = 1000;
+const int screenHeight = 1000;
 void UpdateCameraCenter(Camera2D *camera, Player *player);
 
 int main(void)
@@ -71,14 +71,15 @@ int main(void)
     std::thread clientThread;
     // Player Must Be Created And Added To Renderer Before The Thread
     // This Is So We Don't Have To Wait For A Time Out To Start The Game
-    Enemy Enemy(1);
+    Enemy slime(0);
+    Enemy skelly(1);
     SoundEffects soundEffects;
     MainMenu mainMenu;
     GameOver gameover;
     EnemyRenderer enemyRender;
     BulletRenderer bulletRenderer;
     MapGenerator terrain;
-    enemyRender.addNewEnemy(&Enemy);
+    enemyRender.addNewEnemy(&slime);
     InitAudioDevice(); // Initialize audio device
     std::map<int, Player*>playerMap;
     Camera2D camera = { 0 };
@@ -176,19 +177,25 @@ int main(void)
                         playersRender.renderPlayers();
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-                            client.sendEnemyInfo(1, Enemy.position, Enemy.enemyHealth);
+                            client.sendEnemyInfo(1, slime.position, slime.enemyHealth);
                         }
                         if (ptrPlayer->playerHealth <= 0) {
+                            if (!mainMenu.isSinglePlayer()){
+                                client.sendDeathPacket(ptrPlayer->id);
+                            }
                             dead = true;
+                        }
+                        if (slime.enemyHealth <= 0){
+                            enemyRender.removeEnemy(&slime);
                         }
                         enemyRender.renderEnemy();
                         enemyRender.findClosestPlayer(playerMap);
                         bulletRenderer.checkCreateBullet(ptrPlayer);
-                        bulletRenderer.renderBullets(&Enemy);
+                        bulletRenderer.renderBullets(&slime);
                         
                     
                     EndMode2D();
-                    DrawRectangle( 200, 100, Enemy.enemyHealth*10, 10, RED);
+                    DrawRectangle( 200, 100, slime.enemyHealth*10, 10, RED);
                 EndDrawing();
                                 
             }

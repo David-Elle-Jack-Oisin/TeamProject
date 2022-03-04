@@ -21,10 +21,15 @@ class EnemyRenderer{
             enemy->enemyDamage = 1;
             enemy->hitBox = { enemy->position.x + 50, enemy->position.y + 50, (float)320/2, (float)140};
         }
+        void removeEnemy(Enemy* enemy){
+            EnemyList.remove(enemy);
+        }
         void renderEnemy(){
-            std::list<Enemy*>::iterator iter;
-            for (iter = EnemyList.begin(); iter != EnemyList.end(); ++iter){
-                renderEnemy(*iter);
+            if (EnemyList.size() > 0){
+                std::list<Enemy*>::iterator iter;
+                for (iter = EnemyList.begin(); iter != EnemyList.end(); ++iter){
+                    renderEnemy(*iter);
+                }
             }
         }
         void loadTexture(){
@@ -36,40 +41,41 @@ class EnemyRenderer{
             
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){
-            std::map<int, Player*>::iterator iter;
-            Player* closestPlayer;
-            float distance = 1000000.f;
-            bool set = false;
-            for (iter = playerMap.begin(); iter != playerMap.end(); ++iter){
-                if(!colliding){
-                    if (CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
-                        iter->second->decrementHealth();
-                        damageTimer = 1;
-                        colliding = true;
+            if (EnemyList.size() > 0){
+                std::map<int, Player*>::iterator iter;
+                Player* closestPlayer;
+                float distance = 1000000.f;
+                bool set = false;
+                for (iter = playerMap.begin(); iter != playerMap.end(); ++iter){
+                    if(!colliding){
+                        if (CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
+                            iter->second->decrementHealth();
+                            damageTimer = 1;
+                            colliding = true;
+                        }
                     }
-                }
-                else{
-                    if (!CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
-                        colliding = false;
+                    else{
+                        if (!CheckCollisionRecs(iter->second->hitBox, EnemyList.back()->hitBox)){
+                            colliding = false;
+                        }
+                        if (damageTimer % 20 == 0){
+                            iter->second->decrementHealth();
+                        }
+                        damageTimer++;
                     }
-                    if (damageTimer % 20 == 0){
-                        iter->second->decrementHealth();
-                    }
-                    damageTimer++;
-                }
-                
-                float playerDistance = Vector2Distance(iter->second->position, EnemyList.back()->position);
-                if (playerDistance < distance){
-                    distance = playerDistance;
                     
-                    closestPlayer = iter->second;
-                    set = true;
+                    float playerDistance = Vector2Distance(iter->second->position, EnemyList.back()->position);
+                    if (playerDistance < distance){
+                        distance = playerDistance;
+                        
+                        closestPlayer = iter->second;
+                        set = true;
+                    }
+                }
+                if (set){
+                    EnemyAi(closestPlayer);
                 }
             }
-            if (set){
-                EnemyAi(closestPlayer);
-            }
-            
         }
         void EnemyAi (Player* player){
             
