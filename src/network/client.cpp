@@ -47,6 +47,13 @@ public:
         	clientInstance->SendMessageToConnection(connection, formattedEnemyInfoPacket, (uint32)strlen(formattedEnemyInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
 		}
     }
+	void sendDeathPacket(int id){
+		if (!shutDown) {
+        	std::string playerInfoPacket = packets.createPlayerDeathPacket(id);
+			const char *formattedplayerInfoPacket = playerInfoPacket.c_str();
+        	clientInstance->SendMessageToConnection(connection, formattedplayerInfoPacket, (uint32)strlen(formattedplayerInfoPacket), k_nSteamNetworkingSend_Reliable, nullptr);
+		}
+    }
 	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender){
 		connected = false;
 		timeOut = false;
@@ -140,6 +147,13 @@ private:
 					}
 					// fprintf(stderr,"NETWORK: OTHER PLAYER INFO(%i, %f:%f,%i)\n", id, posX, posY, health);
 					playRenderer->updatePlayerPosition(id, posX, posY);
+					break;
+				}
+				case 2:{
+					const char *identifer = packet.substr(packet.find(":") + 1).c_str();
+					int id = std::stoi(identifer);
+					playRenderer->removePlayer(id);
+					fprintf(stderr,"NETWORK: Player (%s) Died\n",identifer);
 					break;
 				}
 				case 3:{
