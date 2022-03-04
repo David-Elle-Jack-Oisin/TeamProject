@@ -22,24 +22,36 @@ class StartingRoom{
     public:
 
     Rectangle Top = {0, 0, 1920, 100};
-    Rectangle RSide {1820, 0, 100, 1080};
-    Rectangle LSide {0, 0, 100, 1080};
-    Rectangle Bottom {0, 980, 1920, 100};
-    Rectangle Center {100, 100, 1720, 880};
+    Rectangle RSide = {1820, 0, 100, 1080};
+    Rectangle LSide = {0, 0, 100, 1080};
+    Rectangle Bottom = {0, 980, 1920, 100};
+    Rectangle Center = {100, 100, 1720, 880};
 
     Rectangle rectangles[5] = {Top, RSide, Center, LSide, Bottom};
 
     int Draw(){
-    //     Texture2D Stones;
-    //     Stones = LoadTexture("src-sprites/mossyStones.png");
+        Texture2D Stone;
+        Texture2D Stone2;
+        Texture2D Stone3;
+        Stone = LoadTexture("src-sprites/mossyStones.png");
+        Stone2 = LoadTexture("src-sprites/Stone2.png");
+        Stone3 = LoadTexture("src-sprites/Stone3.png");
         
-    //     SetShapesTexture(Stones, Top);
-    //    DrawTextureRec(Stones, Top, {100,100}, GREEN);
-        DrawRectangleRec(Top, BLACK);
-        DrawRectangleRec(Center, GRAY);
-        DrawRectangleRec(RSide, BLACK);
-        DrawRectangleRec(LSide, BLACK);
-        DrawRectangleRec(Bottom, BLACK);
+
+        SetShapesTexture(Stone3, Center);
+        DrawTextureRec(Stone3, Center, {100,100}, WHITE);
+
+        SetShapesTexture(Stone, RSide);
+        DrawTextureRec(Stone, RSide, {100,100}, WHITE);
+
+        SetShapesTexture(Stone, Top);
+        DrawTextureRec(Stone, Top, {100,100}, WHITE);
+
+        SetShapesTexture(Stone, Bottom);
+        DrawTextureRec(Stone, Bottom, {100,100}, WHITE);
+
+        SetShapesTexture(Stone, LSide);
+        DrawTextureRec(Stone, LSide, {100,100}, WHITE);
         
         return 1;
     };
