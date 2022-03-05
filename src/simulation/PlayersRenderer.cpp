@@ -57,21 +57,31 @@ class PlayersRenderer{
     private:
         std::map<int, Player*>&playerMap;
         Texture2D Jerry;
-
+        int LastKey;
         Texture2D Health;
+
+
+        // bool directionRight(Player* player){
+        //     if(player->prevPosition.x - player->position.x < 0){
+        //         return true;
+        //     }
+        //     return false;
+        // }
 
        
         void renderPlayer(Player* player){
             renderHealth(player);
 
             DrawTextureRec(Jerry, player->frameRec, player->position, WHITE);
-            DrawTextureRec(Health, player->healthFrameRec, player->position, WHITE);  
+            DrawTextureRec(Health, player->healthFrameRec, player->position, WHITE);
+            int lastPosX = player->hitBox.x;  
             
             // LEFT CHECK
             if (player->prevPosition.x - player->position.x > 0){
                 player->playerXDir = player->prevPosition.x - player->position.x;
                 player->playerYDir = 0.0;
                 player->prevPosition = player->position;
+                LastKey = 1;
 
                 // ANIMATION CODE
                 player->framesCounter++;
@@ -90,6 +100,7 @@ class PlayersRenderer{
                 player->playerXDir = player->prevPosition.x - player->position.x;
                 player->playerYDir = 0.0;
                 player->prevPosition = player->position;
+                LastKey = 2;
                 // ANIMATION CODE
                 player->framesCounter++;
                 if (player->framesCounter >= (60/player->framesSpeed))
@@ -109,7 +120,36 @@ class PlayersRenderer{
                 player->playerYDir = player->prevPosition.y - player->position.y;
                 player->playerXDir = 0.0;
                 player->prevPosition = player->position;
-                // ANIMATION CODE
+
+                // ANIMATION CODE  LEFT SIDE
+                player->framesCounter++;
+                if ((player->framesCounter >= (60/player->framesSpeed)) && LastKey == 1){
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+                        if (player->currentFrame > 15) {player->currentFrame = 8;}
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                } 
+
+                            if(lastPosX - player->hitBox.x > 0){
+                LastKey = 2;
+            }
+                // ANIMATION CODE RIGHT SIDE
+                if ((player->framesCounter >= (60/player->framesSpeed) && LastKey == 2))
+                {
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (player->currentFrame > 7) {player->currentFrame = 1;}  
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                } 
+
+
 
             }
             // DOWN CHECK 
@@ -118,6 +158,31 @@ class PlayersRenderer{
                 player->playerXDir = 0.0;
                 player->prevPosition = player->position;
                 // ANIMATION CODE
+
+                // ANIMATION CODE  LEFT SIDE
+                player->framesCounter++;
+                if ((player->framesCounter >= (60/player->framesSpeed)) && LastKey == 1){
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+                        if (player->currentFrame > 15) {player->currentFrame = 8;}
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                } 
+
+                // ANIMATION CODE RIGHT SIDE
+                if ((player->framesCounter >= (60/player->framesSpeed)) && LastKey == 2)
+                {
+                        player->framesCounter = 0;
+                        player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (player->currentFrame > 7) {player->currentFrame = 1;}  
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+                        player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
+                }
 
             }
     
