@@ -224,6 +224,7 @@ class MapGenerator {
             if(player->hitBox.y < (startingRoom.Top.height + startingRoom.Top.y) && player ->hitBox.x  > startingRoom.Top.x && player ->hitBox.x < (startingRoom.Top.x + startingRoom.Top.width)){
                 
                 player->position.y = startingRoom.Top.height + startingRoom.Top.y - 11;
+                player->positionOffset = {player->position.x - 100 , player->position.y - 100};
                 fprintf(stderr,"Up Collision\n");
             }
         }
@@ -241,6 +242,7 @@ class MapGenerator {
             if((player->hitBox.y + player->hitBox.height) > (startingRoom.Bottom.y)){
                 fprintf(stderr, "Bottom Collision");
                 player->position.y  = (startingRoom.Bottom.y - player->hitBox.height - 11);
+                player->positionOffset = {player->position.x - 100 , player->position.y - 100};
                // fprintf(stderr,"Up Collision\n");
             }
         }
@@ -258,6 +260,7 @@ class MapGenerator {
             if((player->hitBox.x  < (startingRoom.LSide.x + startingRoom.LSide.width))){
                 fprintf(stderr, "Left Collision");
                 player->position.x  = (startingRoom.LSide.x + 70);
+                player->positionOffset = {player->position.x - 100 , player->position.y - 100};
                // fprintf(stderr,"Up Collision\n");
             }
         }
@@ -278,6 +281,7 @@ class MapGenerator {
             if(((player->hitBox.x + player->hitBox.width) > startingRoom.RSide.x)){
                 fprintf(stderr, "Left Collision");
                 player->position.x  = (startingRoom.RSide.x - 55);
+                player->positionOffset = {player->position.x - 100 , player->position.y - 100};
                // fprintf(stderr,"Up Collision\n");
             }
         }
