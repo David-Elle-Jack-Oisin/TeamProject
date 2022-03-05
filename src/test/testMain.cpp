@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-TEST (OneEqualOneTest, oneEqual) { 
+TEST (Control_Flow_Tests, oneEqual) { 
     ASSERT_EQ (1,1);
 }
 

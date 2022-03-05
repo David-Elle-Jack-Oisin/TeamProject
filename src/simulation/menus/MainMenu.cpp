@@ -26,36 +26,30 @@ class MainMenu{
         // CHECK FOR MUILTIPLAYER PRESSED
         if (muiltiPlayerButtonAction){
             // PAGE LOOP
+            // VARS FOR INPUT
+            int maxChars = 15;
+            char ip[maxChars + 1] = "\0";
+            int letterCount = 0;
+            int framesCounter = 0;
             while(!exitWindow){
                 // EXIT CONDITIONS
-                if (hostButtonAction || isAttemptingToJoinServer || WindowShouldClose()) {exitWindow = true;}
-                // CHECK IF JOIN PRESSED
-                if (joinButtonAction){
-                    // VARS FOR INPUT
-                    int maxChars = 15;
-                    char ip[maxChars + 1] = "\0";
-                    int letterCount = 0;
-                    int framesCounter = 0;
-
-                    // PAGE LOOP
-                    while(!exitWindow2){
-                        if (isAttemptingToJoinServer || WindowShouldClose()) exitWindow2 = true;
-                        
-                        int key = GetCharPressed();
-                        // Check if more characters have been pressed on the same frame
-                        while (key > 0){
-                            if ((key >= 48) && (key <= 57) && (letterCount < maxChars)){
-                                // Add Dots
-                                if (((letterCount + 1) % 4 == 0) && letterCount > 0){
-                                    ip[letterCount] = '.';
-                                    ip[letterCount+1] = '\0';
-                                    letterCount++;
-                                }
-                                ip[letterCount] = (char)key;
+                if ( isAttemptingToJoinServer || WindowShouldClose()) {exitWindow = true;}
+                // CHECK IF JOIN PRESSED    
+                    int key = GetCharPressed();
+                    // Check if more characters have been pressed on the same frame
+                    while (key > 0){
+                        if ((key >= 48) && (key <= 57) && (letterCount < maxChars)){
+                            // Add Dots
+                            if (((letterCount + 1) % 4 == 0) && letterCount > 0){
+                                ip[letterCount] = '.';
                                 ip[letterCount+1] = '\0';
                                 letterCount++;
                             }
-                            key = GetCharPressed();  // Check next character in the queue
+                            ip[letterCount] = (char)key;
+                            ip[letterCount+1] = '\0';
+                            letterCount++;
+                        }
+                        key = GetCharPressed();  // Check next character in the queue
                         }
                         if (IsKeyDown(KEY_BACKSPACE)){
                             letterCount--;
@@ -85,36 +79,9 @@ class MainMenu{
                                 if (((framesCounter/20)%2) == 0) DrawText("_", (int)topButtonBounds.x + 8 + MeasureText(ip, 50), (int)topButtonBounds.y + 19, 50, MAROON);
                             }
                         EndDrawing();
-                    }
-                    // RESET BOOLS ON WAY OUT
-                    joinButtonAction = false;
-                    exitWindow2 = false;
-
-                }
-                else{
-                    // MUILTIPLAYER PAGE DRAW
-                    BeginDrawing();
-                        ClearBackground(WHITE);
-                        DrawTexture(background, 0, 0, WHITE);
-                        DrawRectangleRec(WideRect, BLUE);
-                        DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
-                        DrawRectangleRec(topButtonBounds, BLUE);
-                        DrawText("Join Game", (GetScreenWidth()/2.0f - 400/2.0f + 50), (GetScreenHeight()/2.0f - 130), 40, BLACK);
-                        DrawRectangleRec(bottomButtonBounds, BLUE);
-                        DrawText("Host Game", (GetScreenWidth()/2.0f - 400/2.0f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);  
-                    EndDrawing();
-                }
-                // DECTECT BUTTONS PUSHED 
-                mousePoint = GetMousePosition();
-                if (CheckCollisionPointRec(mousePoint, topButtonBounds))
-                {
-                    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) joinButtonAction = true;
-                }
-                else if (CheckCollisionPointRec(mousePoint, bottomButtonBounds))
-                {
-                    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) hostButtonAction = true;
-                }
+                
             }
+            // RESET BOOLS ON WAY OUT
             muiltiPlayerButtonAction = false;
             exitWindow = false;
         }
@@ -139,16 +106,14 @@ class MainMenu{
         return hostButtonAction;
     }
     bool isMainMenuFinished(){
-        return singlePlayerButtonAction || hostButtonAction || isAttemptingToJoinServer;
+        return singlePlayerButtonAction || isAttemptingToJoinServer;
     }
     void clearOptions(){
         singlePlayerButtonAction = false;
         muiltiPlayerButtonAction = false;
         joinButtonAction = false;
-        hostButtonAction = false;
         isAttemptingToJoinServer = false;
         exitWindow = false;
-        exitWindow2 = false;
     }
     void printBools(){
         fprintf(stderr, "%i %i %i %i %i %i %i\n",singlePlayerButtonAction, muiltiPlayerButtonAction, joinButtonAction,hostButtonAction,isAttemptingToJoinServer, exitWindow, exitWindow2 );
