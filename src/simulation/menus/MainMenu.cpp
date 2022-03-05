@@ -6,7 +6,7 @@ class MainMenu{
     public:
 
     void loadTexture(){
-        Texture2D background = LoadTexture("src-background/neon-rain-drops-colorful-4k.png");
+        Texture2D background = LoadTexture("src-background/Menu.png");
     }
 
     void runMainMenu(){

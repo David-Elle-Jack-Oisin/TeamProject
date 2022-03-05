@@ -7,10 +7,23 @@
 #endif
 
 
+
+
+
+// Vector2 backgroundPosition = (backgroundX, backgroundY);
+// Texture2D background = LoadTexture("src/src-sprites/Eyes.png");
+// Rectangle backgroundFrameRec = {0.0f, 0.0f, (float)backgroundWidth/2, (float)backgroundWidth/3}
+
 class BossRoom{
     private:
 
     public:
+    
+    int backgroundCurrentFrame = 0;
+    int backgroundFramesCounter = 0;
+    int backgroundFramesSpeed = 7; //(May need to be adjusted)
+    int backgroundY = 200;
+    int backgroundX = 1000;
 
     Rectangle topNoEntrance;
 

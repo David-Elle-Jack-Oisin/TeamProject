@@ -95,6 +95,7 @@ int main(void)
     mainMenu.loadTexture();
     enemyRender.loadTexture();
     terrain.loadTextures();
+    gameover.loadTexture();
 
     Music MenuMusic = LoadMusicStream("src-audio/MenuMusic.mp3");
     MenuMusic.looping = true;
