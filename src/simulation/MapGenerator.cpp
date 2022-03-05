@@ -33,6 +33,7 @@ class StartingRoom{
     Rectangle test = {0, 0, 150, 150};
 
     Rectangle rectangles[6] = {Top, RSide, Center, LSide, Bottom, test};
+
     void loadTextures(){
         Bones = LoadTexture("src-sprites/bonePile.png");
         Stone = LoadTexture("src-sprites/mossyStones.png");
@@ -50,16 +51,16 @@ class StartingRoom{
         DrawTextureRec(Floor, Center, {100,100}, WHITE);
 
         SetShapesTexture(Stone2, RSide);
-        DrawTextureRec(Stone2, RSide, {100,100}, WHITE);
+        DrawTextureRec(Stone2, RSide, {1820,0}, WHITE);
 
         SetShapesTexture(Stone2, Top);
-        DrawTextureRec(Stone2, Top, {100,100}, WHITE);
+        DrawTextureRec(Stone2, Top, {0,0}, WHITE);
 
         SetShapesTexture(Stone2, Bottom);
-        DrawTextureRec(Stone2, Bottom, {100,100}, WHITE);
+        DrawTextureRec(Stone2, Bottom, {0,980}, WHITE);
 
         SetShapesTexture(Stone2, LSide);
-        DrawTextureRec(Stone2, LSide, {100,100}, WHITE);
+        DrawTextureRec(Stone2, LSide, {0, 0}, WHITE);
         
         return 1;
     };
