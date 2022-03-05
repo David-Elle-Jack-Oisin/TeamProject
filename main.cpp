@@ -57,8 +57,8 @@
 #include <map>
 
 
-const int screenWidth = 1000;
-const int screenHeight = 1000;
+const int screenWidth = 1920;
+const int screenHeight = 1080;
 void UpdateCameraCenter(Camera2D *camera, Player *player);
 
 int main(void)
