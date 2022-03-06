@@ -40,6 +40,14 @@ class EnemyRenderer{
 
             Skelly = LoadTexture("src-sprites/Skelly.png");
             frameRecSkelly = { 0.0f, 0.0f, (float)Skelly.width/14.0f, (float)Skelly.height};
+
+            Skelly = LoadTexture("src-sprites/Skelly.png");
+            frameRecSkelly = { 0.0f, 0.0f, (float)Skelly.width/14.0f, (float)Skelly.height};
+
+            Spoopy = LoadTexture("src-sprites/SpoopyUpdated.png");
+            frameRecSpoopy = {0.0f, 0.0f, (float)Spoopy.width/22.0f, (float)Spoopy.height};
+
+
             
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){
@@ -111,15 +119,17 @@ class EnemyRenderer{
         Image image;
         Texture2D Slime;
         Texture2D Skelly;
+        Texture2D Spoopy;
         Rectangle frameRecSlime;
         Rectangle frameRecSkelly;
+        Rectangle frameRecSpoopy;
         bool colliding;
         int damageTimer;
        
         void renderEnemy(Enemy* Enemy){
 
 
-            if(Enemy->id == 0){
+            if(Enemy->id == 2){
 
             DrawTextureRec(Slime, frameRecSlime, Enemy->position, WHITE);
             // DrawTextureRec(Skelly, frameRec, Enemy->position, WHITE);
@@ -250,8 +260,71 @@ class EnemyRenderer{
 
             }
 
+            }
+
+        if (Enemy->id == 0){
+                                                                                                 // Multiplying by 2.0f resizes the texture by a factor of 2
+            DrawTexturePro(Spoopy, frameRecSpoopy,{ Enemy->position.x, Enemy->position.y, (((float)Spoopy.width/22.0f) * 2.0f), (((float)Spoopy.height)* 2.0f )}, {0.0f,0.0f}, 0.0f, WHITE);
+
+                        // Left Check
+            if (Enemy->prevPosition.x - Enemy->position.x > 0){
+                Enemy->prevPosition = Enemy->position;
+
+                // ANIMATION CODE
+
+                Enemy->framesCounter++;
+
+
+                if (Enemy->framesCounter >= (60.0f/Enemy->framesSpeed))
+                    {
+                        Enemy->framesCounter = 0;
+                        Enemy->currentFrame++;
+
+                        if (Enemy->currentFrame > 21) {Enemy->currentFrame = 12;}
+
+                        frameRecSpoopy.x = (float)Enemy->currentFrame*(float)Spoopy.width/22.0f;
+            } 
 
             }
+            // RIGHT CHECK 
+            if (Enemy->prevPosition.x - Enemy->position.x < 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+
+                Enemy->framesCounter++;
+
+
+                if (Enemy->framesCounter >= (60/Enemy->framesSpeed))
+                    {
+                        Enemy->framesCounter = 0;
+                        Enemy->currentFrame++;     //currentFrame is the current image of Slime from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (Enemy->currentFrame > 10) {Enemy->currentFrame = 1;}
+
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+
+                        frameRecSpoopy.x = (float)Enemy->currentFrame*(float)Spoopy.width/22.0f;
+            } 
+            }
+            // UP CHECK
+            if (Enemy->prevPosition.y - Enemy->position.y > 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+                Enemy->framesCounter++;
+
+            }
+            // DOWN CHECK 
+            if (Enemy->prevPosition.y - Enemy->position.y < 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+                Enemy->framesCounter++;
+
+            }
+
+
+        }
 
     
         }

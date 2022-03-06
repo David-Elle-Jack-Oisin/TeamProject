@@ -99,6 +99,7 @@ int main(void)
 
     Enemy slime(0);
     Enemy skelly(1);
+    Enemy spoopy(2);
     enemyRender.addNewEnemy(&slime);
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     PlayersRenderer playersRender(playerMap);
@@ -204,16 +205,22 @@ int main(void)
                         if (!enemyRender.activeEnemy()){
                             score++;
                             fprintf(stderr,"%i", score);
-                            if (score % 2 == 0){
+                            if (score % 3 == 0){
                             slime.enemyHealth = 100;
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
                             }
 
-                            if (score % 2 == 1){
+                            if (score % 3 == 1){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&skelly);
+                            }
+
+                            if (score % 3 == 2){
+                            skelly.enemyHealth = 100;
+                            skelly.position = {1400, 540};
+                            enemyRender.addNewEnemy(&spoopy);
                             }
 
 
