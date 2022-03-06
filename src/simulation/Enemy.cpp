@@ -17,7 +17,8 @@ class Enemy
         Rectangle hitBox;
         int enemyHealth;
         int currentHealthFrame;
-        int healthFramesCounter; 
+        int healthFramesCounter;
+        int enemyType; 
 
         int enemyDamage;
 
@@ -26,6 +27,13 @@ class Enemy
         }
 
         Enemy(int identifyier): id(identifyier), position({1400, 540}), prevPosition({0, 0}), framesCounter(0), currentFrame(0), currentHealthFrame(0), enemyHealth(100), healthFramesCounter(0), enemyDamage(){} 
+
+        Enemy(Vector2 Position, int EnemyDamage, int EnemyHealth, int EnemyType){
+            position = Position;
+            enemyDamage = EnemyDamage;
+            enemyHealth = EnemyDamage;
+            enemyType = EnemyType;
+        }
 
 
 };

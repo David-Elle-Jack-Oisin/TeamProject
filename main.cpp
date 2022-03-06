@@ -60,7 +60,13 @@
 
 const int screenWidth = 1920;
 const int screenHeight = 1080;
+
 void UpdateCameraCenter(Camera2D *camera, Player *player);
+
+Enemy* createEnemy(){
+            Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+            return &enemy;
+        }
 
 int main(void)
 {
@@ -191,6 +197,14 @@ int main(void)
                         playerController.updatePosition(deltaTime);
                         soundEffects.updateSoundEffects(deltaTime);
                         playersRender.renderPlayers();
+
+
+                        // Checks to see if no ememies are present
+                        if (!enemyRender.activeEnemy()){
+                            slime.enemyHealth = 100;
+                            slime.position = {1400, 540};
+                            enemyRender.addNewEnemy(&slime);
+                        }
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
                             client.sendEnemyInfo(1, slime.position, slime.enemyHealth);
@@ -219,9 +233,9 @@ int main(void)
                             }
                         }
                         bulletRenderer.renderBullets(&slime);
-                        if (slime.enemyHealth <= 0){
-                            won = true;
-                        }
+                        // if (slime.enemyHealth <= 0){
+                        //     won = true;
+                        // }
                         
                     
                     EndMode2D();
@@ -254,3 +268,14 @@ void UpdateCameraCenter(Camera2D *camera, Player *player){
     camera->offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f};
     camera->target = player->position;
 }
+
+// Enemy* createEnemy(){
+//             Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+//             return &enemy;
+//         }Enemy* createEnemy(){
+//             Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+//             return &enemy;
+//         }Enemy* createEnemy(){
+//             Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+//             return &enemy;
+//         }

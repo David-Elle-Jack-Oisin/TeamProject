@@ -89,6 +89,20 @@ class EnemyRenderer{
             EnemyList.back()->position.x = posX;
             EnemyList.back()->position.y = posY;
         }
+
+        bool activeEnemy(){
+            if (EnemyList.empty()){
+                return false;
+            }
+            return true;
+        }
+
+        // void createEnemy(){
+        //     Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+        //     addNewEnemy(&enemy);
+        // }
+
+        
     private:
         std::list<Enemy*>EnemyList;
         int id;

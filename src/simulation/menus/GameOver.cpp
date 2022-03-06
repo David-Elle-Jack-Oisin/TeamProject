@@ -16,11 +16,14 @@ class GameOver{
     
     public:
 
+    Texture2D backgroundOver;
+
     void loadTexture(){
         Texture2D background = LoadTexture("src-background/Over.png");
     }
     // MainMenu mainmenu;
     void gameOver() {
+        Rectangle BackgroundRecOver = {0, 0, 1920, 1080}; 
         Rectangle replayButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f + 150, 400, 100 };
         exitWindow = false;
         exitButtonAction = false;
@@ -39,6 +42,7 @@ class GameOver{
             }
             BeginDrawing();
                 ClearBackground(WHITE);
+                DrawTextureRec(backgroundOver, BackgroundRecOver,{0, 0}, WHITE);
                 DrawText("You Died!", (GetScreenWidth()/2.0f - 275), (GetScreenHeight()/2.0f - 400), 80, RED);
                 DrawRectangleRec(replayButtonBounds, BLUE);
                 DrawText("Main Menu", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f + 180), 40, BLACK);
