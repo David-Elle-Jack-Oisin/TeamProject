@@ -4,13 +4,15 @@
 
 class MainMenu{
     public:
+    Texture2D background;
 
     void loadTexture(){
-        Texture2D background = LoadTexture("src-background/Menu.png");
+        background = LoadTexture("src-background/Menu.png");
     }
 
     void runMainMenu(){
         mousePoint = GetMousePosition();
+        Rectangle BackgroundRec = {0, 0, 1920, 1080};
         Rectangle WideRect = { 0, GetScreenHeight()/2.0f - 425, GetScreenWidth(), 125 };
         Rectangle topButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f - 150, 400, 100 };
         Rectangle bottomButtonBounds = { GetScreenWidth()/2.0f - 400/2.0f, GetScreenHeight()/2.0f + 150, 400, 100 };
@@ -89,7 +91,7 @@ class MainMenu{
             // MAIN MENU PAGE
             BeginDrawing();
                 ClearBackground(WHITE);
-                DrawTexture(background, 0, 0, WHITE);
+                DrawTextureRec(background, BackgroundRec,{0, 0}, WHITE);
                 DrawRectangleRec(WideRect, BLUE);
                 DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                 DrawRectangleRec(topButtonBounds, BLUE);
@@ -132,7 +134,7 @@ class MainMenu{
     }
     MainMenu(): singlePlayerButtonAction(false){}
     private:
-        Texture2D background;
+        
         bool singlePlayerButtonAction = false;
         bool muiltiPlayerButtonAction = false;
         bool isAttemptingToJoinServer = false;
