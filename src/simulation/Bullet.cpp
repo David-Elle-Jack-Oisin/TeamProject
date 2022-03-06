@@ -25,4 +25,6 @@ class Bullet {
         Rectangle hitBox;
         int framesCounter;
         int currentFrame;
+        // 1 - up 2 - right 3 - down 4 - left
+        int textureDir;
 };

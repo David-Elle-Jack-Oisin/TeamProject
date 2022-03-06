@@ -20,6 +20,10 @@ class BulletRenderer{
             bullet.position.y = posY;
             bullet.directionX = dirX;
             bullet.directionY = dirY;
+            if(bullet.directionY < 0){ bullet.textureDir = 1;}
+            if(bullet.directionY > 0){ bullet.textureDir = 3;}
+            if(bullet.directionX > 0){ bullet.textureDir = 2;}
+            if(bullet.directionX < 0){ bullet.textureDir = 4;}
             bullet.hitBox = { bullet.position.x, bullet.position.y, 20, 20};
             addNewBullet(bullet);
         }
@@ -39,7 +43,13 @@ class BulletRenderer{
         // ===================== Work In Progress =======================
         void loadTexture(){
             rightBullet = LoadTexture("src-sprites/RfireBullet.png");
-            frameRec = { 0.0f, 0.0f, (float)rightBullet.width/12, (float)rightBullet.height};
+            leftBullet = LoadTexture("src-sprites/LfireBullet.png");
+            upBullet = LoadTexture("src-sprites/UfireBullet.png");
+            downBullet = LoadTexture("src-sprites/DfireBullet.png");
+            frameRecRight = { 0.0f, 0.0f, (float)rightBullet.width/12, (float)rightBullet.height};
+            frameRecLeft = { 0.0f, 0.0f, (float)leftBullet.width/12, (float)leftBullet.height};
+            frameRecUp = { 0.0f, 0.0f, (float)upBullet.width, (float)upBullet.height/12};
+            frameRecDown = { 0.0f, 0.0f, (float)downBullet.width, (float)downBullet.height/12};
 
             // Skelly = LoadTexture("src-sprites/Skelly.png");
             // frameRec = { 0.0f, 0.0f, (float)Slime.width/14, (float)Slime.height};
@@ -53,7 +63,10 @@ class BulletRenderer{
         Texture2D leftBullet;
         Texture2D upBullet;
         Texture2D downBullet;
-        Rectangle frameRec;
+        Rectangle frameRecRight;
+        Rectangle frameRecLeft;
+        Rectangle frameRecUp;
+        Rectangle frameRecDown;
 
 
         void removeBullet(int id){
@@ -63,7 +76,13 @@ class BulletRenderer{
        
         void renderBullet(Bullet* bullet, Enemy* curEnemy){
             Vector2 bulletPosition {bullet->hitBox.x, bullet->hitBox.y};
-            DrawTextureRec(rightBullet, frameRec, bulletPosition, WHITE);
+            
+            if(bullet->directionX > 0){DrawTextureRec(rightBullet, frameRecRight, bulletPosition, WHITE);}
+            if(bullet->directionX < 0){DrawTextureRec(leftBullet, frameRecLeft, bulletPosition, WHITE);}
+            if(bullet->directionY < 0){DrawTextureRec(upBullet, frameRecUp, bulletPosition, WHITE);}
+            if(bullet->directionY > 0){DrawTextureRec(downBullet, frameRecDown, bulletPosition, WHITE);}
+            
+            
             if (CheckCollisionRecs(bullet->hitBox, curEnemy->hitBox)){
                 curEnemy->decrementHealth();
             }
@@ -80,7 +99,10 @@ class BulletRenderer{
 
                     if (bullet->currentFrame > 12) {bullet->currentFrame = 1;}
 
-                    frameRec.x = (float)bullet->currentFrame*(float)rightBullet.width/12;
+                    frameRecRight.x = (float)bullet->currentFrame*(float)rightBullet.width/12;
+                    frameRecLeft.x = (float)bullet->currentFrame*(float)leftBullet.width/12;
+                    frameRecDown.y = (float)bullet->currentFrame*(float)downBullet.height/12;
+                    frameRecUp.y = (float)bullet->currentFrame*(float)upBullet.height/12;
             }
 
 
