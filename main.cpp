@@ -100,6 +100,7 @@ int main(void)
     Enemy slime(0);
     Enemy skelly(1);
     Enemy spoopy(2);
+    int currentEnemy = 0;
     enemyRender.addNewEnemy(&slime);
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     PlayersRenderer playersRender(playerMap);
@@ -209,18 +210,21 @@ int main(void)
                             slime.enemyHealth = 100;
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
+                            currentEnemy = 0;
                             }
 
                             if (score % 3 == 1){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&skelly);
+                            currentEnemy = 1;
                             }
 
                             if (score % 3 == 2){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&spoopy);
+                            currentEnemy = 2;
                             }
 
 
@@ -239,6 +243,12 @@ int main(void)
                         if (slime.enemyHealth <= 0){
                             enemyRender.removeEnemy(&slime);
                         }
+                        if (skelly.enemyHealth <= 0){
+                            enemyRender.removeEnemy(&skelly);
+                        }
+                        if (spoopy.enemyHealth <= 0){
+                            enemyRender.removeEnemy(&spoopy);
+                        }
                         enemyRender.renderEnemy();
                         enemyRender.findClosestPlayer(playerMap);
                         if (IsKeyPressed(KEY_SPACE)){
@@ -253,14 +263,23 @@ int main(void)
                                 client.sendBullet(bullet.position.x,bullet.position.y, bullet.directionX, bullet.directionY);
                             }
                         }
-                        bulletRenderer.renderBullets(&slime);
+
+                    if (currentEnemy == 0){bulletRenderer.renderBullets(&slime);}
+                    if (currentEnemy == 1){bulletRenderer.renderBullets(&skelly);}
+                    if (currentEnemy == 2){bulletRenderer.renderBullets(&spoopy);}
+                        //bulletRenderer.renderBullets(&slime);
                         // if (slime.enemyHealth <= 0){
                         //     won = true;
                         // }
                         
                     
                     EndMode2D();
-                    DrawRectangle( 200, 100, slime.enemyHealth*10, 10, RED);
+
+                    if (currentEnemy == 0){DrawRectangle( 200, 100, slime.enemyHealth*10, 10, RED);}
+                    if (currentEnemy == 1){DrawRectangle( 200, 100, skelly.enemyHealth*10, 10, RED);}
+                    if (currentEnemy == 2){DrawRectangle( 200, 100, spoopy.enemyHealth*10, 10, RED);}
+                    
+                    
                 EndDrawing();
                                 
             }

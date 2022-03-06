@@ -129,7 +129,7 @@ class EnemyRenderer{
         void renderEnemy(Enemy* Enemy){
 
 
-            if(Enemy->id == 2){
+            if(Enemy->id == 0){
 
             DrawTextureRec(Slime, frameRecSlime, Enemy->position, WHITE);
             // DrawTextureRec(Skelly, frameRec, Enemy->position, WHITE);
@@ -262,7 +262,7 @@ class EnemyRenderer{
 
             }
 
-        if (Enemy->id == 0){
+        if (Enemy->id == 2){
                                                                                                  // Multiplying by 2.0f resizes the texture by a factor of 2
             DrawTexturePro(Spoopy, frameRecSpoopy,{ Enemy->position.x, Enemy->position.y, (((float)Spoopy.width/22.0f) * 2.0f), (((float)Spoopy.height)* 2.0f )}, {0.0f,0.0f}, 0.0f, WHITE);
 
