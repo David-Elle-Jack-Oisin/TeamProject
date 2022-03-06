@@ -63,6 +63,7 @@ class StartingRoom{
         SetShapesTexture(Stone2, Top);
         SetShapesTexture(Stone2, Bottom);
         SetShapesTexture(Stone2, LSide);
+
     }
     
     int Draw(){
@@ -71,8 +72,14 @@ class StartingRoom{
         DrawTextureRec(Stone2, Top, {0,0}, WHITE);
         DrawTextureRec(Stone2, Bottom, {0,980}, WHITE);
         DrawTextureRec(Stone2, LSide, {0, 0}, WHITE);
-        DrawTextureRec(Bones, test, {100,100}, WHITE);
-        
+        DrawTextureRec(Bones, test, {1600, 100}, WHITE);
+        DrawTextureRec(Bones, test, {900, 400}, WHITE);
+        DrawTextureRec(Bones, test, {1100, 300}, WHITE);
+        DrawTextureRec(Bones, test, {200, 700}, WHITE);
+        DrawTextureRec(Bones, test, {400, 600}, WHITE);
+        DrawTextureRec(Bones, test, {500, 100}, WHITE);
+        DrawTextureRec(Bones, test, {1300, 700}, WHITE);
+        DrawTextureRec(Bones, test, {700, 200}, WHITE);
         return 1;
     };
 
