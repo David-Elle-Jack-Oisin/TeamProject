@@ -17,11 +17,11 @@ class MainMenu{
         // DECTECT buttons clicked
         if (CheckCollisionPointRec(mousePoint, topButtonBounds))
         {
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)||IsKeyDown(KEY_ENTER)) singlePlayerButtonAction = true;
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)||IsKeyDown(KEY_ENTER)) setSinglePlayer(true);
         }
         else if (CheckCollisionPointRec(mousePoint, bottomButtonBounds))
         {
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) muiltiPlayerButtonAction = true;
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) setMultiplayer(true);
         }
         // CHECK FOR MUILTIPLAYER PRESSED
         if (muiltiPlayerButtonAction){
@@ -82,7 +82,7 @@ class MainMenu{
                 
             }
             // RESET BOOLS ON WAY OUT
-            muiltiPlayerButtonAction = false;
+            setMultiplayer(false);
             exitWindow = false;
         }
         else{
@@ -99,39 +99,45 @@ class MainMenu{
             EndDrawing();
         }
     }
-    bool isSinglePlayer(){
-        return singlePlayerButtonAction;
-        }
-    bool isHosting(){
-        return hostButtonAction;
-    }
-    bool isMainMenuFinished(){
-        return singlePlayerButtonAction || isAttemptingToJoinServer;
-    }
     void clearOptions(){
         singlePlayerButtonAction = false;
-        muiltiPlayerButtonAction = false;
-        joinButtonAction = false;
+        setMultiplayer(false);
         isAttemptingToJoinServer = false;
         exitWindow = false;
-    }
-    void printBools(){
-        fprintf(stderr, "%i %i %i %i %i %i %i\n",singlePlayerButtonAction, muiltiPlayerButtonAction, joinButtonAction,hostButtonAction,isAttemptingToJoinServer, exitWindow, exitWindow2 );
     }
     std::string getIpFromInput(){
         return ipFromInput;
     }
-    MainMenu(): singlePlayerButtonAction(false), hostButtonAction(false){}
+
+    void setMultiplayer(bool value){
+        muiltiPlayerButtonAction = value;
+    }
+    void setIsAttemptingToJoinServer(bool value){
+        isAttemptingToJoinServer = value;
+    }
+    bool getIsAttemptingToJoinServer(){
+        return isAttemptingToJoinServer;
+    }
+    void setSinglePlayer(bool value){
+        singlePlayerButtonAction = value;
+    }
+    bool isSinglePlayer(){
+        return singlePlayerButtonAction;
+        }
+    bool isMainMenuFinished(){
+        return singlePlayerButtonAction || isAttemptingToJoinServer;
+    }
+    bool exitTheIpScreen(){
+        return exitWindow;
+    }
+    MainMenu(): singlePlayerButtonAction(false){}
     private:
         Texture2D background;
         bool singlePlayerButtonAction = false;
         bool muiltiPlayerButtonAction = false;
-        bool joinButtonAction = false;
-        bool hostButtonAction = false;
         bool isAttemptingToJoinServer = false;
         std::string ipFromInput;
         Rectangle topButtonBounds;
         Vector2 mousePoint = { 0.0f, 0.0f };
         bool exitWindow = false;
-        bool exitWindow2 = false;
 };
