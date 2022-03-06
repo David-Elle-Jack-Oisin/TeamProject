@@ -43,6 +43,8 @@ class PlayersRenderer{
             playerMap.at(id)->prevPosition = playerMap.at(id)->position; 
             playerMap.at(id)->position.x = x;
             playerMap.at(id)->position.y = y;
+            playerMap.at(id)->positionOffset.x = x - 100;
+            playerMap.at(id)->positionOffset.y = y - 100;
         }
         void matchPlayerIdToServer(int id){
             Player* player = playerMap.at(30);

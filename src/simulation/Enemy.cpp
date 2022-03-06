@@ -7,7 +7,7 @@ class Enemy
     private:
 
     public:
-    static const int framesSpeed = 8;
+        static const int framesSpeed = 8;
         static constexpr float speed = 5.0f;
         int id;
         Vector2 prevPosition;

@@ -30,6 +30,8 @@ TEST (Control_Flow_Tests, JoinServer_Node_Test) {
     ASSERT_EQ(menu.isSinglePlayer(), false);
     ASSERT_EQ(menu.getIsAttemptingToJoinServer(), true);
 }
+
+
 int main( int argc, const char *argv[] )
 {
     testing::InitGoogleTest();
