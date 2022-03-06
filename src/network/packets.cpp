@@ -8,23 +8,25 @@ class Packets{
         std::string packet = "0";
         return packet;
     }
-    std::string createIdReplyPacket(int id, float enemyPosX, float enemyPosY, int health){
+    std::string createIdReplyPacket(int id, float enemyPosX, float enemyPosY, int health, int score){
         std::string packet = "0\n" + std::to_string(id) + "," +
-        std::to_string(enemyPosX) + ":" + std::to_string(enemyPosY) + "," + std::to_string(health);
+        std::to_string(enemyPosX) + ":" + std::to_string(enemyPosY) + "," + std::to_string(health) + "\n" + std::to_string(score);
         return packet;
     }
-    std::tuple<int, float, float, int> parseIdReplyPacket(std::string packet){
+    std::tuple<int, float, float, int, int> parseIdReplyPacket(std::string packet){
         unsigned firstComma = packet.find(",") + 1;
         unsigned colon = packet.find(":") + 1;
         unsigned secondComma = packet.find_last_of(",");
         unsigned newline = packet.find("\n") + 1;
+        unsigned lastNewLine = packet.find_last_of("\n");
         int id = std::stoi(packet.substr(newline, firstComma - newline));
         const char *firstFloatCharArray = packet.substr(firstComma, colon - firstComma - 1).c_str();
         float posX = std::atof(firstFloatCharArray);
 		const char *secondFloatCharArray = packet.substr(colon, secondComma - colon).c_str();
 		float posY = std::atof(secondFloatCharArray);
-        int health = std::stoi(packet.substr(secondComma+ 1));
-        return {id, posX, posY, health};
+        int health = std::stoi(packet.substr(secondComma+ 1, lastNewLine - secondComma+ 1));
+        int score = std::stoi(packet.substr(lastNewLine + 1));
+        return {id, posX, posY, health, score};
     }
     std::string createPlayerInfoPacket(int id, float posX, float posY, int health){
         std::string packet = "1\n" + 
@@ -83,25 +85,27 @@ class Packets{
         return packet;
     }
 
-    std::string createEnemyInfoPacket(int id, float posX, float posY, int health){
+    std::string createEnemyInfoPacket(int id, float posX, float posY, int health, int score){
         std::string packet = "6\n" + 
             std::to_string(id) + "," +
             std::to_string(posX) + ":" + std::to_string(posY) + "," +
-            std::to_string(health);
+            std::to_string(health) + "\n" + std::to_string(score);
         return packet;
     }
-    std::tuple<int, float, float, int> parseEnemyInfo(std::string packet){   
+    std::tuple<int, float, float, int, int> parseEnemyInfo(std::string packet){   
         unsigned firstComma = packet.find(",") + 1;
         unsigned colon = packet.find(":") + 1;
         unsigned secondComma = packet.find_last_of(",");
         unsigned newline = packet.find("\n") + 1;
+        unsigned lastNewLine = packet.find_last_of("\n");
         int id = std::stoi(packet.substr(newline, firstComma - newline));
         const char *firstFloatCharArray = packet.substr(firstComma, colon - firstComma - 1).c_str();
         float posX = std::atof(firstFloatCharArray);
 		const char *secondFloatCharArray = packet.substr(colon, secondComma - colon).c_str();
 		float posY = std::atof(secondFloatCharArray);
-        int health = std::stoi(packet.substr(secondComma+ 1));
-        return {id, posX, posY, health};
+        int health = std::stoi(packet.substr(secondComma+ 1, lastNewLine - secondComma+ 1));
+        int score = std::stoi(packet.substr(lastNewLine + 1));
+        return {id, posX, posY, health, score};
     }
     
     private:

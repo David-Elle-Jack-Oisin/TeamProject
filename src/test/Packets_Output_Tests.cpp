@@ -6,13 +6,15 @@
 
 TEST (Packets_Output_Tests, Id_Reply_Packet_Test) { 
     Packets packet;
-    int id;
+    int id, health, score;
     float posX, posY;
-    std::string idReply = packet.createIdReplyPacket(1, 5.0f, 7.0f);
-    std::tie(id, posX, posY) = packet.parseIdReplyPacket(idReply);
+    std::string idReply = packet.createIdReplyPacket(1, 5.0f, 7.0f, 10, 4);
+    std::tie(id, posX, posY, health, score) = packet.parseIdReplyPacket(idReply);
     ASSERT_EQ(id, 1);
     ASSERT_EQ(posX, 5.0f);
     ASSERT_EQ(posY, 7.0f);
+    ASSERT_EQ(health, 10);
+    ASSERT_EQ(score, 4);
 }
 TEST (Packets_Output_Tests, Player_Info_Packet_Test) { 
     Packets packet;
@@ -38,12 +40,13 @@ TEST (Packets_Output_Tests, Bullet_Info_Packet_Test) {
 }
 TEST (Packets_Output_Tests, Enemy_Info_Packet_Test) { 
     Packets packet;
-    int id, health;
+    int id, health, score;
     float posX, posY;
-    std::string enemyInfo = packet.createEnemyInfoPacket(1, 5.0f, 7.0f, 10);
-    std::tie(id, posX, posY, health) = packet.parseEnemyInfo(enemyInfo);
+    std::string enemyInfo = packet.createEnemyInfoPacket(1, 5.0f, 7.0f, 10, 4);
+    std::tie(id, posX, posY, health, score) = packet.parseEnemyInfo(enemyInfo);
     ASSERT_EQ(id, 1);
     ASSERT_EQ(posX, 5.0f);
     ASSERT_EQ(posY, 7.0f);
     ASSERT_EQ(health, 10);
+    ASSERT_EQ(score, 4);
 }

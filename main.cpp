@@ -58,8 +58,8 @@
 #include <map>
 
 
-const int screenWidth = 1000;
-const int screenHeight = 1000;
+const int screenWidth = 1920;
+const int screenHeight = 1080;
 
 void UpdateCameraCenter(Camera2D *camera, Player *player);
 
@@ -226,13 +226,10 @@ int main(void)
                             enemyRender.addNewEnemy(&spoopy);
                             currentEnemy = &spoopy;
                             }
-
-
-
                         }
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-                            client.sendEnemyInfo(1, slime.position, slime.enemyHealth);
+                            client.sendEnemyInfo(1, slime.position, slime.enemyHealth, score);
                         }
                         if (ptrPlayer->playerHealth <= 0) {
                             if (!mainMenu.isSinglePlayer()){

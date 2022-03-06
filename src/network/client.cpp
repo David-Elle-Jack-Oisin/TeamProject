@@ -43,9 +43,9 @@ public:
         	clientInstance->SendMessageToConnection(connection, formattedplayerInfoPacket, (uint32)strlen(formattedplayerInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
 		}
     }
-	void sendEnemyInfo(int id, Vector2 position, int health){
+	void sendEnemyInfo(int id, Vector2 position, int health, int score){
 		if (!shutDown) {
-        	std::string enemyInfoPacket = packets.createEnemyInfoPacket(id, position.x, position.y, health);
+        	std::string enemyInfoPacket = packets.createEnemyInfoPacket(id, position.x, position.y, health, score);
 			const char *formattedEnemyInfoPacket = enemyInfoPacket.c_str();
         	clientInstance->SendMessageToConnection(connection, formattedEnemyInfoPacket, (uint32)strlen(formattedEnemyInfoPacket), k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
 		}
@@ -97,7 +97,7 @@ private:
     bool shutDown = false;
 	bool timeOut = false;
 	bool connected = false;
-	int id, health;
+	int id, health, score;
 	float posX, posY, dirX, dirY;
 	Packets packets;
 
@@ -141,11 +141,11 @@ private:
 			int typecode = (int)packet.at(0) - 48;
 			switch (typecode){
 				case 0:{
-					std::tie(id, posX, posY, health) = packets.parseIdReplyPacket(packet);
+					std::tie(id, posX, posY, health, score) = packets.parseIdReplyPacket(packet);
+					fprintf(stderr,"NETWORK: Id Recieved (%f)\n",posX);
 					playRenderer->matchPlayerIdToServer(id);
 					enemyRenderer->setEnemyPosition(posX, posY, health);
-					fprintf(stderr,"NETWORK: Id Recieved (%i)\n",id);
-					fprintf(stderr,"NETWORK: EnemyPos (%f, %f)\n",posX,posY);
+					connected = true;
 					break;
 				}
 				case 1:{
@@ -212,7 +212,6 @@ private:
 				break;
 			case k_ESteamNetworkingConnectionState_Connected:
 				fprintf(stderr,"NETWORK: Connected to server OK\n");
-				connected = true;
 				break;
 			default:
 				break;

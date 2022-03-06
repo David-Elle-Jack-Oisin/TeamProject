@@ -38,13 +38,14 @@ class gameServer{
             int posx;
             int posy;
 	    };
-        int EnemyId;
+        int EnemyId, Score;
         float EnemyPosX;
         float EnemyPosY;
         int EnemyHealth;
+        int score = 0;
         float enemyPosX = 1400;
         float enemyPosY = 540;
-        int enemyHealth;
+        int enemyHealth = 100;
         std::atomic<bool> serverShutDown;
         ISteamNetworkingSockets *serverInstance;
 	    HSteamNetPollGroup serverPollGroup;
@@ -217,7 +218,7 @@ class gameServer{
 			                switch (typecode){
                                 case 0:{
                                     fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
-                                    std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY, enemyHealth);
+                                    std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY, enemyHealth, score);
                                     clientToIdMap.insert({client->first, id});
                                     const char *formattedidPacket = idPacket.c_str();
                                     SendToClientReliable(client->first, formattedidPacket);
@@ -236,10 +237,11 @@ class gameServer{
                                 }
                                 case 6:{
                                     // fprintf(stderr, "ENEMY: %s\n", formattedPacket );
-                                    std::tie(EnemyId, EnemyPosX, EnemyPosY, EnemyHealth) = packets.parseEnemyInfo(packet);
+                                    std::tie(EnemyId, EnemyPosX, EnemyPosY, EnemyHealth, Score) = packets.parseEnemyInfo(packet);
                                     if (EnemyPosX != enemyPosX) enemyPosX = EnemyPosX;
                                     if (EnemyPosY != enemyPosY) enemyPosY = EnemyPosY;
                                     if (EnemyHealth != enemyHealth) enemyHealth = EnemyHealth;
+                                    if (Score != score) score = Score;
                                     break;
                                 }
                                 default:{
