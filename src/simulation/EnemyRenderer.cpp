@@ -83,7 +83,7 @@ class EnemyRenderer{
                     }
                 }
                 if (set){
-                    // EnemyAi(closestPlayer);
+                    EnemyAi(closestPlayer);
                 }
             }
         }
