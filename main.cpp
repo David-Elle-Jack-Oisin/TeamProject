@@ -97,10 +97,11 @@ int main(void)
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Enemy slime(0);
-    Enemy skelly(1);
-    Enemy spoopy(2);
-    int currentEnemy = 0;
+    Enemy slime(0, "Faithful Slime");
+    Enemy skelly(1, "Undead Giant Autar");
+    Enemy spoopy(2, "Flame Lord Thalia");
+    Enemy* currentEnemy;
+    currentEnemy = &slime;
     enemyRender.addNewEnemy(&slime);
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     PlayersRenderer playersRender(playerMap);
@@ -210,21 +211,21 @@ int main(void)
                             slime.enemyHealth = 100;
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
-                            currentEnemy = 0;
+                            currentEnemy = &slime;
                             }
 
                             if (score % 3 == 1){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&skelly);
-                            currentEnemy = 1;
+                            currentEnemy = &skelly;
                             }
 
                             if (score % 3 == 2){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&spoopy);
-                            currentEnemy = 2;
+                            currentEnemy = &spoopy;
                             }
 
 
@@ -264,9 +265,7 @@ int main(void)
                             }
                         }
 
-                    if (currentEnemy == 0){bulletRenderer.renderBullets(&slime);}
-                    if (currentEnemy == 1){bulletRenderer.renderBullets(&skelly);}
-                    if (currentEnemy == 2){bulletRenderer.renderBullets(&spoopy);}
+                    bulletRenderer.renderBullets(currentEnemy);
                         //bulletRenderer.renderBullets(&slime);
                         // if (slime.enemyHealth <= 0){
                         //     won = true;
@@ -275,9 +274,8 @@ int main(void)
                     
                     EndMode2D();
 
-                    if (currentEnemy == 0){DrawRectangle( 200, 100, slime.enemyHealth*10, 10, RED);}
-                    if (currentEnemy == 1){DrawRectangle( 200, 100, skelly.enemyHealth*10, 10, RED);}
-                    if (currentEnemy == 2){DrawRectangle( 200, 100, spoopy.enemyHealth*10, 10, RED);}
+                    DrawRectangle( 200, 100, currentEnemy->enemyHealth*10, 10, RED);
+                    DrawText(currentEnemy->name.c_str(),200, 50, 50, WHITE);
                     
                     
                 EndDrawing();
