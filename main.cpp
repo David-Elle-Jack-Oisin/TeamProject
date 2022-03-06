@@ -96,6 +96,7 @@ int main(void)
     enemyRender.loadTexture();
     terrain.loadTextures();
     gameover.loadTexture();
+    bulletRenderer.loadTexture();
 
     Music MenuMusic = LoadMusicStream("src-audio/MenuMusic.mp3");
     MenuMusic.looping = true;

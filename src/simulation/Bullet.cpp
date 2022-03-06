@@ -13,12 +13,16 @@ class Bullet {
     
     int lifeSpan;
     int shotDamage = 1;
+
     bool active;
 
     public:
         static constexpr float speed = 50.0f;
+        static const int framesSpeed = 8;
         Vector2 position;
         float directionX;
         float directionY;
         Rectangle hitBox;
+        int framesCounter;
+        int currentFrame;
 };
