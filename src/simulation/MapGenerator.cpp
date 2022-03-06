@@ -5,6 +5,10 @@
 #define _MAP_H
     #include "MapGenerator.cpp"
 #endif
+#ifndef _PLAYER_H
+#define _PLAYER_H
+    #include "Player.cpp"
+#endif
 
 
 
@@ -53,27 +57,21 @@ class StartingRoom{
         Stone2 = LoadTexture("src-sprites/Stone2.png");
         Stone3 = LoadTexture("src-sprites/Stone3.png");
         Floor = LoadTexture("src-sprites/floor.png");
+        SetShapesTexture(Bones, test);
+        SetShapesTexture(Floor, Center);
+        SetShapesTexture(Stone2, RSide);
+        SetShapesTexture(Stone2, Top);
+        SetShapesTexture(Stone2, Bottom);
+        SetShapesTexture(Stone2, LSide);
     }
     
     int Draw(){
-        
-        SetShapesTexture(Bones, test);
-        DrawTextureRec(Bones, test, {100,100}, WHITE);
-
-        SetShapesTexture(Floor, Center);
         DrawTextureRec(Floor, Center, {100,100}, WHITE);
-
-        SetShapesTexture(Stone2, RSide);
         DrawTextureRec(Stone2, RSide, {1820,0}, WHITE);
-
-        SetShapesTexture(Stone2, Top);
         DrawTextureRec(Stone2, Top, {0,0}, WHITE);
-
-        SetShapesTexture(Stone2, Bottom);
         DrawTextureRec(Stone2, Bottom, {0,980}, WHITE);
-
-        SetShapesTexture(Stone2, LSide);
         DrawTextureRec(Stone2, LSide, {0, 0}, WHITE);
+        DrawTextureRec(Bones, test, {100,100}, WHITE);
         
         return 1;
     };
