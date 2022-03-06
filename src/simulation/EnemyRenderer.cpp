@@ -33,11 +33,13 @@ class EnemyRenderer{
             }
         }
         void loadTexture(){
-            Slime = LoadTexture("src-sprites/LSlime.png");
-            frameRec = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
 
-            // Skelly = LoadTexture("src-sprites/Skelly.png");
-            // frameRec = { 0.0f, 0.0f, (float)Slime.width/14, (float)Slime.height};
+
+            Slime = LoadTexture("src-sprites/LSlime.png");
+            frameRecSlime = { 0.0f, 0.0f, (float)Slime.width/2, (float)Slime.height};
+
+            Skelly = LoadTexture("src-sprites/Skelly.png");
+            frameRecSkelly = { 0.0f, 0.0f, (float)Skelly.width/14.0f, (float)Skelly.height};
             
         }
         void findClosestPlayer(std::map<int, Player*> &playerMap){
@@ -106,14 +108,20 @@ class EnemyRenderer{
     private:
         std::list<Enemy*>EnemyList;
         int id;
+        Image image;
         Texture2D Slime;
         Texture2D Skelly;
-        Rectangle frameRec;
+        Rectangle frameRecSlime;
+        Rectangle frameRecSkelly;
         bool colliding;
         int damageTimer;
        
         void renderEnemy(Enemy* Enemy){
-            DrawTextureRec(Slime, frameRec, Enemy->position, WHITE);
+
+
+            if(Enemy->id == 0){
+
+            DrawTextureRec(Slime, frameRecSlime, Enemy->position, WHITE);
             // DrawTextureRec(Skelly, frameRec, Enemy->position, WHITE);
             // LEFT CHECK
             if (Enemy->prevPosition.x - Enemy->position.x > 0){
@@ -131,7 +139,7 @@ class EnemyRenderer{
 
                         if (Enemy->currentFrame > 2) {Enemy->currentFrame = 1;}
 
-                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/2;
+                        frameRecSlime.x = (float)Enemy->currentFrame*(float)Slime.width/2;
             } 
 
             }
@@ -154,7 +162,7 @@ class EnemyRenderer{
                         //This hides the other frames in the animation
                         //So that the walking looks natural
 
-                        frameRec.x = (float)Enemy->currentFrame*(float)Slime.width/2;
+                        frameRecSlime.x = (float)Enemy->currentFrame*(float)Slime.width/2;
             } 
             }
             // UP CHECK
@@ -171,6 +179,80 @@ class EnemyRenderer{
                 Enemy->framesCounter++;
 
             }
+            }
+
+
+
+
+
+
+            if(Enemy->id == 1){
+
+                //DrawTexturePro(Skelly, frameRecSkelly,{ 0.0f, 0.0f, (((float)Skelly.width/14) * 2), (((float)Skelly.height)* 2 )}, Enemy->position, 0,WHITE);
+               // DrawTextureRec(Skelly, frameRecSkelly, Enemy->position, WHITE);
+               DrawTexturePro(Skelly, frameRecSkelly,{ Enemy->position.x, Enemy->position.y, (((float)Skelly.width/14.0f) * 3.0f), (((float)Skelly.height)* 3.0f )}, {0.0f,0.0f}, 0.0f, WHITE);
+
+
+                // Left Check
+            if (Enemy->prevPosition.x - Enemy->position.x > 0){
+                Enemy->prevPosition = Enemy->position;
+
+                // ANIMATION CODE
+
+                Enemy->framesCounter++;
+
+
+                if (Enemy->framesCounter >= (60.0f/Enemy->framesSpeed))
+                    {
+                        Enemy->framesCounter = 0;
+                        Enemy->currentFrame++;
+
+                        if (Enemy->currentFrame > 13) {Enemy->currentFrame = 8;}
+
+                        frameRecSkelly.x = (float)Enemy->currentFrame*(float)Skelly.width/14.0f;
+            } 
+
+            }
+            // RIGHT CHECK 
+            if (Enemy->prevPosition.x - Enemy->position.x < 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+
+                Enemy->framesCounter++;
+
+
+                if (Enemy->framesCounter >= (60/Enemy->framesSpeed))
+                    {
+                        Enemy->framesCounter = 0;
+                        Enemy->currentFrame++;     //currentFrame is the current image of Slime from the spritesheet
+                        //0-7 is right-facing, 7-14 is left-facing
+
+                        if (Enemy->currentFrame > 6) {Enemy->currentFrame = 1;}
+
+                        //This hides the other frames in the animation
+                        //So that the walking looks natural
+
+                        frameRecSkelly.x = (float)Enemy->currentFrame*(float)Skelly.width/14.0f;
+            } 
+            }
+            // UP CHECK
+            if (Enemy->prevPosition.y - Enemy->position.y > 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+                Enemy->framesCounter++;
+
+            }
+            // DOWN CHECK 
+            if (Enemy->prevPosition.y - Enemy->position.y < 0){
+                Enemy->prevPosition = Enemy->position;
+                // ANIMATION CODE
+                Enemy->framesCounter++;
+
+            }
+
+
+            }
+
     
         }
 };

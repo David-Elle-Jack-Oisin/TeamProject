@@ -63,16 +63,17 @@ const int screenHeight = 1080;
 
 void UpdateCameraCenter(Camera2D *camera, Player *player);
 
-Enemy* createEnemy(){
-            Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
-            return &enemy;
-        }
+// Enemy* createEnemy(){
+//             Enemy enemy = Enemy({1000, 1000}, 20, 20, 1);
+//             return &enemy;
+//         }
 
 int main(void)
 {
     // Initializationcamera
     //--------------------------------------------------------------------------------------
 
+    int score;
 
     gameClient client;
     std::thread clientThread;
@@ -201,9 +202,22 @@ int main(void)
 
                         // Checks to see if no ememies are present
                         if (!enemyRender.activeEnemy()){
+                            score++;
+                            fprintf(stderr,"%i", score);
+                            if (score % 2 == 0){
                             slime.enemyHealth = 100;
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
+                            }
+
+                            if (score % 2 == 1){
+                            skelly.enemyHealth = 100;
+                            skelly.position = {1400, 540};
+                            enemyRender.addNewEnemy(&skelly);
+                            }
+
+
+
                         }
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
