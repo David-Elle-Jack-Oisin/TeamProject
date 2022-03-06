@@ -40,6 +40,12 @@ class StartingRoom{
         Texture2D Stone3;
         Texture2D Floor;
         Texture2D Bones;
+        Texture2D EyesLeft;
+        Texture2D EyesRight;
+        int frameCounter;
+        Rectangle eyesFrameRec;
+        int currentFrame;
+        int stareCounter;
     public:
 
     Rectangle Top = {0, 0, 1920, 100};
@@ -57,6 +63,9 @@ class StartingRoom{
         Stone2 = LoadTexture("src-sprites/Stone2.png");
         Stone3 = LoadTexture("src-sprites/Stone3.png");
         Floor = LoadTexture("src-sprites/floor.png");
+        EyesLeft = LoadTexture("src-sprites/EyesLookLeft.png");
+        EyesRight = LoadTexture("src-sprites/EyesLookingRight.png");
+        eyesFrameRec = { 0.0f, 0.0f, (float)EyesLeft.width/17, (float)EyesLeft.height};
         SetShapesTexture(Bones, test);
         SetShapesTexture(Floor, Center);
         SetShapesTexture(Stone2, RSide);
@@ -80,6 +89,35 @@ class StartingRoom{
         DrawTextureRec(Bones, test, {500, 100}, WHITE);
         DrawTextureRec(Bones, test, {1300, 700}, WHITE);
         DrawTextureRec(Bones, test, {700, 200}, WHITE);
+        DrawTextureRec(EyesLeft, eyesFrameRec, {2000, 400}, WHITE);
+        DrawTextureRec(EyesLeft, eyesFrameRec, {2100, 900}, WHITE);
+        DrawTextureRec(EyesLeft, eyesFrameRec, {2300, 100}, WHITE);
+        DrawTextureRec(EyesLeft, eyesFrameRec, {1100, -100}, WHITE);
+        DrawTextureRec(EyesLeft, eyesFrameRec, {1400, 1100}, WHITE);
+        DrawTextureRec(EyesRight, eyesFrameRec, {-200, -200}, WHITE);
+        DrawTextureRec(EyesRight, eyesFrameRec, {350, -100}, WHITE);
+        DrawTextureRec(EyesRight, eyesFrameRec, {-140, 300}, WHITE);
+        DrawTextureRec(EyesRight, eyesFrameRec, {-190, 800}, WHITE);
+        DrawTextureRec(EyesRight, eyesFrameRec, {200, 1200}, WHITE);
+        frameCounter++;
+        if (frameCounter >= 60/8){
+            frameCounter = 0;
+            if (currentFrame != 11 && currentFrame != 0){
+                currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
+                if (currentFrame > 17) {currentFrame = 0;}
+                    //This hides the other frames in the animation
+                    //So that the walking looks natural
+                    eyesFrameRec.x = (float)currentFrame*(float)EyesLeft.width/17;
+            }
+            else{
+                stareCounter++;
+                if (stareCounter >= 20){
+                    stareCounter = 0;
+                    currentFrame++;
+                }
+            }
+            
+        }
         return 1;
     };
 
