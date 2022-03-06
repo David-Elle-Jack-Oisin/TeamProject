@@ -83,8 +83,9 @@ class BulletRenderer{
             if(bullet->directionY > 0){DrawTextureRec(downBullet, frameRecDown, bulletPosition, WHITE);}
             
             
-            if (CheckCollisionRecs(bullet->hitBox, curEnemy->hitBox)){
+            if (bullet->hit == false && CheckCollisionRecs(bullet->hitBox, curEnemy->hitBox)){
                 curEnemy->decrementHealth();
+                bullet->hit = true;
             }
 
 
