@@ -84,6 +84,9 @@ class PlayersRenderer{
                 player->playerYDir = 0.0;
                 player->prevPosition = player->position;
                 LastKey = 1;
+                if (player->currentFrame < 8){
+                    player->currentFrame = 8;
+                }
 
                 // ANIMATION CODE
                 player->framesCounter++;
@@ -111,7 +114,7 @@ class PlayersRenderer{
                         player->currentFrame++;     //currentFrame is the current image of Jerry from the spritesheet
                         //0-7 is right-facing, 7-14 is left-facing
 
-                        if (player->currentFrame > 7) {player->currentFrame = 1;}  
+                        if (player->currentFrame > 7) {player->currentFrame = 0;}  
                         //This hides the other frames in the animation
                         //So that the walking looks natural
                         player->frameRec.x = (float)player->currentFrame*(float)Jerry.width/16;
