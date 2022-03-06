@@ -217,7 +217,7 @@ class gameServer{
 			                switch (typecode){
                                 case 0:{
                                     fprintf(stderr, "ID REQUEST: %s\n", formattedPacket );
-                                    std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY);
+                                    std::string idPacket = packets.createIdReplyPacket(id, enemyPosX, enemyPosY, enemyHealth);
                                     clientToIdMap.insert({client->first, id});
                                     const char *formattedidPacket = idPacket.c_str();
                                     SendToClientReliable(client->first, formattedidPacket);
@@ -239,6 +239,7 @@ class gameServer{
                                     std::tie(EnemyId, EnemyPosX, EnemyPosY, EnemyHealth) = packets.parseEnemyInfo(packet);
                                     if (EnemyPosX != enemyPosX) enemyPosX = EnemyPosX;
                                     if (EnemyPosY != enemyPosY) enemyPosY = EnemyPosY;
+                                    if (EnemyHealth != enemyHealth) enemyHealth = EnemyHealth;
                                     break;
                                 }
                                 default:{

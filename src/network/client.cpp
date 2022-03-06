@@ -97,9 +97,8 @@ private:
     bool shutDown = false;
 	bool timeOut = false;
 	bool connected = false;
-	int id;
+	int id, health;
 	float posX, posY, dirX, dirY;
-	int health;
 	Packets packets;
 
 	static void InitialiseConnectionSockets(){
@@ -142,9 +141,9 @@ private:
 			int typecode = (int)packet.at(0) - 48;
 			switch (typecode){
 				case 0:{
-					std::tie(id, posX, posY) = packets.parseIdReplyPacket(packet);
+					std::tie(id, posX, posY, health) = packets.parseIdReplyPacket(packet);
 					playRenderer->matchPlayerIdToServer(id);
-					enemyRenderer->setEnemyPosition(posX, posY);
+					enemyRenderer->setEnemyPosition(posX, posY, health);
 					fprintf(stderr,"NETWORK: Id Recieved (%i)\n",id);
 					fprintf(stderr,"NETWORK: EnemyPos (%f, %f)\n",posX,posY);
 					break;

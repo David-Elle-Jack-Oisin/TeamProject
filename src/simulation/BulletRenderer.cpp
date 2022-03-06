@@ -86,6 +86,8 @@ class BulletRenderer{
             if (bullet->hit == false && CheckCollisionRecs(bullet->hitBox, curEnemy->hitBox)){
                 curEnemy->decrementHealth();
                 bullet->hit = true;
+                // fprintf(stderr,"HIT\n");
+                // fprintf(stderr,"Health (%i)\n",curEnemy->enemyHealth);
             }
 
 

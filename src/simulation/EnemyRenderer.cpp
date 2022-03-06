@@ -83,7 +83,7 @@ class EnemyRenderer{
                     }
                 }
                 if (set){
-                    EnemyAi(closestPlayer);
+                    // EnemyAi(closestPlayer);
                 }
             }
         }
@@ -95,9 +95,11 @@ class EnemyRenderer{
             EnemyList.back()->hitBox.x = EnemyList.back()->position.x + 50;
             EnemyList.back()->hitBox.y = EnemyList.back()->position.y + 50;
         }
-        void setEnemyPosition(float posX, float posY){
+        void setEnemyPosition(float posX, float posY, int health){
             EnemyList.back()->position.x = posX;
             EnemyList.back()->position.y = posY;
+            EnemyList.back()->enemyHealth = health;
+            fprintf(stderr,"ENEMY: EnemyPos and health set\n");
         }
 
         bool activeEnemy(){
