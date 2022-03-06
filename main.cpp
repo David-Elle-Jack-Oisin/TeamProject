@@ -77,7 +77,6 @@ int main(void)
 
     gameClient client;
     std::thread clientThread;
-    // enemys 
     // MENUS 
     SoundEffects soundEffects;
     MainMenu mainMenu;
@@ -96,14 +95,14 @@ int main(void)
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-
+    // enemys 
     Enemy slime(0, "Faithful Slime");
     Enemy skelly(1, "Undead Giant Autar");
     Enemy spoopy(2, "Flame Lord Thalia");
     Enemy* currentEnemy;
     currentEnemy = &slime;
     enemyRender.addNewEnemy(&slime);
-    InitWindow(screenWidth, screenHeight, "Quest for moisture");
+    InitWindow(screenWidth, screenHeight, "The Dungeon's Dozen");
     PlayersRenderer playersRender(playerMap);
     playersRender.loadTexture();
     mainMenu.loadTexture();

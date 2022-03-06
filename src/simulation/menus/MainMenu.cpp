@@ -93,7 +93,7 @@ class MainMenu{
                 ClearBackground(WHITE);
                 DrawTextureRec(background, BackgroundRec,{0, 0}, WHITE);
                 DrawRectangleRec(WideRect, BLUE);
-                DrawText("A Quest for Moisture", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
+                DrawText("The Dungeon's Dozen", (GetScreenWidth()/2.0f - 425), (GetScreenHeight()/2.0f - 400), 80, BLACK);
                 DrawRectangleRec(topButtonBounds, BLUE);
                 DrawText("Single Player", (GetScreenWidth()/2.0f - 400/2.25f + 50), (GetScreenHeight()/2.0f - 120), 40, BLACK);
                 DrawRectangleRec(bottomButtonBounds, BLUE);
