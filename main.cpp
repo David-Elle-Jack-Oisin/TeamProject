@@ -166,7 +166,7 @@ int main(void)
 
                 BeginDrawing();
 
-                ClearBackground(RAYWHITE);
+                ClearBackground(BLACK);
                 
                     
                     BeginMode2D(camera);
