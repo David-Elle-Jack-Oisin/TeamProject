@@ -64,7 +64,7 @@ public:
         	clientInstance->SendMessageToConnection(connection, formattedBulletPacket, (uint32)strlen(formattedBulletPacket), k_nSteamNetworkingSend_Reliable, nullptr);
 		}
     }
-	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender, BulletRenderer *bulletRender){
+	void startClient(PlayersRenderer *renderer, EnemyRenderer *enemyRender, BulletRenderer *bulletRender, std::string *ip){
 		connected = false;
 		timeOut = false;
 		SteamNetworkingIPAddr serverAddress;
@@ -72,7 +72,7 @@ public:
 		enemyRenderer = enemyRender;
 		bulletRenderer = bulletRender;
 		serverAddress.Clear();
-		if (!serverAddress.ParseString("127.0.0.1"))
+		if (!serverAddress.ParseString(ip->c_str()))
 			fprintf(stderr,"NETWORK: Invalid server address '%s'\n", "127.0.0.1");
 		serverAddress.m_port = DEFAULT_SERVER_PORT;
 		InitialiseConnectionSockets();

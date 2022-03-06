@@ -139,8 +139,9 @@ int main(void)
 
         if (mainMenu.isMainMenuFinished()){
             if (!mainMenu.isSinglePlayer()){
-                clientThread = std::thread([&client, &playersRender,&enemyRender,&bulletRenderer](){
-                    client.startClient(&playersRender, &enemyRender, &bulletRenderer);
+                std::string ip = mainMenu.getIpFromInput();
+                clientThread = std::thread([&client, &playersRender,&enemyRender,&bulletRenderer, &ip](){
+                    client.startClient(&playersRender, &enemyRender, &bulletRenderer, &ip);
                 });
                 int connectFrame = 0;
                 while(!client.checkConnected() && !WindowShouldClose()){

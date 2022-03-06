@@ -30,7 +30,7 @@ class MainMenu{
             // PAGE LOOP
             // VARS FOR INPUT
             int maxChars = 15;
-            char ip[maxChars + 1] = "\0";
+            char ip[maxChars + 1] = "127.000.000.001\0";
             int letterCount = 0;
             int framesCounter = 0;
             while(!exitWindow){
