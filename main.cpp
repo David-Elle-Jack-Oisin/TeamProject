@@ -22,6 +22,7 @@
 #include "src/simulation/PlayerController.cpp"
 #include "src/simulation/menus/MainMenu.cpp"
 #include "src/simulation/SoundEffects.cpp"
+#include "src/simulation/menus/GameWon.cpp"
 #ifndef _PLAYER_RENDERER_H
 #define _PLAYER_RENDERER_H
     #include "src/simulation/PlayersRenderer.cpp"
@@ -69,17 +70,17 @@ int main(void)
 
     gameClient client;
     std::thread clientThread;
-    // Player Must Be Created And Added To Renderer Before The Thread
-    // This Is So We Don't Have To Wait For A Time Out To Start The Game
-    Enemy slime(0);
-    Enemy skelly(1);
+    // enemys 
+    // MENUS 
     SoundEffects soundEffects;
     MainMenu mainMenu;
     GameOver gameover;
+    GameWon gamewon;
+    // Renderers
     EnemyRenderer enemyRender;
     BulletRenderer bulletRenderer;
     MapGenerator terrain;
-    enemyRender.addNewEnemy(&slime);
+    
     InitAudioDevice(); // Initialize audio device
     std::map<int, Player*>playerMap;
     Camera2D camera = { 0 };
@@ -88,7 +89,10 @@ int main(void)
     camera.offset = Vector2{ screenWidth/2.0f, screenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
-    
+
+    Enemy slime(0);
+    Enemy skelly(1);
+    enemyRender.addNewEnemy(&slime);
     InitWindow(screenWidth, screenHeight, "Quest for moisture");
     PlayersRenderer playersRender(playerMap);
     playersRender.loadTexture();
@@ -105,12 +109,10 @@ int main(void)
     music.looping = true; 
 
     bool dead = false;
+    bool won = false; 
 
     SetTargetFPS(60);  
-    PlayerController playerController;
-    Player *ptrPlayer;
-    ptrPlayer = playerController.getPlayer();
-    playersRender.addNewPlayer(ptrPlayer);
+    
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {   
@@ -118,6 +120,13 @@ int main(void)
         PlayMusicStream(MenuMusic);
         mainMenu.runMainMenu();
         dead = false;
+        won = false;
+        PlayerController playerController;
+        Player *ptrPlayer;
+        ptrPlayer = playerController.getPlayer();
+        playersRender.addNewPlayer(ptrPlayer);
+        
+    
 
         if (mainMenu.isMainMenuFinished()){
             if (!mainMenu.isSinglePlayer()){
@@ -154,9 +163,15 @@ int main(void)
                     clientThread.join();
                 }
             }
+            else{
+                slime.enemyHealth = 100;
+                slime.position = {1400, 540};
+            }
         }
         if (mainMenu.isMainMenuFinished()){
-            while(!WindowShouldClose() & !dead){
+            dead = false;
+            won = false;
+            while(!WindowShouldClose() & !dead & !won){
                 UpdateMusicStream(music);
                 PlayMusicStream(music);
 
@@ -204,6 +219,9 @@ int main(void)
                             }
                         }
                         bulletRenderer.renderBullets(&slime);
+                        if (slime.enemyHealth <= 0){
+                            won = true;
+                        }
                         
                     
                     EndMode2D();
@@ -211,6 +229,7 @@ int main(void)
                 EndDrawing();
                                 
             }
+            if (won) gamewon.won();
             if (dead)gameover.gameOver();
             if (!mainMenu.isSinglePlayer()){
                 client.turnOff();
