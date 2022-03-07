@@ -70,8 +70,10 @@ class MainMenu{
                         // JOIN PAGE DRAW
                         BeginDrawing();
                             ClearBackground(RAYWHITE);
-                            DrawTexture(background, 0, 0, WHITE);
-                            DrawRectangleRec(topButtonBounds, LIGHTGRAY);
+                            DrawTextureRec(background, BackgroundRec,{0, 0}, WHITE);
+                            DrawRectangleRec(WideRect, BLUE);
+                            DrawText("Enter Ip", (GetScreenWidth()/2.0f - 200), (GetScreenHeight()/2.0f - 400), 80, BLACK);
+                            DrawRectangleRec(topButtonBounds, WHITE);
                             DrawRectangleLines((int)topButtonBounds.x, (int)topButtonBounds.y, (int)topButtonBounds.width, (int)topButtonBounds.height, RED);
 
                             DrawText(ip, (int)topButtonBounds.x + 5, (int)topButtonBounds.y + 8, 50, MAROON);
