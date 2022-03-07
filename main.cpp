@@ -230,7 +230,7 @@ int main(void)
                         }
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-                            client.sendEnemyInfo(1, slime.position, slime.enemyHealth, score);
+                            client.sendEnemyInfo(1, currentEnemy->position, currentEnemy->enemyHealth, score);
                         }
                         if (ptrPlayer->playerHealth <= 0) {
                             if (!mainMenu.isSinglePlayer()){
