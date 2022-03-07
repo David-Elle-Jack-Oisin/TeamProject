@@ -73,8 +73,6 @@ int main(void)
     // Initializationcamera
     //--------------------------------------------------------------------------------------
 
-    int score;
-
     gameClient client;
     std::thread clientThread;
     // MENUS 
@@ -205,23 +203,23 @@ int main(void)
 
                         // Checks to see if no ememies are present
                         if (!enemyRender.activeEnemy()){
-                            score++;
-                            fprintf(stderr,"%i", score);
-                            if (score % 3 == 0){
+                            enemyRender.score++;
+                            fprintf(stderr,"%i", enemyRender.score);
+                            if (enemyRender.score % 3 == 0){
                             slime.enemyHealth = 100;
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
                             currentEnemy = &slime;
                             }
 
-                            if (score % 3 == 1){
+                            if (enemyRender.score % 3 == 1){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&skelly);
                             currentEnemy = &skelly;
                             }
 
-                            if (score % 3 == 2){
+                            if (enemyRender.score % 3 == 2){
                             skelly.enemyHealth = 100;
                             skelly.position = {1400, 540};
                             enemyRender.addNewEnemy(&spoopy);
@@ -230,7 +228,7 @@ int main(void)
                         }
                         if (!mainMenu.isSinglePlayer()){
                             client.sendPlayerInfo(ptrPlayer->id, ptrPlayer->position, ptrPlayer->playerHealth);
-                            client.sendEnemyInfo(1, currentEnemy->position, currentEnemy->enemyHealth, score);
+                            client.sendEnemyInfo(1, currentEnemy->position, currentEnemy->enemyHealth, enemyRender.score);
                         }
                         if (ptrPlayer->playerHealth <= 0) {
                             if (!mainMenu.isSinglePlayer()){

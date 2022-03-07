@@ -16,6 +16,7 @@
 
 class EnemyRenderer{
     public:
+        int score = 0;
         void addNewEnemy(Enemy* enemy){
             EnemyList.push_back(enemy);
             enemy->enemyDamage = 1;
@@ -95,10 +96,11 @@ class EnemyRenderer{
             EnemyList.back()->hitBox.x = EnemyList.back()->position.x + 50;
             EnemyList.back()->hitBox.y = EnemyList.back()->position.y + 50;
         }
-        void setEnemyPosition(float posX, float posY, int health){
+        void setEnemyPosition(float posX, float posY, int health, int scoreNew){
             EnemyList.back()->position.x = posX;
             EnemyList.back()->position.y = posY;
             EnemyList.back()->enemyHealth = health;
+            score = scoreNew;
             fprintf(stderr,"ENEMY: EnemyPos and health set\n");
         }
 

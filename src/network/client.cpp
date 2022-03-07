@@ -144,7 +144,7 @@ private:
 					std::tie(id, posX, posY, health, score) = packets.parseIdReplyPacket(packet);
 					fprintf(stderr,"NETWORK: Id Recieved (%f)\n",posX);
 					playRenderer->matchPlayerIdToServer(id);
-					enemyRenderer->setEnemyPosition(posX, posY, health);
+					enemyRenderer->setEnemyPosition(posX, posY, health, score);
 					connected = true;
 					break;
 				}
