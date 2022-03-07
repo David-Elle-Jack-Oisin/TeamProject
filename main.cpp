@@ -271,6 +271,8 @@ int main(void)
 
                     DrawRectangle( 200, 100, currentEnemy->enemyHealth*10, 10, RED);
                     DrawText(currentEnemy->name.c_str(),200, 50, 50, WHITE);
+                    DrawText("Score: ", 1400, 50, 50, WHITE);
+                    DrawText(std::to_string(enemyRender.score).c_str(), 1600, 50, 50, WHITE);
                     
                     
                 EndDrawing();
