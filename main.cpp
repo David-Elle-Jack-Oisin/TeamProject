@@ -207,21 +207,24 @@ int main(void)
                             fprintf(stderr,"%i", enemyRender.score);
                             if (enemyRender.score % 3 == 0){
                             slime.enemyHealth = 100;
+                            slime.speed = slime.speed + (enemyRender.score * 0.1);
                             slime.position = {1400, 540};
                             enemyRender.addNewEnemy(&slime);
                             currentEnemy = &slime;
                             }
 
                             if (enemyRender.score % 3 == 1){
-                            skelly.enemyHealth = 100;
+                            skelly.enemyHealth = 100 + (20 * enemyRender.score);
                             skelly.position = {1400, 540};
+                            skelly.speed = skelly.speed + (enemyRender.score * 0.1);
                             enemyRender.addNewEnemy(&skelly);
                             currentEnemy = &skelly;
                             }
 
                             if (enemyRender.score % 3 == 2){
-                            skelly.enemyHealth = 100;
-                            skelly.position = {1400, 540};
+                            spoopy.enemyHealth = 100 + (20 * enemyRender.score);
+                            spoopy.speed = spoopy.speed + (enemyRender.score * 0.1);
+                            spoopy.position = {1400, 540};
                             enemyRender.addNewEnemy(&spoopy);
                             currentEnemy = &spoopy;
                             }
@@ -235,6 +238,7 @@ int main(void)
                                 client.sendDeathPacket(ptrPlayer->id);
                             }
                             dead = true;
+                            enemyRender.score = 0;
                         }
                         if (slime.enemyHealth <= 0){
                             enemyRender.removeEnemy(&slime);

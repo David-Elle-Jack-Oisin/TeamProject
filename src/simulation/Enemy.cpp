@@ -8,7 +8,7 @@ class Enemy
 
     public:
         static constexpr float framesSpeed = 8.0f;
-        static constexpr float speed = 5.0f;
+        float speed = 1.0f;
         int id;
         Vector2 prevPosition;
         Vector2 position;

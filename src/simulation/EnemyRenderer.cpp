@@ -84,13 +84,13 @@ class EnemyRenderer{
                     }
                 }
                 if (set){
-                    EnemyAi(closestPlayer);
+                   EnemyAi(closestPlayer);
                 }
             }
         }
         void EnemyAi (Player* player){
             
-            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, 1.0);
+            Vector2 nextPosition = Vector2MoveTowards(EnemyList.back()->position, player->positionOffset, EnemyList.back()->speed);
             EnemyList.back()->prevPosition = EnemyList.back()->position; 
             EnemyList.back()->position = nextPosition;
             EnemyList.back()->hitBox.x = EnemyList.back()->position.x + 50;
