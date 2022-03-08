@@ -274,8 +274,8 @@ class MapGenerator {
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.Top))){
             //fprintf(stderr,"Collision\n");
-            DrawRectangleRec(player->frameRec, RED);
-            DrawRectangleRec(player->hitBox, GREEN);
+            // DrawRectangleRec(player->frameRec, RED);
+            // DrawRectangleRec(player->hitBox, GREEN);
 
             if(player->hitBox.y < (startingRoom.Top.height + startingRoom.Top.y) && player ->hitBox.x  > startingRoom.Top.x && player ->hitBox.x < (startingRoom.Top.x + startingRoom.Top.width)){
                 
@@ -290,8 +290,8 @@ class MapGenerator {
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.Bottom))){
             //fprintf(stderr,"Collision\n");
-            DrawRectangleRec(player->frameRec, RED);
-            DrawRectangleRec(player->hitBox, GREEN);
+            // DrawRectangleRec(player->frameRec, RED);
+            // DrawRectangleRec(player->hitBox, GREEN);
 
             // && player ->hitBox.x  > startingRoom.Bottom.x && player ->hitBox.x < (startingRoom.Bottom.x + startingRoom.Top.width
 
@@ -308,8 +308,8 @@ class MapGenerator {
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.LSide))){
             //fprintf(stderr,"Collision\n");
-            DrawRectangleRec(player->frameRec, RED);
-            DrawRectangleRec(player->hitBox, GREEN);
+            // DrawRectangleRec(player->frameRec, RED);
+            // DrawRectangleRec(player->hitBox, GREEN);
 
             // && player ->hitBox.x  > startingRoom.Bottom.x && player ->hitBox.x < (startingRoom.Bottom.x + startingRoom.Top.width
 
@@ -329,8 +329,8 @@ class MapGenerator {
 
         if((CheckCollisionRecs(player->hitBox, startingRoom.RSide))){
             //fprintf(stderr,"Collision\n");
-            DrawRectangleRec(player->frameRec, RED);
-            DrawRectangleRec(player->hitBox, GREEN);
+            // DrawRectangleRec(player->frameRec, RED);
+            // DrawRectangleRec(player->hitBox, GREEN);
 
             // && player ->hitBox.x  > startingRoom.Bottom.x && player ->hitBox.x < (startingRoom.Bottom.x + startingRoom.Top.width
 
