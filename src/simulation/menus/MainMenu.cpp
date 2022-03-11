@@ -134,6 +134,9 @@ class MainMenu{
     bool exitTheIpScreen(){
         return exitWindow;
     }
+    bool isMultiplayer(){
+        return muiltiPlayerButtonAction;
+    }
     MainMenu(): singlePlayerButtonAction(false){}
     private:
         

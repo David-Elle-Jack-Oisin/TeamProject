@@ -5,6 +5,7 @@ TEST (Control_Flow_Tests, Initial_Node_Main_Menu_Test) {
     MainMenu menu;
     ASSERT_EQ(menu.isMainMenuFinished(), false);
     ASSERT_EQ(menu.isSinglePlayer(), false);
+    ASSERT_EQ(menu.isMultiplayer(), false);
 }
 TEST (Control_Flow_Tests, SinglePlayer_Node_Test) { 
     MainMenu menu;
@@ -17,6 +18,7 @@ TEST (Control_Flow_Tests, SinglePlayer_Node_Test) {
 TEST (Control_Flow_Tests, Muiltiplayer_Node_Test) { 
     MainMenu menu;
     menu.setMultiplayer(true);
+    ASSERT_EQ(menu.isMultiplayer(), true);
     ASSERT_EQ(menu.isMainMenuFinished(), false);
     ASSERT_EQ(menu.isSinglePlayer(), false);
     ASSERT_EQ(menu.getIsAttemptingToJoinServer(), false);
